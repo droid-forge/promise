@@ -78,7 +78,7 @@ public class FastParser {
      new okhttp3.Interceptor() {
       @Override
       public Response intercept(@NonNull Chain chain) throws IOException {
-       LogUtil.d(TAG, "Request Request timeout - " + config.timeOut() + " read", chain.readTimeoutMillis() + " write", chain.writeTimeoutMillis());
+       LogUtil.e(TAG, "Request Request timeout - " + config.timeOut() + " read", chain.readTimeoutMillis() + " write", chain.writeTimeoutMillis());
        Request request = chain.request();
        Response response = null;
        boolean responseOK = false;

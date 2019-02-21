@@ -24,7 +24,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
+import androidx.collection.ArrayMap;
 import me.yoctopus.Promise;
 import me.yoctopus.data.db.query.QueryBuilder;
 import me.yoctopus.data.log.LogUtil;
@@ -83,6 +86,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
 
   @Override
   public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+    LogUtil.d(TAG, "onUpgrade", oldVersion, newVersion);
     if (shouldUpgrade(database, oldVersion, newVersion)) {
       LogUtil.d(TAG, "onUpgrade", "upgrading tables");
       upgrade(database, oldVersion, newVersion);
@@ -100,16 +104,17 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public abstract List<Table<?, SQLiteDatabase>> tables();
 
   private void create(SQLiteDatabase database) {
-    boolean created = true;
+   boolean created = true;
 
-    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
-      try {
-        created = created && create(table, database);
-      } catch (DBError dbError) {
-        LogUtil.e(TAG, dbError);
-        return;
-      }
+   for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
+    try {
+     created = created && create(table, database);
     }
+    catch (DBError dbError) {
+     LogUtil.e(TAG, dbError);
+     return;
+    }
+   }
 /*
 
     int j = 0;
@@ -133,21 +138,21 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
-    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
-      try {
-        if ((v2 - v1) == 1) checkTableExist(table).onUpgrade(database, v1, v2);
-        else {
-          int i = v1;
-          while (i < v2) {
-            checkTableExist(table).onUpgrade(database, i, i + 1);
-            i++;
-          }
-        }
-      } catch (ModelError modelError) {
-        LogUtil.e(TAG, modelError);
-        return;
+   for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
+    try {
+     if ((v2 - v1) == 1) checkTableExist(table).onUpgrade(database, v1, v2);
+     else {
+      int i = v1;
+      while (i < v2) {
+       checkTableExist(table).onUpgrade(database, i, i + 1);
+       i++;
       }
+     }
+    } catch (ModelError modelError) {
+     LogUtil.e(TAG, modelError);
+     return;
     }
+   }
    /* initTables();
     for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
         indexCreatedTableHashMap.entrySet()) {
@@ -223,7 +228,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public Cursor query(QueryBuilder builder) {
     String sql = builder.build();
     String[] params = builder.buildParameters();
-    LogUtil.d(TAG, "query: " + sql, " params: " + Arrays.toString(params));
+    LogUtil.e(TAG, "query: "+ sql, " params: "+ Arrays.toString(params));
     return getReadableDatabase().rawQuery(sql, params);
   }
 
@@ -303,8 +308,8 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public boolean deleteAll() {
     synchronized (FastDB.class) {
       boolean deleted = true;
-      for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables()))
-        deleted = deleted && delete(checkTableExist(table));
+      for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables()))
+       deleted = deleted && delete(checkTableExist(table));
      /* for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
           indexCreatedTableHashMap.entrySet())
         deleted = deleted && delete(checkTableExist(entry.getValue()));*/

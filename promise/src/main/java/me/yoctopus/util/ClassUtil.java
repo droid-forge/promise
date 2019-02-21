@@ -15,7 +15,12 @@
 
 package me.yoctopus.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
+
+import me.yoctopus.model.List;
 
 /**
  * Created on 12/6/17 by yoctopus.
@@ -33,6 +38,10 @@ public class ClassUtil {
             return defaultVal;
         }
     }
+
+   /* public static Map<String, Class<?>> getFields(Class<?> klass, Class<?> object){
+        List<Field> fields = new List<>(klass.getDeclaredFields());
+    }*/
 
     public static boolean hasField(Class<?> klass,
                                    String fieldName) {
@@ -65,5 +74,9 @@ public class ClassUtil {
         } catch (NoSuchMethodException e) {
             return false;
         }
+    }
+
+    public static boolean hasAnnotation(Class<?> klass, Class<? extends Annotation> annotation) {
+        return klass.isAnnotationPresent(annotation);
     }
 }

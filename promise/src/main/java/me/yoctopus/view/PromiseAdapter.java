@@ -16,8 +16,11 @@
 package me.yoctopus.view;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +41,16 @@ import me.yoctopus.cac.anim.Animator;
 import me.yoctopus.data.log.LogUtil;
 import me.yoctopus.model.List;
 import me.yoctopus.model.Viewable;
+import me.yoctopus.model.function.MapFunction;
 import me.yoctopus.util.Conditions;
 
-/** Created by yoctopus on 11/6/17. */
+/**
+ * Created by yoctopus on 11/6/17.
+ */
 public class PromiseAdapter<T extends Viewable>
     extends RecyclerView.Adapter<PromiseAdapter<T>.Holder> {
   private String TAG = LogUtil.makeTag(PromiseAdapter.class);
+  private String AdapterItems = "__adapter_items__";
   private Indexer indexer;
   private List<T> list;
   private Listener<T> listener;
@@ -56,6 +63,7 @@ public class PromiseAdapter<T extends Viewable>
   private Handler handler;
   private RecyclerView recyclerView;
   private OnAfterInitListener onAfterInitListener;
+  private SparseArray<T> sparseArray= new SparseArray<>();
 
   public PromiseAdapter(@NonNull Listener<T> listener) {
     this(new List<T>(), listener);
@@ -66,6 +74,26 @@ public class PromiseAdapter<T extends Viewable>
     this.listener = listener;
     this.handler = new Handler(Looper.getMainLooper());
     indexList();
+  }
+
+  public void restoreViewState(Bundle instanceState) {
+    this.list = new List<>(instanceState.getParcelableArrayList(AdapterItems))
+        .map(new MapFunction<T, Parcelable>() {
+      @Override
+      public T from(Parcelable parcelable) {
+        return (T) parcelable;
+      }
+    });
+    notifyDataSetChanged();
+  }
+
+  public void backupViewState(Bundle instanceState) {
+      /*instanceState.putParcelableArrayList(AdapterItems, list);*/
+  }
+
+  @Deprecated
+  public void destroyViewState() {
+
   }
 
   public PromiseAdapter<T> swipe(Swipe<T> swipeListener) {
@@ -136,8 +164,7 @@ public class PromiseAdapter<T extends Viewable>
     if (manager instanceof GridLayoutManager) {
       GridLayoutManager manager1 = (GridLayoutManager) manager;
       recyclerView.setLayoutManager(new WrapContentGridLayoutManager(recyclerView.getContext(), manager1.getSpanCount()));
-    }
-    else if (manager instanceof LinearLayoutManager)
+    } else if (manager instanceof LinearLayoutManager)
       recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(recyclerView.getContext()));
     /*if (recyclerView.getItemAnimator() != null) {
       recyclerView.setItemAnimator(new CustomItemAnimator());
@@ -268,7 +295,7 @@ public class PromiseAdapter<T extends Viewable>
     void onClick(T t, @IdRes int id);
   }
 
-  public interface  OnAfterInitListener {
+  public interface OnAfterInitListener {
     void onAfterInit(View view);
   }
 
@@ -307,7 +334,7 @@ public class PromiseAdapter<T extends Viewable>
       for (Field field : fields)
         try {
           Object view = field.get(t);
-          if (view != null && view instanceof View)
+          if (view instanceof View)
             ((View) view)
                 .setOnClickListener(
                     new View.OnClickListener() {
@@ -316,7 +343,8 @@ public class PromiseAdapter<T extends Viewable>
                         listener.onClick(t, v.getId());
                       }
                     });
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException ignored) {
+          /*LogUtil.e(TAG, "illegal access ", ignored);*/
         }
     }
 
@@ -326,7 +354,7 @@ public class PromiseAdapter<T extends Viewable>
       for (Field field : fields)
         try {
           Object view = field.get(t);
-          if (view != null && view instanceof View)
+          if (view instanceof View)
             ((View) view)
                 .setOnLongClickListener(
                     new View.OnLongClickListener() {
@@ -337,7 +365,7 @@ public class PromiseAdapter<T extends Viewable>
                         return true;
                       }
                     });
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException ignored) {
         }
     }
   }
@@ -427,7 +455,7 @@ public class PromiseAdapter<T extends Viewable>
     }
 
     void add(List<T> list) {
-      for (T t: list) add(t);
+      for (T t : list) add(t);
     }
 
     void clear() {
@@ -475,6 +503,7 @@ public class PromiseAdapter<T extends Viewable>
     public WrapContentGridLayoutManager(Context context, int spanCount) {
       super(context, spanCount);
     }
+
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
       try {
@@ -484,6 +513,7 @@ public class PromiseAdapter<T extends Viewable>
       }
     }
   }
+
   public class CustomItemAnimator extends DefaultItemAnimator {
     @Override
     public boolean animateChange(

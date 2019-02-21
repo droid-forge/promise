@@ -19,17 +19,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'petervincent.android'
-description = 'Promise-Android'
+//group = 'petervincent.android'
+//description = 'Promise-Android'
 
 ext {
     libraryVersion = '1.0.0'
@@ -55,24 +55,25 @@ ext {
     allLicenses = ["Apache-2.0"]
 }
 
-apply from: 'install.gradle'
-apply from: 'bintray.gradle'
+//apply from: 'install.gradle'
+//apply from: 'bintray.gradle'
 
-def coreAarFile = file('build/promise.aar')
-artifacts {
-    archives coreAarFile
-}
+//def coreAarFile = file('build/promise.aar')
+//artifacts {
+//    archives coreAarFile
+//}
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://bintray.com/vincentwasonga")
-            pom.groupId = project.group
-            pom.artifactId = project.ext.artifact
-            pom.version = project.ext.libraryVersion
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://bintray.com/vincentwasonga")
+//            pom.groupId = project.group
+//            pom.artifactId = project.ext.artifact
+//            pom.version = project.ext.libraryVersion
+//        }
+//    }
+//}
+
 android {
     compileSdkVersion project.ext.compileSdkVersion
     buildToolsVersion project.ext.buildToolsVersion
@@ -81,6 +82,7 @@ android {
         minSdkVersion project.ext.minSdkVersion
         versionCode project.ext.libraryVersionName
         versionName project.ext.libraryVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {

@@ -24,7 +24,6 @@ import me.yoctopus.model.List;
 import me.yoctopus.model.ResponseCallBack;
 import me.yoctopus.model.Viewable;
 
-import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
 
 /**
  * Created on 12/14/17 by yoctopus.

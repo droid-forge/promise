@@ -40,6 +40,7 @@ import me.yoctopus.model.function.JoinFunction;
 import me.yoctopus.model.function.MapFunction;
 import me.yoctopus.model.function.ReduceFunction;
 import me.yoctopus.model.function.SearchFunction;
+import me.yoctopus.util.Conditions;
 
 /**
  * Created on 5/13/18 by yoctopus.
@@ -85,7 +86,7 @@ public class List<T> extends ArrayList<T> {
   public List<T> sample(int size) {
     List<T> list = new List<>();
     if (size() > size) for (int i = 0; i < size; i++) list.add(get(i));
-    else if (size() <= size) list = this;
+    else list = this;
     return list;
   }
 
@@ -120,24 +121,24 @@ public class List<T> extends ArrayList<T> {
   }
 
   public <K> List<T> arranged(final MapFunction<K, T> function, final Comparator<K> comparator) {
-    return map(new MapFunction<Pair<T, K>, T>() {
+    return map(new MapFunction<Arrangeable<T, K>, T>() {
       @Override
-      public Pair<T, K> from(T t) {
-        return new Pair<>(t, function.from(t));
+      public Arrangeable<T, K> from(T t) {
+        return new Arrangeable<T, K>().value(t).key(function.from(t));
       }
     })
         .sorted(
-            new Comparator<Pair<T, K>>() {
+            new Comparator<Arrangeable<T, K>>() {
               @Override
-              public int compare(Pair<T, K> o1, Pair<T, K> o2) {
-                return comparator.compare(o1.second, o2.second);
+              public int compare(Arrangeable<T, K> o1, Arrangeable<T, K> o2) {
+                return comparator.compare(o1.key(), o2.key());
               }
             })
         .map(
-            new MapFunction<T, Pair<T, K>>() {
+            new MapFunction<T, Arrangeable<T, K>>() {
               @Override
-              public T from(Pair<T, K> arrangeable) {
-                return arrangeable.first;
+              public T from(Arrangeable<T, K> arrangeable) {
+                return arrangeable.value();
               }
             });
   }
@@ -153,7 +154,7 @@ public class List<T> extends ArrayList<T> {
       T t = this.get(i);
       K key = function.getKey(t);
       if (map.containsKey(key)) {
-        List<T> list = map.get(key);
+        List<T> list = Conditions.checkNotNull(map.get(key));
         list.add(t);
       } else {
         List<T> list = new List<>();
@@ -161,8 +162,7 @@ public class List<T> extends ArrayList<T> {
         map.put(key, list);
       }
     }
-    Set<Map.Entry<K, List<T>>> entries = map.entrySet();
-    for (Map.Entry<K, List<T>> entry : entries) {
+    for (Map.Entry<K, List<T>> entry : map.entrySet()) {
       E e = function.get(entry.getKey());
       function.apply(e, entry.getValue());
       es.add(e);
@@ -262,8 +262,7 @@ public class List<T> extends ArrayList<T> {
         new FilterFunction<T>() {
           @Override
           public boolean filter(T t) {
-            if (reverse) return set.contains(function.filterBy(t));
-            else return !set.contains(function.filterBy(t));
+            return reverse == set.contains(function.filterBy(t));
           }
         })
         .join(list, combiner);

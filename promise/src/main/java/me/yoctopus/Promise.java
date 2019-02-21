@@ -24,8 +24,6 @@ import android.net.ConnectivityManager;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -39,7 +37,6 @@ import io.reactivex.subjects.PublishSubject;
 import me.yoctopus.data.log.LogUtil;
 import me.yoctopus.data.net.FastParser;
 import me.yoctopus.model.Action;
-import me.yoctopus.model.AsyncAction;
 import me.yoctopus.model.List;
 import me.yoctopus.model.Message;
 import me.yoctopus.model.ResponseCallBack;
