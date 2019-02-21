@@ -14,13 +14,19 @@ Easily interacting with sqlite database, make http requests, store shared prefer
 * Websockets and data streaming
 
 # Setup
-- Clone the repository
-- Import the promise folder as a module in android studio
-- Add in your app module build gradle file as project implementation.
+- 
 #### build.gradle
 ```
+allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
+
+
 dependencies {
-    implementation project(path: ':promise')
+            implementation 'com.github.dev4vin:android-promise:1.0.1'
 }
 ```
 #### Stay Updated
