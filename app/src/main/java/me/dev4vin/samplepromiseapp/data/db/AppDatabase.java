@@ -4,15 +4,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import me.dev4vin.samplepromiseapp.models.Todo;
-import me.yoctopus.Promise;
-import me.yoctopus.data.db.Corrupt;
-import me.yoctopus.data.db.FastDB;
-import me.yoctopus.data.db.Table;
-import me.yoctopus.data.db.query.QueryBuilder;
-import me.yoctopus.data.log.LogUtil;
-import me.yoctopus.model.List;
-import me.yoctopus.model.Message;
-import me.yoctopus.model.SList;
+import me.dev4vin.Promise;
+import me.dev4vin.data.db.Corrupt;
+import me.dev4vin.data.db.FastDB;
+import me.dev4vin.data.db.Table;
+import me.dev4vin.data.db.query.QueryBuilder;
+import me.dev4vin.data.log.LogUtil;
+import me.dev4vin.model.List;
+import me.dev4vin.model.Message;
+import me.dev4vin.model.SList;
 
 public class AppDatabase extends FastDB {
 

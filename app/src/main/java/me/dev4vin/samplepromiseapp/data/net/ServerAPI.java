@@ -11,15 +11,15 @@ import java.util.Map;
 import me.dev4vin.samplepromiseapp.auth.Session;
 import me.dev4vin.samplepromiseapp.error.ServerError;
 import me.dev4vin.samplepromiseapp.models.Todo;
-import me.yoctopus.data.log.LogUtil;
-import me.yoctopus.data.net.Config;
-import me.yoctopus.data.net.EndPoint;
-import me.yoctopus.data.net.FastParser;
-import me.yoctopus.data.net.Interceptor;
-import me.yoctopus.data.net.extras.HttpPayload;
-import me.yoctopus.data.net.extras.HttpResponse;
-import me.yoctopus.model.List;
-import me.yoctopus.model.ResponseCallBack;
+import me.dev4vin.data.log.LogUtil;
+import me.dev4vin.data.net.Config;
+import me.dev4vin.data.net.EndPoint;
+import me.dev4vin.data.net.FastParser;
+import me.dev4vin.data.net.Interceptor;
+import me.dev4vin.data.net.extras.HttpPayload;
+import me.dev4vin.data.net.extras.HttpResponse;
+import me.dev4vin.model.List;
+import me.dev4vin.model.ResponseCallBack;
 
 public class ServerAPI extends FastParser {
   private static ServerAPI instance;

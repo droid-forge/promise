@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import me.dev4vin.samplepromiseapp.models.Todo;
-import me.yoctopus.data.db.Column;
-import me.yoctopus.data.db.Model;
-import me.yoctopus.model.List;
+import me.dev4vin.data.db.Column;
+import me.dev4vin.data.db.Model;
+import me.dev4vin.model.List;
 
 public class TodoTable extends Model<Todo> {
 

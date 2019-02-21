@@ -1,6 +1,6 @@
 package me.dev4vin.samplepromiseapp.auth;
 
-import me.yoctopus.model.List;
+import me.dev4vin.model.List;
 
 public class User {
   private String email, password, names;

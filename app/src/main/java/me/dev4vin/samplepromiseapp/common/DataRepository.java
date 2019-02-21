@@ -4,8 +4,8 @@ import me.dev4vin.samplepromiseapp.data.db.AppDatabase;
 import me.dev4vin.samplepromiseapp.data.net.ServerAPI;
 import me.dev4vin.samplepromiseapp.error.ServerError;
 import me.dev4vin.samplepromiseapp.models.Todo;
-import me.yoctopus.model.List;
-import me.yoctopus.model.ResponseCallBack;
+import me.dev4vin.model.List;
+import me.dev4vin.model.ResponseCallBack;
 
 public class DataRepository {
   private static DataRepository instance;

@@ -9,15 +9,15 @@ import java.util.Map;
 
 import me.dev4vin.samplepromiseapp.data.net.ServerAPI;
 import me.dev4vin.samplepromiseapp.error.AuthError;
-import me.yoctopus.data.log.LogUtil;
-import me.yoctopus.data.net.EndPoint;
-import me.yoctopus.data.net.extras.HttpPayload;
-import me.yoctopus.data.net.extras.HttpResponse;
-import me.yoctopus.data.pref.PreferenceStore;
-import me.yoctopus.data.pref.Preferences;
-import me.yoctopus.data.utils.Converter;
-import me.yoctopus.model.ResponseCallBack;
-import me.yoctopus.model.function.FilterFunction;
+import me.dev4vin.data.log.LogUtil;
+import me.dev4vin.data.net.EndPoint;
+import me.dev4vin.data.net.extras.HttpPayload;
+import me.dev4vin.data.net.extras.HttpResponse;
+import me.dev4vin.data.pref.PreferenceStore;
+import me.dev4vin.data.pref.Preferences;
+import me.dev4vin.data.utils.Converter;
+import me.dev4vin.model.ResponseCallBack;
+import me.dev4vin.model.function.FilterFunction;
 
 public class Session {
   private static String TAG = LogUtil.makeTag(Session.class);

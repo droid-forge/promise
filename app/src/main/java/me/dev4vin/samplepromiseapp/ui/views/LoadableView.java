@@ -2,7 +2,7 @@ package me.dev4vin.samplepromiseapp.ui.views;
 
 import android.view.View;
 
-import me.yoctopus.model.Viewable;
+import me.dev4vin.model.Viewable;
 
 public class LoadableView implements Viewable {
   private String status;

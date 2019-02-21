@@ -16,12 +16,12 @@ import me.dev4vin.samplepromiseapp.R;
 import me.dev4vin.samplepromiseapp.common.DataRepository;
 import me.dev4vin.samplepromiseapp.models.Todo;
 import me.dev4vin.samplepromiseapp.ui.views.LoadableView;
-import me.yoctopus.model.List;
-import me.yoctopus.model.ResponseCallBack;
-import me.yoctopus.view.AdapterDivider;
-import me.yoctopus.view.PromiseAdapter;
-import me.yoctopus.view.SearchableAdapter;
-import me.yoctopus.view.loading.ProgressLayout;
+import me.dev4vin.model.List;
+import me.dev4vin.model.ResponseCallBack;
+import me.dev4vin.view.AdapterDivider;
+import me.dev4vin.view.PromiseAdapter;
+import me.dev4vin.view.SearchableAdapter;
+import me.dev4vin.view.loading.ProgressLayout;
 
 public class MainActivity extends AppCompatActivity implements PromiseAdapter.Listener<Todo> {
   protected Toolbar toolbar;

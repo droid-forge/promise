@@ -3,10 +3,8 @@ package me.dev4vin.samplepromiseapp.models;
 import android.os.Parcel;
 import android.view.View;
 
-import java.util.Objects;
-
-import me.yoctopus.model.SModel;
-import me.yoctopus.model.Searchable;
+import me.dev4vin.model.SModel;
+import me.dev4vin.model.Searchable;
 
 public class Todo extends SModel implements Searchable {
   private String category;
