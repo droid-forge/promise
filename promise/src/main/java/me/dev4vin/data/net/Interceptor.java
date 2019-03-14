@@ -15,11 +15,12 @@
 
 package me.dev4vin.data.net;
 
+import androidx.annotation.Nullable;
 import me.dev4vin.model.ResponseCallBack;
 
 /**
  * Created on 6/21/18 by yoctopus.
  */
 public abstract class Interceptor<T> {
-    public abstract void intercept(T t, ResponseCallBack<T, Throwable> callBack);
+    public abstract void intercept(@Nullable EndPoint endPoint, T t, ResponseCallBack<T, Throwable> callBack);
 }
