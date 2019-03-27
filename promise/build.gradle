@@ -26,6 +26,8 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 //apply plugin: 'com.github.dcendents.android-maven'
 
 //group = 'petervincent.android'
@@ -92,4 +94,10 @@ android {
 }
 
 apply from: 'deps.gradle'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
 

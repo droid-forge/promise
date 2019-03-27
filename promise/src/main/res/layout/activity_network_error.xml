@@ -20,7 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="me.dev4vin.view.NetworkErrorActivity">
+    tools:context="com.promise.view.NetworkErrorActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
