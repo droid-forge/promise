@@ -120,6 +120,10 @@ public class PromiseAdapter<T extends Viewable>
     indexer.add(Conditions.checkNotNull(t));
   }
 
+  public void unshift(final T t) {
+    indexer.unshift(Conditions.checkNotNull(t));
+  }
+
   public void add(final List<T> list) {
     indexer.add(Conditions.checkNotNull(list));
   }
@@ -393,13 +397,40 @@ public class PromiseAdapter<T extends Viewable>
             });
       } else {
         list.add(t);
-        if (reverse) list.reverse();
-        t.index(list.size() - 1);
+        t.index(0);
         handler.post(
             new Runnable() {
               @Override
               public void run() {
-                notifyItemInserted(list.size() - 1);
+                notifyItemInserted(0);
+              }
+            });
+      }
+    }
+
+    void unshift(T t) {
+      if (list == null) list = new List<>();
+      if (!list.isEmpty()) {
+        List<T> list1 = new List<>();
+        list1.add(t);
+        list1.addAll(list);
+        setList(list1);
+        index();
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyDataSetChanged();
+              }
+            });
+      } else {
+        list.add(t);
+        t.index(0);
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyItemInserted(0);
               }
             });
       }
