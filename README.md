@@ -1,5 +1,5 @@
 # Android Promise
-- [v1.0.0]
+- [v1.0.8]
 Easily interacting with sqlite database, make http requests, store shared preferences, log to console, list with recyclerview, multithreading
 
 - Please read also [issues](https://github.com/dev4vin/android-promise/issues) 
@@ -26,8 +26,20 @@ allprojects {
 
 
 dependencies {
-     implementation 'com.github.dev4vin:android-promise:1.0.4'
+     implementation 'com.github.dev4vin:android-promise:1.0.8'
 }
+```
+
+# Initialization
+Initialize Promise in your main application file, entry point
+
+#### App.java
+```java
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    Promise.init(this).threads(100);
+  }
 ```
 #### Stay Updated
 
