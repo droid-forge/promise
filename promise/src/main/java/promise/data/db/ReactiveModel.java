@@ -120,7 +120,8 @@ public abstract class ReactiveModel<T extends SModel>
       public SList<T> call() throws Exception {
         return table.onReadAll(database, close);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -130,7 +131,8 @@ public abstract class ReactiveModel<T extends SModel>
       public SList<T> call() throws Exception {
         return table.onReadAll(database, column);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -140,7 +142,8 @@ public abstract class ReactiveModel<T extends SModel>
       public SList<T> call() throws Exception {
         return table.onReadAll(database, columns);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -150,7 +153,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onUpdate(t, database, column);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
 
   }
 
@@ -171,7 +175,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onDelete(database, column, list);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -181,7 +186,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onDelete(database, column);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -191,7 +197,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onDelete(t, database);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -201,7 +208,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onDelete(database);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -211,7 +219,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Long call() throws Exception {
         return table.onSave(t, database);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -221,7 +230,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onSave(list, database, close);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -231,7 +241,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Boolean call() throws Exception {
         return table.onDrop(database);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -241,7 +252,8 @@ public abstract class ReactiveModel<T extends SModel>
       public Integer call() throws Exception {
         return table.onGetLastId(database);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -252,7 +264,8 @@ public abstract class ReactiveModel<T extends SModel>
         table.backup(database);
         observer.onComplete();
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
@@ -263,7 +276,8 @@ public abstract class ReactiveModel<T extends SModel>
         table.restore(database);
         observer.onComplete();
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   private T getWithId(Cursor cursor) {
@@ -290,7 +304,8 @@ public abstract class ReactiveModel<T extends SModel>
         public Q call() throws Exception {
           return (Q) table.read(database).first();
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Nullable
@@ -301,7 +316,8 @@ public abstract class ReactiveModel<T extends SModel>
         public Q call() throws Exception {
           return (Q) table.read(database).last();
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -311,7 +327,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).all();
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -321,7 +338,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).limit(limit);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -331,7 +349,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).between(column, a, b);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -341,7 +360,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).where(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -351,7 +371,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).notIn(column, a, b);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -361,7 +382,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).like(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -371,7 +393,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).orderBy(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -381,7 +404,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).groupBy(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -391,7 +415,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<Q> call() throws Exception {
           return (SList<Q>) table.read(database).groupAndOrderBy(column, column1);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
   }
 
@@ -420,7 +445,8 @@ public abstract class ReactiveModel<T extends SModel>
         public U call() throws Exception {
           return (U) table.read(database(), columns).last();
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
 
     }
 
@@ -431,7 +457,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).all();
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -441,7 +468,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).limit(limit);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -451,7 +479,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).between(column, a, b);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -461,7 +490,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).where(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -471,7 +501,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).notIn(column, a, b);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -481,7 +512,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).like(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -491,7 +523,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).orderBy(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -501,7 +534,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).groupBy(column);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
@@ -511,7 +545,8 @@ public abstract class ReactiveModel<T extends SModel>
         public SList<U> call() throws Exception {
           return (SList<U>) table.read(database(), columns).groupAndOrderBy(column, column1);
         }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+          .observeOn(Schedulers.from(Promise.instance().executor()));
     }
   }
 }

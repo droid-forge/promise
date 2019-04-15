@@ -30,8 +30,10 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import promise.data.log.LogUtil;
@@ -76,6 +78,16 @@ public class Promise {
   }
 
   public static Promise init(Context context) {
+    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+      @Override
+      public void accept(Throwable throwable) throws Exception {
+        if (throwable instanceof UndeliverableException) {
+          LogUtil.e(TAG, "undeliverable error: ", throwable);
+        }
+        else Thread.currentThread().getUncaughtExceptionHandler()
+            .uncaughtException(Thread.currentThread(), throwable);
+      }
+    });
     if (instance != null) throw new IllegalStateException("Promise can only be instantiated once");
     instance = new Promise(context);
     return instance;

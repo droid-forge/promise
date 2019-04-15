@@ -16,6 +16,7 @@
 package promise.data.db;
 
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
@@ -38,6 +39,7 @@ import promise.model.List;
 import promise.model.ResponseCallBack;
 import promise.model.S;
 import promise.model.SList;
+import promise.model.SModel;
 import promise.model.function.EachFunction;
 import promise.model.function.MapFunction;
 import promise.util.Conditions;
@@ -118,11 +120,11 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
         : DEFAULT_NAME;
   }
 
-  public abstract List<ReactiveTable<?, SQLiteDatabase>> tables();
+  public abstract List<Table<?, SQLiteDatabase>> tables();
 
   private void create(SQLiteDatabase database) {
     boolean created = true;
-    for (ReactiveTable<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
+    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
       try {
         created = created && create(table, database);
       } catch (DBError dbError) {
@@ -133,13 +135,13 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   }
 
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
-    for (ReactiveTable<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
+    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
       try {
-        if ((v2 - v1) == 1) checkTableExist(table).onUpgrade(database, v1, v2);
+        if ((v2 - v1) == 1) table.onUpgrade(database, v1, v2);
         else {
           int i = v1;
           while (i < v2) {
-            checkTableExist(table).onUpgrade(database, i, i + 1);
+            table.onUpgrade(database, i, i + 1);
             i++;
           }
         }
@@ -150,11 +152,11 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
     }
   }
 
-  public boolean add(SQLiteDatabase database, List<ReactiveTable<?, SQLiteDatabase>> tables) {
+  public boolean add(SQLiteDatabase database, List<Table<?, SQLiteDatabase>> tables) {
     boolean created = true;
     int j = 0;
     IndexCreated indexCreated;
-    for (ReactiveTable<?, SQLiteDatabase> table : tables) {
+    for (Table<?, SQLiteDatabase> table : tables) {
       try {
         created = created && create(table, database);
       } catch (DBError dbError) {
@@ -179,7 +181,7 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
     return dropped;
   }
 
-  private boolean create(ReactiveTable<?, SQLiteDatabase> table, SQLiteDatabase database) throws DBError {
+  private boolean create(Table<?, SQLiteDatabase> table, SQLiteDatabase database) throws DBError {
     try {
       table.onCreate(database);
     } catch (ModelError e) {
@@ -188,8 +190,12 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
     return true;
   }
 
-  private Single<Boolean> drop(ReactiveTable<?, SQLiteDatabase> table, SQLiteDatabase database) {
-    return checkTableExist(table).onDrop(database);
+  private Single<Boolean> drop(Table<?, SQLiteDatabase> table, SQLiteDatabase database) {
+    try {
+      return checkTableExist(model(table)).onDrop(database);
+    } catch (ModelError modelError) {
+      return Single.error(modelError);
+    }
   }
 
   public Single<Cursor> query(final QueryBuilder builder) {
@@ -198,10 +204,10 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
       public Cursor call() throws Exception {
         String sql = builder.build();
         String[] params = builder.buildParameters();
-        LogUtil.e(TAG, "query: " + sql, " params: " + Arrays.toString(params));
         return getReadableDatabase().rawQuery(sql, params);
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   public Context getContext() {
@@ -233,75 +239,119 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
 
 
   @Override
-  public <T extends S> ReactiveTable.Extras<T> read(ReactiveTable<T, SQLiteDatabase> table) {
-    return checkTableExist(table).read(getReadableDatabase());
+  public <T extends S> ReactiveTable.Extras<T> read(Table<T, SQLiteDatabase> table) throws ModelError {
+    return checkTableExist(model(table)).read(getReadableDatabase());
   }
 
   @Override
-  public <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, SQLiteDatabase> table) {
-    return checkTableExist(table).onReadAll(getReadableDatabase(), true);
+  public <T extends S> Maybe<SList<T>> readAll(Table<T, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onReadAll(getReadableDatabase(), true);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, SQLiteDatabase> table, Column column) {
-    return checkTableExist(table).onReadAll(getReadableDatabase(), column);
+  public <T extends S> Maybe<SList<T>> readAll(Table<T, SQLiteDatabase> table, Column column) {
+    try {
+      return checkTableExist(model(table)).onReadAll(getReadableDatabase(), column);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Maybe<Boolean> update(T t, ReactiveTable<T, SQLiteDatabase> table, Column column) {
-    return checkTableExist(table).onUpdate(t, getWritableDatabase(), column);
+  public <T extends S> Maybe<Boolean> update(T t, Table<T, SQLiteDatabase> table, Column column) {
+    try {
+      return checkTableExist(model(table)).onUpdate(t, getWritableDatabase(), column);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Maybe<Boolean> update(T t, ReactiveTable<T, SQLiteDatabase> table) {
-    return checkTableExist(table).onUpdate(t, getWritableDatabase());
+  public <T extends S> Maybe<Boolean> update(T t, Table<T, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onUpdate(t, getWritableDatabase());
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, SQLiteDatabase> table, Column[] columns) {
-    return checkTableExist(table).onReadAll(getReadableDatabase(), columns);
+  public <T extends S> Maybe<SList<T>> readAll(Table<T, SQLiteDatabase> table, Column[] columns) {
+    try {
+      return checkTableExist(model(table)).onReadAll(getReadableDatabase(), columns);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> ReactiveTable.Extras<T> read(ReactiveTable<T, SQLiteDatabase> table, Column... columns) {
-    return checkTableExist(table).read(getReadableDatabase(), columns);
+  public <T extends S> ReactiveTable.Extras<T> read(Table<T, SQLiteDatabase> table, Column... columns) throws ModelError {
+    return checkTableExist(model(table)).read(getReadableDatabase(), columns);
   }
 
   @Override
-  public Maybe<Boolean> delete(ReactiveTable<?, SQLiteDatabase> table, Column column) {
-    return checkTableExist(table).onDelete(getWritableDatabase(), column);
+  public Maybe<Boolean> delete(Table<?, SQLiteDatabase> table, Column column) {
+    try {
+      return checkTableExist(model(table)).onDelete(getWritableDatabase(), column);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Maybe<Boolean> delete(ReactiveTable<T, SQLiteDatabase> table, T t) {
-    return checkTableExist(table).onDelete(t, getWritableDatabase());
+  public <T extends S> Maybe<Boolean> delete(Table<T, SQLiteDatabase> table, T t) {
+    try {
+      return checkTableExist(model(table)).onDelete(t, getWritableDatabase());
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public Maybe<Boolean> delete(ReactiveTable<?, SQLiteDatabase> table) {
-    return checkTableExist(table).onDelete(getWritableDatabase());
+  public Maybe<Boolean> delete(Table<?, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onDelete(getWritableDatabase());
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T> Maybe<Boolean> delete(ReactiveTable<?, SQLiteDatabase> table, Column<T> column, List<T> list) {
-    return checkTableExist(table).onDelete(getWritableDatabase(), column, list);
+  public <T> Maybe<Boolean> delete(Table<?, SQLiteDatabase> table, Column<T> column, List<T> list) {
+    try {
+      return checkTableExist(model(table)).onDelete(getWritableDatabase(), column, list);
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Single<Long> save(T t, ReactiveTable<T, SQLiteDatabase> table) {
-    return checkTableExist(table).onSave(t, getWritableDatabase());
+  public <T extends S> Single<Long> save(T t, Table<T, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onSave(t, getWritableDatabase());
+    } catch (ModelError modelError) {
+      return Single.error(modelError);
+    }
   }
 
   @Override
-  public <T extends S> Single<Boolean> save(SList<T> list, ReactiveTable<T, SQLiteDatabase> table) {
-    return checkTableExist(table).onSave(list, getWritableDatabase(), true);
+  public <T extends S> Single<Boolean> save(SList<T> list, Table<T, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onSave(list, getWritableDatabase(), true);
+    } catch (ModelError modelError) {
+      return Single.error(modelError);
+    }
   }
 
   @Override
   public Maybe<Boolean> deleteAll() {
-    return Maybe.zip(tables().map(new MapFunction<Maybe<Boolean>, ReactiveTable<?, SQLiteDatabase>>() {
+    return Maybe.zip(tables().map(new MapFunction<Maybe<Boolean>, Table<?, SQLiteDatabase>>() {
       @Override
-      public Maybe<Boolean> from(ReactiveTable<?, SQLiteDatabase> sqLiteDatabaseReactiveTable) {
+      public Maybe<Boolean> from(Table<?, SQLiteDatabase> sqLiteDatabaseReactiveTable) {
         return delete(sqLiteDatabaseReactiveTable);
       }
     }), new Function<Object[], Boolean>() {
@@ -314,12 +364,17 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
           }
         });
       }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+        .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
-  public Maybe<Integer> getLastId(ReactiveTable<?, SQLiteDatabase> table) {
-    return checkTableExist(table).onGetLastId(getReadableDatabase());
+  public Maybe<Integer> getLastId(Table<?, SQLiteDatabase> table) {
+    try {
+      return checkTableExist(model(table)).onGetLastId(getReadableDatabase());
+    } catch (ModelError modelError) {
+      return Maybe.error(modelError);
+    }
   }
 
   /*private IndexCreated getIndexCreated(Table<?, SQLiteDatabase> table) {
@@ -360,5 +415,31 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
       result = 31 * result + (created ? 1 : 0);
       return result;
     }
+  }
+
+  public <T extends S> ReactiveTable<T, SQLiteDatabase> model(final Table<T, SQLiteDatabase> table) throws ModelError {
+    if (!(table instanceof Model)) throw new ModelError(new IllegalStateException("Passed table not a model instance"));
+    final Model<SModel> model = (Model<SModel>) table;
+    return (ReactiveTable<T, SQLiteDatabase>) new ReactiveModel<SModel>() {
+      @Override
+      public SModel from(Cursor cursor) {
+        return model.from(cursor);
+      }
+
+      @Override
+      public ContentValues get(SModel t) {
+        return model.get((SModel) t);
+      }
+
+      @Override
+      public String getName() {
+        return model.getName();
+      }
+
+      @Override
+      public List<Column> getColumns() {
+        return model.getColumns();
+      }
+    };
   }
 }

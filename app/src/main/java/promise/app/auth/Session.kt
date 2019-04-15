@@ -110,8 +110,10 @@ object Session {
     val map = ArrayMap<String, Any>()
     map["email"] = user.email()
     map["names"] = user.names()
-    if (sessionPreferences!!.save(map))
-      for (role in user.roles())
+    sessionPreferences!!.save(map)
+    if (user.roles() == null) return
+    if (!user.roles()!!.isEmpty())
+      for (role in user.roles()!!)
         rolePreferenceStore!!.save("roles", role, ResponseCallBack())
   }
 

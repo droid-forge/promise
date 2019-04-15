@@ -25,33 +25,33 @@ import promise.model.SList;
 
 interface ReactiveCrud<X> {
 
-    <T extends S> ReactiveTable.Extras<T> read(ReactiveTable<T, X> table);
+    <T extends S> ReactiveTable.Extras<T> read(Table<T, X> table) throws ModelError;
 
-    <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, X> table);
+    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table);
 
-    <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, X> table, Column column);
+    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table, Column column);
 
-    <T extends S> Maybe<Boolean> update(T t, ReactiveTable<T, X> table, Column column);
+    <T extends S> Maybe<Boolean> update(T t, Table<T, X> table, Column column);
 
-    <T extends S> Maybe<Boolean> update(T t, ReactiveTable<T, X> table);
+    <T extends S> Maybe<Boolean> update(T t, Table<T, X> table);
 
-    <T extends S> Maybe<SList<T>> readAll(ReactiveTable<T, X> table, Column[] columns);
+    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table, Column[] columns);
 
-    <T extends S> ReactiveTable.Extras<T> read(ReactiveTable<T, X> table, Column... columns);
+    <T extends S> ReactiveTable.Extras<T> read(Table<T, X> table, Column... columns) throws ModelError;
 
-    Maybe<Boolean> delete(ReactiveTable<?, X> table, Column column);
+    Maybe<Boolean> delete(Table<?, X> table, Column column);
 
-    <T extends S> Maybe<Boolean> delete(ReactiveTable<T, X> table, T t);
+    <T extends S> Maybe<Boolean> delete(Table<T, X> table, T t);
 
-    Maybe<Boolean> delete(ReactiveTable<?, X> table);
+    Maybe<Boolean> delete(Table<?, X> table);
 
-    <T> Maybe<Boolean> delete(ReactiveTable<?, X> table, Column<T> column, List<T> list);
+    <T> Maybe<Boolean> delete(Table<?, X> table, Column<T> column, List<T> list);
 
-    <T extends S> Single<Long> save(T t, ReactiveTable<T, X> table);
+    <T extends S> Single<Long> save(T t, Table<T, X> table);
 
-    <T extends S> Single<Boolean> save(SList<T> list, ReactiveTable<T, X> table);
+    <T extends S> Single<Boolean> save(SList<T> list, Table<T, X> table);
 
     Maybe<Boolean> deleteAll();
 
-    Maybe<Integer> getLastId(ReactiveTable<?, X> table);
+    Maybe<Integer> getLastId(Table<?, X> table);
 }

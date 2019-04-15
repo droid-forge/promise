@@ -8,36 +8,28 @@ class User {
   private var names: String? = null
   private var roles: List<Role>? = null
 
-  fun email(): String? {
-    return email
-  }
+  fun email(): String? = email
 
   fun email(email: String): User {
     this.email = email
     return this
   }
 
-  fun password(): String? {
-    return password
-  }
+  fun password(): String? = password
 
   fun password(password: String): User {
     this.password = password
     return this
   }
 
-  fun names(): String? {
-    return names
-  }
+  fun names(): String? = names
 
   fun names(names: String): User {
     this.names = names
     return this
   }
 
-  fun roles(): List<Role>? {
-    return roles
-  }
+  fun roles(): List<Role>? = roles
 
   fun roles(roles: List<Role>): User {
     this.roles = roles

@@ -33,7 +33,7 @@ public class ResponseCallBack<T, E extends Throwable> {
             }
         }
         else LogUtil.e(TAG,
-                new IllegalStateException("Could not pass data, response not provided"));
+                new IllegalStateException("Could not pass data: "+t+" , response not provided"));
     }
 
     public ResponseCallBack<T, E> response(Response<T, E> response) {
@@ -44,7 +44,7 @@ public class ResponseCallBack<T, E extends Throwable> {
     public void error(E e) {
         if (error != null) error.onError(e);
         else LogUtil.e(TAG,
-                new IllegalStateException("Could not process error, error not provided"));
+                new IllegalStateException("Could not process error: "+e+" , error not provided"));
     }
 
     public ResponseCallBack<T, E> error(Error<E> error) {
