@@ -1,6 +1,7 @@
 package promise.app.data.net
 
 import androidx.collection.ArrayMap
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import promise.app.auth.Session
@@ -56,30 +57,30 @@ private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
    * @param responseCallBack to return data to caller function
    */
   fun getTodos(skip: Int, limit: Int, responseCallBack: ResponseCallBack<List<Todo>, ServerError>) {
-    get(EndPoint("todos/:from/-/:to")
-        .params(object : ArrayMap<String, String>() {
+    get(EndPoint("/todos")
+        /*.params(object : ArrayMap<String, String>() {
           init {
             put("from", skip.toString())
             put("to", limit.toString())
           }
-        }),
+        })*/,
         HttpPayload.get(),
-        ResponseCallBack<HttpResponse<String, JSONObject>, JSONException>()
+        ResponseCallBack<HttpResponse<String, JSONArray>, JSONException>()
             .response { stringJSONObjectHttpResponse ->
-              val status = stringJSONObjectHttpResponse.status()
-              if (status == 200) {
-                val array = stringJSONObjectHttpResponse.response().getJSONArray("payload")
-                val todos = List<Todo>()
-                for (i in 0 until array.hashCode()) {
-                  val todoObject = array.getJSONObject(i)
-                  todos.add(Todo()
-                      .category(todoObject.getString("category"))
-                      .name(todoObject.getString("namee"))
-                      .completed(todoObject.getBoolean("completed")))
-                }
-                responseCallBack.response(todos)
-              } else if (status == 404) responseCallBack.error(ServerError("Todos not found"))
-            }.error { responseCallBack.response(someTodos()) })
+              val array = stringJSONObjectHttpResponse.response()
+              val todos = List<Todo>()
+              for (i in 0 until array.hashCode()) {
+                val todoObject = array.getJSONObject(i)
+                /*"id": 1,
+                "title": "delectus aut autem",
+                "completed": false*/
+                todos.add(Todo()
+                    .category("Personal")
+                    .name(todoObject.getString("title"))
+                    .completed(todoObject.getBoolean("completed")))
+              }
+              responseCallBack.response(todos)
+            }.error { responseCallBack.response(someTodos()) }, JSONArray::class.java)
   }
 
   fun addTodo(todo: Todo, responseCallBack: ResponseCallBack<Todo, ServerError>) {
@@ -112,7 +113,7 @@ private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
 
   companion object {
     private var instance: ServerAPI? = null
-    private val UPSTREAM_URL = "https://somelink.com/api/"
+    private val UPSTREAM_URL = "https://jsonplaceholder.typicode.com"
 
     fun instance(): ServerAPI {
       if (instance == null) instance = ServerAPI()

@@ -39,6 +39,7 @@ import promise.data.log.LogUtil;
 import promise.data.net.extras.HttpPayload;
 import promise.data.net.extras.HttpResponse;
 import promise.data.net.extras.InputStreamHttpResponse;
+import promise.data.net.extras.JsonHttpResponse;
 import promise.data.net.extras.JsonObjectHttpResponse;
 import promise.model.Action;
 import promise.model.Message;
@@ -132,6 +133,16 @@ public class FastParser {
     return new FastParser(config);
   }
 
+  public FastParser payloadInterceptor(Interceptor<HttpPayload> payloadInterceptor) {
+    this.payloadInterceptor = payloadInterceptor;
+    return this;
+  }
+
+  public FastParser responseInterceptor(Interceptor<HttpResponse<?, ?>> responseInterceptor) {
+    this.responseInterceptor = responseInterceptor;
+    return this;
+  }
+
   public void download(
       @NonNull final EndPoint endPoint,
       @NonNull final HttpPayload payload,
@@ -149,54 +160,19 @@ public class FastParser {
     makeRequest(request, file, responseCallBack);
   }
 
-  private void makeRequest(
-      final Request request,
-      final File file,
-      @NonNull final ResponseCallBack<HttpResponse<InputStream, File>, Exception> responseCallBack) {
-    Promise.instance()
-        .execute(
-            new Action<HttpResponse<InputStream, File>>() {
-              @Override
-              public HttpResponse<InputStream, File> execute() throws Exception {
-                Response response = client.newCall(request).execute();
-                ArrayMap<String, String> headers = new ArrayMap<>();
-                for (String name : response.headers().names())
-                  headers.put(name, response.header(name));
-                HttpResponse<InputStream, File> response1 = new InputStreamHttpResponse(file);
-                response1.getResponse(response.body().byteStream());
-                response1.status(response.code());
-                response1.headers(headers);
-                return response1;
-              }
-            },
-            new ResponseCallBack<HttpResponse<InputStream, File>, Throwable>()
-                .response(
-                    new ResponseCallBack.Response<HttpResponse<InputStream, File>, Throwable>() {
-                      @Override
-                      public void onResponse(HttpResponse<InputStream, File> response) {
-                        responseCallBack.response(response);
-                      }
-                    })
-                .error(
-                    new ResponseCallBack.Error<Throwable>() {
-                      @Override
-                      public void onError(Throwable throwable) {
-                        if (throwable instanceof JSONException)
-                          responseCallBack.error((JSONException) throwable);
-                        else
-                          Promise.instance().send(new Message(SENDER, throwable));
-                      }
-                    }));
-  }
-
-  public FastParser payloadInterceptor(Interceptor<HttpPayload> payloadInterceptor) {
-    this.payloadInterceptor = payloadInterceptor;
-    return this;
-  }
-
-  public FastParser responseInterceptor(Interceptor<HttpResponse<?, ?>> responseInterceptor) {
-    this.responseInterceptor = responseInterceptor;
-    return this;
+  public HttpResponse<InputStream, File> syncDownload(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final File file) throws Exception {
+    HttpUrl.Builder httpBuider = HttpUrl.parse(endPoint.toString()).newBuilder();
+    if (payload.payload() != null)
+      for (Map.Entry<String, Object> param : payload.payload().entrySet())
+        httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
+    Request.Builder builder = new Request.Builder();
+    for (Map.Entry<String, String> entry : payload.headers().entrySet())
+      builder.addHeader(entry.getKey(), entry.getValue());
+    Request request = builder.url(httpBuider.build()).get().build();
+    return syncMakeRequest(request, file);
   }
 
   /**
@@ -252,6 +228,68 @@ public class FastParser {
     }
   }
 
+  public <T> void post(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final ResponseCallBack<HttpResponse<String, T>, JSONException> responseCallBack, final Class<T> tClass) {
+    if (!checkNetwork()) {
+      if (config.sendMessages())
+        Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
+      else {
+        NetworkErrorActivity.bind(
+            new NetworkErrorActivity.Action() {
+              @Override
+              public void onAction() {
+                post(endPoint, payload, responseCallBack, tClass);
+              }
+            });
+        startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
+      }
+      return;
+    }
+    if (payloadInterceptor != null) payloadInterceptor.intercept(
+        endPoint,
+        payload,
+        new ResponseCallBack<HttpPayload, Throwable>()
+            .response(
+                new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                  @Override
+                  public void onResponse(HttpPayload httpPayload) throws Throwable {
+                    makeRequest(getHeaders(httpPayload)
+                        .url(getUrl(endPoint))
+                        .post(getBody(httpPayload))
+                        .build(), responseCallBack, tClass);
+                  }
+                })
+            .error(
+                new ResponseCallBack.Error<Throwable>() {
+                  @Override
+                  public void onError(Throwable throwable) {
+                    responseCallBack.error(new JSONException(throwable.getMessage()));
+                  }
+                }));
+    else {
+      Request request = getHeaders(payload).url(getUrl(endPoint)).post(getBody(payload)).build();
+      makeRequest(request, responseCallBack, tClass);
+    }
+  }
+
+  public HttpResponse<String, JSONObject> syncPost(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).post(getBody(payload)).build();
+    return syncMakeRequest(request);
+  }
+
+  public <T> HttpResponse<String, T> syncPost(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).post(getBody(payload)).build();
+    return syncMakeRequest(request, tClass);
+  }
+
   /**
    * send a get request to the server
    *
@@ -271,7 +309,7 @@ public class FastParser {
             new NetworkErrorActivity.Action() {
               @Override
               public void onAction() {
-                post(endPoint, payload, responseCallBack);
+                get(endPoint, payload, responseCallBack);
               }
             });
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
@@ -306,6 +344,70 @@ public class FastParser {
     }
   }
 
+  public <T> void get(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final ResponseCallBack<HttpResponse<String, T>, JSONException> responseCallBack,
+      final Class<T> tClass) {
+    if (!checkNetwork()) {
+      if (config.sendMessages())
+        Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
+      else {
+        NetworkErrorActivity.bind(
+            new NetworkErrorActivity.Action() {
+              @Override
+              public void onAction() {
+                get(endPoint, payload, responseCallBack, tClass);
+              }
+            });
+        startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
+      }
+      return;
+    }
+    final HttpUrl.Builder httpBuider = HttpUrl.parse(getUrl(endPoint)).newBuilder();
+    if (payload.payload() != null)
+      for (Map.Entry<String, Object> param : payload.payload().entrySet())
+        httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
+    if (payloadInterceptor != null) payloadInterceptor.intercept(
+        endPoint,
+        payload,
+        new ResponseCallBack<HttpPayload, Throwable>()
+            .response(
+                new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                  @Override
+                  public void onResponse(HttpPayload httpPayload) throws Throwable {
+                    makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack, tClass);
+                  }
+                })
+            .error(
+                new ResponseCallBack.Error<Throwable>() {
+                  @Override
+                  public void onError(Throwable throwable) {
+                    responseCallBack.error(new JSONException(throwable.getMessage()));
+                  }
+                }));
+    else {
+      Request request = getHeaders(payload).url(httpBuider.build()).get().build();
+      makeRequest(request, responseCallBack, tClass);
+    }
+  }
+
+  public HttpResponse<String, JSONObject> syncGet(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).get().build();
+    return syncMakeRequest(request);
+  }
+
+  public <T> HttpResponse<String, T> syncGet(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).get().build();
+    return syncMakeRequest(request, tClass);
+  }
+
   public void put(
       @NonNull final EndPoint endPoint,
       @NonNull final HttpPayload payload,
@@ -318,7 +420,7 @@ public class FastParser {
             new NetworkErrorActivity.Action() {
               @Override
               public void onAction() {
-                post(endPoint, payload, responseCallBack);
+                put(endPoint, payload, responseCallBack);
               }
             });
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
@@ -352,6 +454,69 @@ public class FastParser {
     }
   }
 
+  public <T> void put(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final ResponseCallBack<HttpResponse<String, T>, JSONException> responseCallBack,
+      final Class<T> tClass) {
+    if (!checkNetwork()) {
+      if (config.sendMessages())
+        Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
+      else {
+        NetworkErrorActivity.bind(
+            new NetworkErrorActivity.Action() {
+              @Override
+              public void onAction() {
+                put(endPoint, payload, responseCallBack, tClass);
+              }
+            });
+        startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
+      }
+      return;
+    }
+    if (payloadInterceptor != null) payloadInterceptor.intercept(
+        endPoint,
+        payload,
+        new ResponseCallBack<HttpPayload, Throwable>()
+            .response(
+                new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                  @Override
+                  public void onResponse(HttpPayload httpPayload) throws Throwable {
+                    makeRequest(getHeaders(httpPayload)
+                        .url(getUrl(endPoint))
+                        .put(getBody(httpPayload))
+                        .build(), responseCallBack, tClass);
+                  }
+                })
+            .error(
+                new ResponseCallBack.Error<Throwable>() {
+                  @Override
+                  public void onError(Throwable throwable) {
+                    responseCallBack.error(new JSONException(throwable.getMessage()));
+                  }
+                }));
+    else {
+      Request request = getHeaders(payload).url(getUrl(endPoint)).put(getBody(payload)).build();
+      makeRequest(request, responseCallBack, tClass);
+    }
+  }
+
+  public HttpResponse<String, JSONObject> syncPut(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).put(getBody(payload)).build();
+    return syncMakeRequest(request);
+  }
+
+  public <T> HttpResponse<String, T> syncPut(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).put(getBody(payload)).build();
+    return syncMakeRequest(request, tClass);
+  }
+
   /**
    * send a delete reqeust to the server
    *
@@ -371,7 +536,7 @@ public class FastParser {
             new NetworkErrorActivity.Action() {
               @Override
               public void onAction() {
-                post(endPoint, payload, responseCallBack);
+                delete(endPoint, payload, responseCallBack);
               }
             });
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
@@ -405,6 +570,69 @@ public class FastParser {
     }
   }
 
+  public <T> void delete(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final ResponseCallBack<HttpResponse<String, T>, JSONException> responseCallBack,
+      final Class<T> tClass) {
+    if (!checkNetwork()) {
+      if (config.sendMessages())
+        Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
+      else {
+        NetworkErrorActivity.bind(
+            new NetworkErrorActivity.Action() {
+              @Override
+              public void onAction() {
+                delete(endPoint, payload, responseCallBack, tClass);
+              }
+            });
+        startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
+      }
+      return;
+    }
+    if (payloadInterceptor != null) payloadInterceptor.intercept(
+        endPoint,
+        payload,
+        new ResponseCallBack<HttpPayload, Throwable>()
+            .response(
+                new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                  @Override
+                  public void onResponse(HttpPayload httpPayload) throws Throwable {
+                    makeRequest(getHeaders(httpPayload)
+                        .url(getUrl(endPoint))
+                        .delete(getBody(httpPayload))
+                        .build(), responseCallBack, tClass);
+                  }
+                })
+            .error(
+                new ResponseCallBack.Error<Throwable>() {
+                  @Override
+                  public void onError(Throwable throwable) {
+                    responseCallBack.error(new JSONException(throwable.getMessage()));
+                  }
+                }));
+    else {
+      Request request = getHeaders(payload).url(getUrl(endPoint)).delete(getBody(payload)).build();
+      makeRequest(request, responseCallBack, tClass);
+    }
+  }
+
+  public HttpResponse<String, JSONObject> syncDelete(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).delete(getBody(payload)).build();
+    return syncMakeRequest(request);
+  }
+
+  public <T> HttpResponse<String, T> syncDelete(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).delete(getBody(payload)).build();
+    return syncMakeRequest(request, tClass);
+  }
+
   /**
    * send patch request to the server
    *
@@ -424,7 +652,7 @@ public class FastParser {
             new NetworkErrorActivity.Action() {
               @Override
               public void onAction() {
-                post(endPoint, payload, responseCallBack);
+                patch(endPoint, payload, responseCallBack);
               }
             });
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
@@ -458,6 +686,122 @@ public class FastParser {
     }
   }
 
+  public <T> void patch(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload,
+      final ResponseCallBack<HttpResponse<String, T>, JSONException> responseCallBack,
+      final Class<T> tClass) {
+    if (!checkNetwork()) {
+      if (config.sendMessages())
+        Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
+      else {
+        NetworkErrorActivity.bind(
+            new NetworkErrorActivity.Action() {
+              @Override
+              public void onAction() {
+                patch(endPoint, payload, responseCallBack, tClass);
+              }
+            });
+        startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
+      }
+      return;
+    }
+    if (payloadInterceptor != null) payloadInterceptor.intercept(
+        endPoint,
+        payload,
+        new ResponseCallBack<HttpPayload, Throwable>()
+            .response(
+                new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                  @Override
+                  public void onResponse(HttpPayload httpPayload) throws Throwable {
+                    makeRequest(getHeaders(httpPayload)
+                        .url(getUrl(endPoint))
+                        .patch(getBody(httpPayload))
+                        .build(), responseCallBack, tClass);
+                  }
+                })
+            .error(
+                new ResponseCallBack.Error<Throwable>() {
+                  @Override
+                  public void onError(Throwable throwable) {
+                    responseCallBack.error(new JSONException(throwable.getMessage()));
+                  }
+                }));
+    else {
+      Request request = getHeaders(payload).url(getUrl(endPoint)).patch(getBody(payload)).build();
+      makeRequest(request, responseCallBack, tClass);
+    }
+  }
+
+  public HttpResponse<String, JSONObject> syncPatch(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).patch(getBody(payload)).build();
+    return syncMakeRequest(request);
+  }
+
+  public <T> HttpResponse<String, T> syncPatch(
+      @NonNull final EndPoint endPoint,
+      @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
+    if (!checkNetwork()) throw new Exception("Network not connected");
+    Request request = getHeaders(payload).url(getUrl(endPoint)).patch(getBody(payload)).build();
+    return syncMakeRequest(request, tClass);
+  }
+
+  private void makeRequest(
+      final Request request,
+      final File file,
+      @NonNull final ResponseCallBack<HttpResponse<InputStream, File>, Exception> responseCallBack) {
+    Promise.instance()
+        .execute(
+            new Action<HttpResponse<InputStream, File>>() {
+              @Override
+              public HttpResponse<InputStream, File> execute() throws Exception {
+                Response response = client.newCall(request).execute();
+                ArrayMap<String, String> headers = new ArrayMap<>();
+                for (String name : response.headers().names())
+                  headers.put(name, response.header(name));
+                HttpResponse<InputStream, File> response1 = new InputStreamHttpResponse(file);
+                response1.getResponse(response.body().byteStream());
+                response1.status(response.code());
+                response1.headers(headers);
+                return response1;
+              }
+            },
+            new ResponseCallBack<HttpResponse<InputStream, File>, Throwable>()
+                .response(
+                    new ResponseCallBack.Response<HttpResponse<InputStream, File>, Throwable>() {
+                      @Override
+                      public void onResponse(HttpResponse<InputStream, File> response) {
+                        responseCallBack.response(response);
+                      }
+                    })
+                .error(
+                    new ResponseCallBack.Error<Throwable>() {
+                      @Override
+                      public void onError(Throwable throwable) {
+                        if (throwable instanceof JSONException)
+                          responseCallBack.error((JSONException) throwable);
+                        else
+                          Promise.instance().send(new Message(SENDER, throwable));
+                      }
+                    }));
+  }
+
+  private HttpResponse<InputStream, File> syncMakeRequest(
+      final Request request,
+      final File file) throws Exception {
+    Response response = client.newCall(request).execute();
+    ArrayMap<String, String> headers = new ArrayMap<>();
+    for (String name : response.headers().names())
+      headers.put(name, response.header(name));
+    HttpResponse<InputStream, File> response1 = new InputStreamHttpResponse(file);
+    response1.getResponse(response.body().byteStream());
+    response1.status(response.code());
+    response1.headers(headers);
+    return response1;
+  }
   /**
    * send subscribe to the request observables
    *
@@ -526,6 +870,98 @@ public class FastParser {
                         }
                       }
                     }));
+  }
+
+
+  private <T> void makeRequest(final Request request,
+                               final ResponseCallBack<HttpResponse<String,T>, JSONException> responseCallBack, final Class<T> tClass) {
+    Promise.instance()
+        .execute(
+            new Action<JsonHttpResponse<T>>() {
+              @Override
+              public JsonHttpResponse<T> execute() throws Exception {
+                Response response = request(request);
+                ArrayMap<String, String> headers =
+                    new ArrayMap<>();
+                for (String name : response.headers().names())
+                  headers.put(name, response.header(name));
+                JsonHttpResponse<T> response1 = new JsonHttpResponse<>(tClass);
+                response1.getResponse(response.body().string());
+                response1.status(response.code());
+                response1.headers(headers);
+                return response1;
+              }
+            },
+            new ResponseCallBack<JsonHttpResponse<T>, Throwable>()
+                .response(
+                    new ResponseCallBack.Response<JsonHttpResponse<T>, Throwable>() {
+                      @Override
+                      public void onResponse(final JsonHttpResponse<T> jsonObjectHttpResponse) {
+                        if (responseInterceptor != null) responseInterceptor.intercept(
+                            null,
+                            jsonObjectHttpResponse,
+                            new ResponseCallBack<HttpResponse<?, ?>, Throwable>()
+                                .response(
+                                    new ResponseCallBack.Response<
+                                        HttpResponse<?, ?>, Throwable>() {
+                                      @Override
+                                      public void onResponse(HttpResponse<?, ?> httpResponse)
+                                          throws Throwable {
+                                        responseCallBack.response(
+                                            (HttpResponse<String, T>) httpResponse);
+                                      }
+                                    })
+                                .error(
+                                    new ResponseCallBack.Error<Throwable>() {
+                                      @Override
+                                      public void onError(Throwable throwable) {
+                                        responseCallBack.error(new JSONException(throwable.getMessage()));
+                                      }
+                                    }));
+                        else
+                          responseCallBack.response(jsonObjectHttpResponse);
+                      }
+                    })
+                .error(
+                    new ResponseCallBack.Error<Throwable>() {
+                      @Override
+                      public void onError(Throwable error) {
+                        if (error instanceof JSONException)
+                          responseCallBack.error((JSONException) error);
+                        else if (config.sendMessages()) {
+                          Promise.instance().send(new Message(SENDER, error));
+                        }
+                      }
+                    }));
+  }
+
+
+  private HttpResponse<String, JSONObject> syncMakeRequest(
+      final Request request) throws JSONException, Exception {
+    Response response = request(request);
+    ArrayMap<String, String> headers =
+        new ArrayMap<>();
+    for (String name : response.headers().names())
+      headers.put(name, response.header(name));
+    JsonObjectHttpResponse response1 = new JsonObjectHttpResponse();
+    response1.getResponse(response.body().string());
+    response1.status(response.code());
+    response1.headers(headers);
+    return response1;
+  }
+
+
+  private <T> HttpResponse<String,T> syncMakeRequest(final Request request, final Class<T> tClass) throws JSONException, Exception {
+    Response response = request(request);
+    ArrayMap<String, String> headers =
+        new ArrayMap<>();
+    for (String name : response.headers().names())
+      headers.put(name, response.header(name));
+    JsonHttpResponse<T> response1 = new JsonHttpResponse<>(tClass);
+    response1.getResponse(response.body().string());
+    response1.status(response.code());
+    response1.headers(headers);
+    return response1;
   }
 
   /**

@@ -44,7 +44,7 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
   }
 
   /**
-   * @param category todo category
+   * @param category
    */
   fun todos(category: String, responseCallBack: ResponseCallBack<List<Todo>, AppError>) {
     disposable.add(readAll(todoTable, TodoTable.category.with(category)).subscribe({ todos -> responseCallBack.response(todos) }, { throwable -> responseCallBack.error(AppError(throwable)) }))

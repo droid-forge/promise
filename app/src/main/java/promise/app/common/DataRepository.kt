@@ -2,6 +2,7 @@ package promise.app.common
 
 import promise.app.data.db.async.AsyncAppDatabase
 import promise.app.data.net.ServerAPI
+import promise.app.data.net.TodoApi
 import promise.app.error.AppError
 import promise.app.error.ServerError
 import promise.app.models.Todo
@@ -11,7 +12,7 @@ import promise.model.ResponseCallBack
 class DataRepository private constructor() {
 
   private val appDatabase: AsyncAppDatabase = AsyncAppDatabase.instance()
-  private val serverAPI: ServerAPI = ServerAPI.instance()
+  /*private val serverAPI: ServerAPI = ServerAPI.instance()*/
 
   /**
    * get todos from the either the database or the upstream server
@@ -26,11 +27,12 @@ class DataRepository private constructor() {
     appDatabase.todos(skip, limit, ResponseCallBack<List<Todo>, AppError>()
         .response { todos ->
           if (todos.isEmpty())
-            serverAPI.getTodos(skip, limit, ResponseCallBack<List<Todo>, ServerError>()
-                .response { todos1 ->
-                  appDatabase.saveTodos(todos1, ResponseCallBack())
-                  responseCallBack.response(todos1)
-                }.error { serverError -> responseCallBack.error(serverError) })
+            promise.app.data.net.getTodos(ResponseCallBack<List<Todo>, AppError>()
+                .response {
+                  appDatabase.saveTodos(it, ResponseCallBack())
+                  responseCallBack.response(it)
+                }
+                .error { responseCallBack.error(it) })
           else
             responseCallBack.response(todos)
         }.error { appError -> responseCallBack.error(appError) })

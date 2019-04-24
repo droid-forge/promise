@@ -104,7 +104,7 @@ public class List<T> extends ArrayList<T> {
     return -1;
   }
 
-  public List<T> shuffle() {
+  public List<T> shuffled() {
     Collections.shuffle(this);
     return this;
   }
@@ -304,7 +304,6 @@ public class List<T> extends ArrayList<T> {
   public List<T> filter(EachFunction<T> function) {
     List<T> list = new List<>();
     for (T t : this) if (function.filter(t)) list.add(t);
-
     return list;
   }
 
@@ -324,14 +323,12 @@ public class List<T> extends ArrayList<T> {
   }
 
   public void consume(BIConsumer<T, T> consumer) {
-    if (isEmpty() || size() < 1) return;
+    if (isEmpty()) return;
     else if (size() < 2) {
       consumer.accept(get(0), get(1));
       return;
     }
-    for (int i = 0; i < size(); i++) {
-      consumer.accept(get(i), get(i + 1));
-    }
+    for (int i = 0; i < size(); i++) consumer.accept(get(i), get(i + 1));
   }
 
   public List<T> search(SearchFunction<T> function) {
