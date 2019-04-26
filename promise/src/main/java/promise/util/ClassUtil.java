@@ -15,6 +15,8 @@
 
 package promise.util;
 
+import com.google.gson.Gson;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -23,6 +25,10 @@ import java.lang.reflect.Field;
  */
 
 public class ClassUtil {
+    public static <T> T makeCopy(T t, Class<T> tClass) {
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(t), tClass);
+    }
     public static int getIntFieldIfExists(Class<?> klass,
                                           String fieldName,
                                           Class<?> obj,
@@ -53,9 +59,7 @@ public class ClassUtil {
                                     String methodName,
                                     Class<?>... parameterTypes) {
         try {
-            Class<?> klass = Class.forName(className);
-            klass.getDeclaredMethod(methodName, parameterTypes);
-            return true;
+            return hasMethod(Class.forName(className), methodName, parameterTypes);
         } catch (Throwable th) {
             return false;
         }
