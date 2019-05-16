@@ -28,9 +28,10 @@ public class TxManager {
     }
 
     public static TxManager getInstance() {
-        if (instance == null) instance =  new TxManager();
+        if (instance == null) instance = new TxManager();
         return instance;
     }
+
     public void execute(Tx tx) throws NoCallBacksError {
         if (queue == null) return;
         if (tx.complete.isEmpty()) throw new NoCallBacksError("No complete callbacks found");

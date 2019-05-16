@@ -196,7 +196,10 @@ public class List<T> extends ArrayList<T> {
       U u = uList.get(i);
       for (int i1 = 0, SizeT = this.size(); i1 < SizeT; i1++) {
         T t = this.get(i1);
-        if (function.joinBy(t, u)) ts.add(t);
+        if (function.joinBy(t, u)) {
+          ts.add(t);
+          break;
+        }
       }
     }
     return ts;

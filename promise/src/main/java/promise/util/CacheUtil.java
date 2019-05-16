@@ -66,9 +66,7 @@ public class CacheUtil {
     private static boolean tooOld(long time){
         long now=new Date().getTime();
         long diff=now-time;
-        if(diff>900000)
-            return true;
-        return false;
+        return diff > 900000;
     }
      
     public byte[] read(String url){

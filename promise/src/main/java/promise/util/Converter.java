@@ -23,13 +23,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2/5/18 by yoctopus.
  */
 
 public class Converter {
-    public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
+    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
         HashMap<String, Object> map = new HashMap<>();
         Iterator<String> keysItr = object.keys();
         while (keysItr.hasNext()) {
@@ -37,7 +38,6 @@ public class Converter {
             Object value = object.get(key);
             if (value instanceof JSONArray) value = toList((JSONArray) value);
             else if (value instanceof JSONObject) value = toMap((JSONObject) value);
-            else value = value.toString();
             map.put(key, value);
         }
         return map;
@@ -49,7 +49,6 @@ public class Converter {
             Object value = array.get(i);
             if (value instanceof JSONArray) value = toList((JSONArray) value);
             else if (value instanceof JSONObject) value = toMap((JSONObject) value);
-            else value = value.toString();
             list.add(value);
         }
         return list;
