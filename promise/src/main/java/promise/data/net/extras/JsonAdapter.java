@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package promise.data.net.converters;
+package promise.data.net.extras;
 
 import com.google.gson.Gson;
 
@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import promise.data.net.CallAdapter;
+import promise.data.net.extras.CallAdapter;
 import promise.data.utils.Converter;
 
 /**
@@ -38,10 +38,8 @@ public class JsonAdapter<T> extends CallAdapter<T, JSONObject, Map<String, Objec
         return new Converter<T, JSONObject, Map<String, Object>>() {
             @Override
             public Map<String, Object> get(T t) {
-                Gson gson = new Gson();
                 try {
-                    JSONObject object = new JSONObject(gson.toJson(t));
-                    return promise.util.Converter.toMap(object);
+                    return promise.util.Converter.toMap(new JSONObject(new Gson().toJson(t)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -50,8 +48,7 @@ public class JsonAdapter<T> extends CallAdapter<T, JSONObject, Map<String, Objec
 
             @Override
             public T from(JSONObject jsonObject) {
-                Gson gson = new Gson();
-                return gson.fromJson(jsonObject.toString(), type());
+                return new Gson().fromJson(jsonObject.toString(), type());
             }
         };
     }

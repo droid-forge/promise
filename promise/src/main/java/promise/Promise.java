@@ -24,6 +24,8 @@ import android.net.ConnectivityManager;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -45,7 +47,6 @@ import promise.model.ResponseCallBack;
 import promise.model.function.MapFunction;
 import promise.util.Conditions;
 
-/** Created on 2/13/18 by yoctopus. */
 public class Promise {
   public static final String TAG = LogUtil.makeTag(Promise.class);
   public static final String CLEANING_UP_RESOURCES = "Cleaning up resources";
@@ -53,18 +54,14 @@ public class Promise {
   private Context context;
   private ExecutorService executor;
   private PublishSubject<Message> bus;
-  public final BroadcastReceiver networkChangeReceiver =
+  private final BroadcastReceiver networkChangeReceiver =
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-          if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
-              LogUtil.e(TAG, "network connection gone");
-            instance().send(new Message(TAG, "Network shut down"));
-          }
-          if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true)) {
-              LogUtil.e(TAG, "network connection back");
-            instance().send(new Message(TAG, FastParser.NETWORK_IS_BACK));
-          }
+          if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false))
+            send(new Message(TAG, "Network shut down"));
+          else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true))
+            send(new Message(TAG, FastParser.NETWORK_IS_BACK));
         }
       };
   private CompositeDisposable disposable;
@@ -73,7 +70,7 @@ public class Promise {
   private Promise(Context context) {
     this.context = context;
     disposable = new CompositeDisposable();
-    context.registerReceiver(
+    this.context.registerReceiver(
         networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
   }
 
@@ -162,7 +159,14 @@ public class Promise {
   }
 
   public void execute(Runnable runnable) {
-    instance().executor().execute(runnable);
+    executor.execute(runnable);
+  }
+
+  public void executeRepeatativelyWithSeconds(Runnable runnable, long waitInterval) {
+    ScheduledExecutorService scheduler =
+        Executors.newSingleThreadScheduledExecutor();
+    scheduler.scheduleAtFixedRate
+        (runnable, 0, waitInterval, TimeUnit.SECONDS);
   }
 
   public <T> void execute(
@@ -176,8 +180,8 @@ public class Promise {
                     return action.execute();
                   }
                 })
-            .observeOn(Schedulers.from(instance().executor))
-            .subscribeOn(Schedulers.from(instance().executor))
+            .observeOn(Schedulers.from(executor))
+            .subscribeOn(Schedulers.from(executor))
             .subscribe(
                 new Consumer<T>() {
                   @Override
@@ -250,8 +254,8 @@ public class Promise {
                     return List.fromArray(objects);
                   }
                 })
-            .observeOn(Schedulers.from(instance().executor))
-            .subscribeOn(Schedulers.from(instance().executor))
+            .observeOn(Schedulers.from(executor))
+            .subscribeOn(Schedulers.from(executor))
             .subscribe(
                 new Consumer<List<Object>>() {
                   @Override

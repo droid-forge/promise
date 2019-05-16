@@ -43,7 +43,7 @@ class NBar {
     if (notifManager == null)
       notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      int importance = NotificationManager.IMPORTANCE_HIGH;
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
       NotificationChannel mChannel = notifManager.getNotificationChannel("normal_channel_id");
       if (mChannel == null) {
         mChannel = new NotificationChannel("normal_channel_id", title, importance);
@@ -88,7 +88,7 @@ class NBar {
     if (notifManager == null)
       notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      int importance = NotificationManager.IMPORTANCE_HIGH;
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
       NotificationChannel mChannel = notifManager.getNotificationChannel("progress_channel_id");
       if (mChannel == null) {
         mChannel = new NotificationChannel("progress_channel_id", title, importance);

@@ -72,7 +72,7 @@ public abstract class Model<T extends SModel>
     }
     sql = sql.concat(");");
     try {
-      LogUtil.e(TAG, sql);
+      LogUtil.d(TAG, sql);
       database.execSQL(sql);
     } catch (SQLException e) {
       throw new ModelError(e);
@@ -94,7 +94,7 @@ public abstract class Model<T extends SModel>
     for (Column column : columns) {
       String alterSql = ALTER_COMMAND + " `" + getName() + "` " + "ADD " + column.toString() + ";";
       try {
-        LogUtil.e(TAG, alterSql);
+        LogUtil.d(TAG, alterSql);
         database.execSQL(alterSql);
       } catch (SQLException e) {
         throw new ModelError(e);

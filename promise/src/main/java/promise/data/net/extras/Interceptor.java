@@ -13,9 +13,11 @@
  *
  */
 
-package promise.data.net;
+package promise.data.net.extras;
 
 import androidx.annotation.Nullable;
+
+import promise.data.net.EndPoint;
 import promise.model.ResponseCallBack;
 
 /**

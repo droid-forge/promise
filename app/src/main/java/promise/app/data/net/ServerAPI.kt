@@ -3,7 +3,6 @@ package promise.app.data.net
 import androidx.collection.ArrayMap
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 import promise.app.auth.Session
 import promise.app.error.ServerError
 import promise.app.models.Todo
@@ -11,7 +10,7 @@ import promise.data.log.LogUtil
 import promise.data.net.Config
 import promise.data.net.EndPoint
 import promise.data.net.FastParser
-import promise.data.net.Interceptor
+import promise.data.net.extras.Interceptor
 import promise.data.net.extras.HttpPayload
 import promise.data.net.extras.HttpResponse
 import promise.model.List

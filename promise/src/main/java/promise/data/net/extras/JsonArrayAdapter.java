@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package promise.data.net.converters;
+package promise.data.net.extras;
 
 import com.google.gson.Gson;
 
@@ -21,7 +21,6 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 
 import promise.data.log.LogUtil;
-import promise.data.net.CallAdapter;
 import promise.data.utils.Converter;
 import promise.model.List;
 

@@ -62,7 +62,6 @@ public class Config {
         this.context = context;
     }
 
-
     public long timeOut() {
         return timeOut;
     }
@@ -71,7 +70,6 @@ public class Config {
         return mainUrl;
     }
 
-
     public Context getContext() {
         return context;
     }
@@ -79,7 +77,6 @@ public class Config {
     public void setContext(Context context) {
         this.context = context;
     }
-
 
     protected String getUrl(String endpoint) {
         if (mainUrl.endsWith("/") && endpoint.startsWith("/")) endpoint = endpoint.substring(1);

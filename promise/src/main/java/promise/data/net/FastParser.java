@@ -39,6 +39,7 @@ import promise.data.log.LogUtil;
 import promise.data.net.extras.HttpPayload;
 import promise.data.net.extras.HttpResponse;
 import promise.data.net.extras.InputStreamHttpResponse;
+import promise.data.net.extras.Interceptor;
 import promise.data.net.extras.JsonHttpResponse;
 import promise.data.net.extras.JsonObjectHttpResponse;
 import promise.model.Action;
@@ -79,7 +80,7 @@ public class FastParser {
           new okhttp3.Interceptor() {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
-              LogUtil.e(TAG, "Request Request timeout - " + config.timeOut() + " read", chain.readTimeoutMillis() + " write", chain.writeTimeoutMillis());
+              LogUtil.d(TAG, "Request Request timeout - " + config.timeOut() + " read", chain.readTimeoutMillis() + " write", chain.writeTimeoutMillis());
               Request request = chain.request();
               Response response = null;
               boolean responseOK = false;

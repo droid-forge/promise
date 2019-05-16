@@ -225,7 +225,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public Cursor query(QueryBuilder builder) {
     String sql = builder.build();
     String[] params = builder.buildParameters();
-    LogUtil.e(TAG, "query: "+ sql, " params: "+ Arrays.toString(params));
+    LogUtil.d(TAG, "query: "+ sql, " params: "+ Arrays.toString(params));
     return getReadableDatabase().rawQuery(sql, params);
   }
 

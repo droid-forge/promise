@@ -15,7 +15,8 @@
 
 package promise.data.net.extras;
 
-import promise.data.net.CallAdapter;
+import promise.data.net.extras.CallAdapter;
+import promise.data.net.extras.HttpResponse;
 
 /**
  * Created on 6/16/18 by yoctopus.

@@ -192,12 +192,11 @@ public class List<T> extends ArrayList<T> {
 
   public <U> List<T> joinOn(List<U> uList, JoinFunction<T, U> function) {
     List<T> ts = new List<>();
-    for (int i = 0, size = this.size(); i < size; i++) {
-      T t = this.get(i);
-      for (int i1 = 0, uSize = uList.size(); i1 < uSize; i1++) {
-        U u = uList.get(i1);
-        if (!function.joinBy(t, u)) continue;
-        ts.add(t);
+    for (int i = 0, sizeU = uList.size(); i < sizeU; i++) {
+      U u = uList.get(i);
+      for (int i1 = 0, SizeT = this.size(); i1 < SizeT; i1++) {
+        T t = this.get(i1);
+        if (function.joinBy(t, u)) ts.add(t);
       }
     }
     return ts;

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package promise.data.net;
+package promise.data.net.extras;
 
 import java.lang.reflect.Type;
 
