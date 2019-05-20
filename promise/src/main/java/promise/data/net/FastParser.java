@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLHandshakeException;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
 import promise.Promise;
 import promise.data.log.LogUtil;
@@ -80,7 +81,6 @@ public class FastParser {
           new okhttp3.Interceptor() {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
-              LogUtil.d(TAG, "Request Request timeout - " + config.timeOut() + " read", chain.readTimeoutMillis() + " write", chain.writeTimeoutMillis());
               Request request = chain.request();
               Response response = null;
               boolean responseOK = false;
@@ -105,30 +105,7 @@ public class FastParser {
     client = builder.build();
   }
 
-  public static String toUrlParams(JSONObject data) {
-    data = Conditions.checkNotNull(data);
-    Iterator<String> iter = data.keys();
-    StringBuilder params = new StringBuilder();
-    while (iter.hasNext()) {
-      String key = iter.next();
-      data.opt(key);
-      params.append(key).append("=").append(data.opt(key)).append("&");
-    }
-    return params.toString();
-  }
 
-  private static String toUrlParams(Map<String, Object> data) {
-    data = Conditions.checkNotNull(data);
-    StringBuilder params = new StringBuilder();
-    for (Map.Entry<String, Object> entry : data.entrySet()) {
-      String key = entry.getKey();
-      Object object;
-      if (entry.getValue() == null) object = "";
-      else object = entry.getValue();
-      params.append(key).append("=").append(object.toString()).append("&");
-    }
-    return params.toString();
-  }
 
   public static FastParser with(Config config) {
     return new FastParser(config);
@@ -144,12 +121,12 @@ public class FastParser {
     return this;
   }
 
-  public void download(
+  @Nullable
+  public HttpResponse<InputStream, File> download(
       @NonNull final EndPoint endPoint,
       @NonNull final HttpPayload payload,
       final File file,
-      final ResponseCallBack<HttpResponse<InputStream, File>, Exception> responseCallBack) {
-
+      final ResponseCallBack<HttpResponse<InputStream, File>, Exception> responseCallBack) throws Exception {
     HttpUrl.Builder httpBuider = HttpUrl.parse(endPoint.toString()).newBuilder();
     if (payload.payload() != null)
       for (Map.Entry<String, Object> param : payload.payload().entrySet())
@@ -158,23 +135,14 @@ public class FastParser {
     for (Map.Entry<String, String> entry : payload.headers().entrySet())
       builder.addHeader(entry.getKey(), entry.getValue());
     Request request = builder.url(httpBuider.build()).get().build();
-    makeRequest(request, file, responseCallBack);
+    if (responseCallBack == null) return syncMakeRequest(request, file);
+    else {
+      makeRequest(request, file, responseCallBack);
+      return null;
+    }
+
   }
 
-  public HttpResponse<InputStream, File> syncDownload(
-      @NonNull final EndPoint endPoint,
-      @NonNull final HttpPayload payload,
-      final File file) throws Exception {
-    HttpUrl.Builder httpBuider = HttpUrl.parse(endPoint.toString()).newBuilder();
-    if (payload.payload() != null)
-      for (Map.Entry<String, Object> param : payload.payload().entrySet())
-        httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
-    Request.Builder builder = new Request.Builder();
-    for (Map.Entry<String, String> entry : payload.headers().entrySet())
-      builder.addHeader(entry.getKey(), entry.getValue());
-    Request request = builder.url(httpBuider.build()).get().build();
-    return syncMakeRequest(request, file);
-  }
 
   /**
    * send a post request to the server
@@ -202,27 +170,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .post(getBody(httpPayload))
-                        .build(), responseCallBack);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .post(getBody(httpPayload))
+                          .build(), responseCallBack);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).post(getBody(payload)).build();
       makeRequest(request, responseCallBack);
@@ -248,27 +220,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .post(getBody(httpPayload))
-                        .build(), responseCallBack, tClass);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .post(getBody(httpPayload))
+                          .build(), responseCallBack, tClass);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).post(getBody(payload)).build();
       makeRequest(request, responseCallBack, tClass);
@@ -321,24 +297,28 @@ public class FastParser {
     if (payload.payload() != null)
       for (Map.Entry<String, Object> param : payload.payload().entrySet())
         httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(httpBuider.build()).get().build();
       makeRequest(request, responseCallBack);
@@ -369,24 +349,28 @@ public class FastParser {
     if (payload.payload() != null)
       for (Map.Entry<String, Object> param : payload.payload().entrySet())
         httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack, tClass);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack, tClass);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(httpBuider.build()).get().build();
       makeRequest(request, responseCallBack, tClass);
@@ -428,27 +412,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .put(getBody(httpPayload))
-                        .build(), responseCallBack);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .put(getBody(httpPayload))
+                          .build(), responseCallBack);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).put(getBody(payload)).build();
       makeRequest(request, responseCallBack);
@@ -475,27 +463,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .put(getBody(httpPayload))
-                        .build(), responseCallBack, tClass);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .put(getBody(httpPayload))
+                          .build(), responseCallBack, tClass);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).put(getBody(payload)).build();
       makeRequest(request, responseCallBack, tClass);
@@ -544,27 +536,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .delete(getBody(httpPayload))
-                        .build(), responseCallBack);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .delete(getBody(httpPayload))
+                          .build(), responseCallBack);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).delete(getBody(payload)).build();
       makeRequest(request, responseCallBack);
@@ -591,27 +587,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .delete(getBody(httpPayload))
-                        .build(), responseCallBack, tClass);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .delete(getBody(httpPayload))
+                          .build(), responseCallBack, tClass);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).delete(getBody(payload)).build();
       makeRequest(request, responseCallBack, tClass);
@@ -660,27 +660,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .patch(getBody(httpPayload))
-                        .build(), responseCallBack);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .patch(getBody(httpPayload))
+                          .build(), responseCallBack);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).patch(getBody(payload)).build();
       makeRequest(request, responseCallBack);
@@ -707,27 +711,31 @@ public class FastParser {
       }
       return;
     }
-    if (payloadInterceptor != null) payloadInterceptor.intercept(
-        endPoint,
-        payload,
-        new ResponseCallBack<HttpPayload, Throwable>()
-            .response(
-                new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                  @Override
-                  public void onResponse(HttpPayload httpPayload) throws Throwable {
-                    makeRequest(getHeaders(httpPayload)
-                        .url(getUrl(endPoint))
-                        .patch(getBody(httpPayload))
-                        .build(), responseCallBack, tClass);
-                  }
-                })
-            .error(
-                new ResponseCallBack.Error<Throwable>() {
-                  @Override
-                  public void onError(Throwable throwable) {
-                    responseCallBack.error(new JSONException(throwable.getMessage()));
-                  }
-                }));
+    if (payloadInterceptor != null) try {
+      payloadInterceptor.intercept(
+          endPoint,
+          payload,
+          new ResponseCallBack<HttpPayload, Throwable>()
+              .response(
+                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
+                    @Override
+                    public void onResponse(HttpPayload httpPayload) throws Throwable {
+                      makeRequest(getHeaders(httpPayload)
+                          .url(getUrl(endPoint))
+                          .patch(getBody(httpPayload))
+                          .build(), responseCallBack, tClass);
+                    }
+                  })
+              .error(
+                  new ResponseCallBack.Error<Throwable>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                      responseCallBack.error(new JSONException(throwable.getMessage()));
+                    }
+                  }));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     else {
       Request request = getHeaders(payload).url(getUrl(endPoint)).patch(getBody(payload)).build();
       makeRequest(request, responseCallBack, tClass);
@@ -835,27 +843,31 @@ public class FastParser {
                     new ResponseCallBack.Response<JsonObjectHttpResponse, Throwable>() {
                       @Override
                       public void onResponse(final JsonObjectHttpResponse jsonObjectHttpResponse) {
-                        if (responseInterceptor != null) responseInterceptor.intercept(
-                            null,
-                            jsonObjectHttpResponse,
-                            new ResponseCallBack<HttpResponse<?, ?>, Throwable>()
-                                .response(
-                                    new ResponseCallBack.Response<
-                                        HttpResponse<?, ?>, Throwable>() {
-                                      @Override
-                                      public void onResponse(HttpResponse<?, ?> httpResponse)
-                                          throws Throwable {
-                                        responseCallBack.response(
-                                            (HttpResponse<String, JSONObject>) httpResponse);
-                                      }
-                                    })
-                                .error(
-                                    new ResponseCallBack.Error<Throwable>() {
-                                      @Override
-                                      public void onError(Throwable throwable) {
-                                        responseCallBack.error(new JSONException(throwable.getMessage()));
-                                      }
-                                    }));
+                        if (responseInterceptor != null) try {
+                          responseInterceptor.intercept(
+                              null,
+                              jsonObjectHttpResponse,
+                              new ResponseCallBack<HttpResponse<?, ?>, Throwable>()
+                                  .response(
+                                      new ResponseCallBack.Response<
+                                          HttpResponse<?, ?>, Throwable>() {
+                                        @Override
+                                        public void onResponse(HttpResponse<?, ?> httpResponse)
+                                            throws Throwable {
+                                          responseCallBack.response(
+                                              (HttpResponse<String, JSONObject>) httpResponse);
+                                        }
+                                      })
+                                  .error(
+                                      new ResponseCallBack.Error<Throwable>() {
+                                        @Override
+                                        public void onError(Throwable throwable) {
+                                          responseCallBack.error(new JSONException(throwable.getMessage()));
+                                        }
+                                      }));
+                        } catch (Exception e) {
+                          e.printStackTrace();
+                        }
                         else
                           responseCallBack.response(jsonObjectHttpResponse);
                       }
@@ -898,27 +910,31 @@ public class FastParser {
                     new ResponseCallBack.Response<JsonHttpResponse<T>, Throwable>() {
                       @Override
                       public void onResponse(final JsonHttpResponse<T> jsonObjectHttpResponse) {
-                        if (responseInterceptor != null) responseInterceptor.intercept(
-                            null,
-                            jsonObjectHttpResponse,
-                            new ResponseCallBack<HttpResponse<?, ?>, Throwable>()
-                                .response(
-                                    new ResponseCallBack.Response<
-                                        HttpResponse<?, ?>, Throwable>() {
-                                      @Override
-                                      public void onResponse(HttpResponse<?, ?> httpResponse)
-                                          throws Throwable {
-                                        responseCallBack.response(
-                                            (HttpResponse<String, T>) httpResponse);
-                                      }
-                                    })
-                                .error(
-                                    new ResponseCallBack.Error<Throwable>() {
-                                      @Override
-                                      public void onError(Throwable throwable) {
-                                        responseCallBack.error(new JSONException(throwable.getMessage()));
-                                      }
-                                    }));
+                        if (responseInterceptor != null) try {
+                          responseInterceptor.intercept(
+                              null,
+                              jsonObjectHttpResponse,
+                              new ResponseCallBack<HttpResponse<?, ?>, Throwable>()
+                                  .response(
+                                      new ResponseCallBack.Response<
+                                          HttpResponse<?, ?>, Throwable>() {
+                                        @Override
+                                        public void onResponse(HttpResponse<?, ?> httpResponse)
+                                            throws Throwable {
+                                          responseCallBack.response(
+                                              (HttpResponse<String, T>) httpResponse);
+                                        }
+                                      })
+                                  .error(
+                                      new ResponseCallBack.Error<Throwable>() {
+                                        @Override
+                                        public void onError(Throwable throwable) {
+                                          responseCallBack.error(new JSONException(throwable.getMessage()));
+                                        }
+                                      }));
+                        } catch (Exception e) {
+                          e.printStackTrace();
+                        }
                         else
                           responseCallBack.response(jsonObjectHttpResponse);
                       }
@@ -936,7 +952,6 @@ public class FastParser {
                     }));
   }
 
-
   private HttpResponse<String, JSONObject> syncMakeRequest(
       final Request request) throws JSONException, Exception {
     Response response = request(request);
@@ -950,7 +965,6 @@ public class FastParser {
     response1.headers(headers);
     return response1;
   }
-
 
   private <T> HttpResponse<String,T> syncMakeRequest(final Request request, final Class<T> tClass) throws JSONException, Exception {
     Response response = request(request);
@@ -1063,4 +1077,5 @@ public class FastParser {
     intent.putExtra(NetworkErrorActivity.REASON, reason);
     config.getContext().startActivity(intent);
   }
+
 }

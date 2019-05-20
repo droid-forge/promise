@@ -24,5 +24,5 @@ import promise.model.ResponseCallBack;
  * Created on 6/21/18 by yoctopus.
  */
 public abstract class Interceptor<T> {
-    public abstract void intercept(@Nullable EndPoint endPoint, T t, ResponseCallBack<T, Throwable> callBack);
+   @Nullable public abstract T intercept(@Nullable EndPoint endPoint, T t, @Nullable ResponseCallBack<T, Throwable> callBack) throws Exception;
 }

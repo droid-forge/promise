@@ -23,7 +23,7 @@ import android.os.Parcelable;
  */
 
 public abstract class SModel implements S, Parcelable {
-    private int id;
+    private int id = 0;
     private long createdAt, updatedAt;
 
     public long createdAt() {
@@ -53,6 +53,8 @@ public abstract class SModel implements S, Parcelable {
     }
 
     public SModel() {
+        createdAt = System.currentTimeMillis();
+        updatedAt = System.currentTimeMillis();
     }
 
     @Override

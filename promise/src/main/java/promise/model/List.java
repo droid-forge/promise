@@ -16,19 +16,21 @@
 package promise.model;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
+import androidx.core.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.collection.ArrayMap;
-import androidx.core.util.Pair;
 import promise.model.function.BIConsumer;
 import promise.model.function.Combiner;
 import promise.model.function.EachFunction;
@@ -192,10 +194,10 @@ public class List<T> extends ArrayList<T> {
 
   public <U> List<T> joinOn(List<U> uList, JoinFunction<T, U> function) {
     List<T> ts = new List<>();
-    for (int i = 0, sizeU = uList.size(); i < sizeU; i++) {
-      U u = uList.get(i);
-      for (int i1 = 0, SizeT = this.size(); i1 < SizeT; i1++) {
-        T t = this.get(i1);
+    for (int i = 0, tSize = this.size(); i < tSize; i++) {
+      T t = this.get(i);
+      for (int i1 = 0, uSize = uList.size(); i1 < uSize; i1++) {
+        U u = uList.get(i1);
         if (function.joinBy(t, u)) {
           ts.add(t);
           break;
@@ -310,7 +312,6 @@ public class List<T> extends ArrayList<T> {
   }
 
   public <U> List<T> reduce(List<U> list, JoinFunction<T, U> function) {
-
     List<T> ts = new List<>();
     for (int i = 0; i < this.size(); i++) {
       T t = this.get(i);
@@ -320,17 +321,18 @@ public class List<T> extends ArrayList<T> {
           break;
         }
     }
-
     return ts;
   }
 
   public void consume(BIConsumer<T, T> consumer) {
-    if (isEmpty()) return;
-    else if (size() < 2) {
-      consumer.accept(get(0), get(1));
-      return;
+    Iterator<T> it = iterator();
+    if(!it.hasNext()) return;
+    T first = it.next();
+    while(it.hasNext()) {
+      T next = it.next();
+      consumer.accept(first, next);
+      first = next;
     }
-    for (int i = 0; i < size(); i++) consumer.accept(get(i), get(i + 1));
   }
 
   public List<T> search(SearchFunction<T> function) {

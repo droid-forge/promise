@@ -13,10 +13,15 @@
 
 package promise.data.net.extras;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
+import java.util.Iterator;
+import java.util.Map;
 
 import promise.data.net.extras.HttpResponse;
 import promise.data.utils.Converter;
+import promise.util.Conditions;
 
 /**
  * Created on 6/16/18 by yoctopus.
@@ -42,4 +47,5 @@ public abstract class CallAdapter<T, D, U> {
     public U parse(T t) {
         return converter().get(t);
     }
+
 }

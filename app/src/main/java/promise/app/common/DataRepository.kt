@@ -1,5 +1,6 @@
 package promise.app.common
 
+import promise.app.data.db.AppDatabase
 import promise.app.data.db.async.AsyncAppDatabase
 import promise.app.data.net.ServerAPI
 import promise.app.data.net.TodoApi
@@ -11,7 +12,7 @@ import promise.model.ResponseCallBack
 
 class DataRepository private constructor() {
 
-  private val appDatabase: AsyncAppDatabase = AsyncAppDatabase.instance()
+  private val appDatabase: AppDatabase = AppDatabase.instance()
   /*private val serverAPI: ServerAPI = ServerAPI.instance()*/
 
   /**
@@ -24,18 +25,16 @@ class DataRepository private constructor() {
    * @param responseCallBack return response back to caller
    */
   fun getTodos(skip: Int, limit: Int, responseCallBack: ResponseCallBack<List<Todo>, Exception>) {
-    appDatabase.todos(skip, limit, ResponseCallBack<List<Todo>, AppError>()
-        .response { todos ->
-          if (todos.isEmpty())
-            promise.app.data.net.getTodos(ResponseCallBack<List<Todo>, AppError>()
-                .response {
-                  appDatabase.saveTodos(it, ResponseCallBack())
-                  responseCallBack.response(it)
-                }
-                .error { responseCallBack.error(it) })
-          else
-            responseCallBack.response(todos)
-        }.error { appError -> responseCallBack.error(appError) })
+    val todos = appDatabase.todos(skip, limit)
+    if (todos.isEmpty())
+      promise.app.data.net.getTodos(ResponseCallBack<List<Todo>, AppError>()
+          .response {
+            appDatabase.saveTodos(it)
+            responseCallBack.response(it)
+          }
+          .error { responseCallBack.error(it) })
+    else
+      responseCallBack.response(todos)
 
   }
 

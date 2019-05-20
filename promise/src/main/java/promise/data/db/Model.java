@@ -23,8 +23,12 @@ import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import androidx.annotation.Nullable;
+
+import promise.data.db.query.QueryBuilder;
 import promise.data.log.LogUtil;
 import promise.data.utils.Converter;
 import promise.model.List;
@@ -38,7 +42,7 @@ public abstract class Model<T extends SModel>
   private static final String CREATE_PREFIX = "CREATE TABLE IF NOT EXISTS ";
   private static final String DROP_PREFIX = "TRUNCATE TABLE IF EXISTS ";
   private static final String SELECT_PREFIX = "SELECT * FROM ";
-  public static Column<Integer> id;
+  public static Column<Integer> id, createdAt, updatedAt;
 
   static {
     id = new Column<>("id", Column.Type.INTEGER.PRIMARY_KEY_AUTOINCREMENT());
@@ -52,7 +56,7 @@ public abstract class Model<T extends SModel>
   public abstract List<Column> getColumns();
 
   public int getNumberOfColumns() {
-    return getColumns().size() + 1;
+    return getColumns().size() + 3;
   }
 
   @Override
@@ -65,6 +69,8 @@ public abstract class Model<T extends SModel>
     List<Column> columns1 = new List<>();
     columns1.add(id);
     columns1.addAll(columns);
+    columns1.add(new Column("CREATED_AT", Column.Type.INTEGER.NOT_NULL()));
+    columns1.add(new Column("UPDATED_AT", Column.Type.INTEGER.NOT_NULL()));
     for (int i = 0; i < columns1.size(); i++) {
       Column column = columns1.get(i);
       if (i == columns1.size() - 1) sql = sql.concat(column.toString());
@@ -82,11 +88,13 @@ public abstract class Model<T extends SModel>
 
   @Override
   public boolean onUpgrade(SQLiteDatabase database, int v1, int v2) throws ModelError {
-    /*synchronized (this) {
-        backup(database);
-        if (onDrop(database)) onCreate(database);
-        restore(database);
-    }*/
+    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
+    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
+    QueryBuilder builder = new QueryBuilder().from(this);
+    Cursor c = database.rawQuery(builder.build(), builder.buildParameters());
+    Set<String> set = new HashSet<>(List.fromArray(c.getColumnNames()));
+    if (!set.contains(createdAt.getName())) addColumns(database, createdAt);
+    if (!set.contains(updatedAt.getName())) addColumns(database, updatedAt);
     return false;
   }
 
@@ -203,7 +211,9 @@ public abstract class Model<T extends SModel>
   public final boolean onUpdate(T t, SQLiteDatabase database, Column column) {
     String where = null;
     if (column != null) where = column.getName() + column.getOperand() + column.value();
-    return database.update(name, get(t), where, null) >= 0;
+    ContentValues values = get(t);
+    values.put(updatedAt.getName(), System.currentTimeMillis());
+    return database.update(name, values, where, null) >= 0;
   }
 
   @Override
@@ -242,8 +252,11 @@ public abstract class Model<T extends SModel>
 
   @Override
   public final long onSave(T t, SQLiteDatabase database) {
-    /*database.close();*/
-    return database.insert(name, null, get(t));
+    if (t.id() != 0 && onUpdate(t, database)) return t.id();
+    ContentValues values = get(t);
+    values.put(createdAt.getName(), System.currentTimeMillis());
+    values.put(updatedAt.getName(), System.currentTimeMillis());
+    return database.insert(name, null, values);
   }
 
   @Override
@@ -252,7 +265,7 @@ public abstract class Model<T extends SModel>
     int i = 0, listSize = list.size();
     while (i < listSize) {
       T t = list.get(i);
-      saved = saved && database.insert(name, null, get(t)) > 0;
+      saved = saved && onSave(t, database) > 0;
       i++;
     }
     /*if (close) database.close();*/
@@ -292,9 +305,11 @@ public abstract class Model<T extends SModel>
     if (backup != null && !backup.isEmpty()) onSave(backup, database, false);
   }
 
-  public T getWithId(Cursor cursor) {
+  T getWithId(Cursor cursor) {
     T t = from(cursor);
     t.id(cursor.getInt(id.getIndex()));
+    t.createdAt(cursor.getInt(createdAt.getIndex(cursor)));
+    t.updatedAt(cursor.getInt(updatedAt.getIndex(cursor)));
     return t;
   }
 

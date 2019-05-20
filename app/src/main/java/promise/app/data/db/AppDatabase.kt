@@ -3,6 +3,7 @@ package promise.app.data.db
 import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import promise.Promise
+import promise.app.models.Task
 import promise.app.models.Todo
 import promise.data.db.Corrupt
 import promise.data.db.FastDB
@@ -25,8 +26,10 @@ class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION,
    * @param newVersion new database version
    * @return true if to be upgraded or false
    */
-  override fun shouldUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int): Boolean =
-      newVersion > oldVersion
+  override fun shouldUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int): Boolean {
+    if (oldVersion == 1 && newVersion == 2) add(database, List.fromArray(taskTable))
+    return newVersion > oldVersion
+  }
 
   /**
    * All tables must be registered here
@@ -36,8 +39,9 @@ class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION,
   override fun tables(): List<Table<*, SQLiteDatabase>> =
       object : List<Table<*, SQLiteDatabase>>() {
         init {
-          addAll(List.fromArray<TodoTable>(
-              todoTable
+          addAll(fromArray(
+              todoTable,
+              taskTable
           ))
         }
       }
@@ -60,6 +64,8 @@ class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION,
    */
   fun todos(category: String): List<Todo> = readAll(todoTable, TodoTable.category.with(category))
 
+  fun tasks(category: String): List<Task> = readAll(taskTable, TaskTable.category.with(category))
+
   /**
    * @param todos to be saved
    * @return true if all todos are saved
@@ -76,16 +82,18 @@ class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION,
 
   companion object {
 
-    private val DB_NAME = "a"
-    private val DB_VERSION = 1
-    val SENDER_TAG = "App_Database"
+    private const val DB_NAME = "a"
+    private const val DB_VERSION = 2
+    const val SENDER_TAG = "App_Database"
     @SuppressLint("StaticFieldLeak")
     private var instance: AppDatabase? = null
 
     private var todoTable: TodoTable? = null
+    private var taskTable: TaskTable? = null
 
     init {
       todoTable = TodoTable()
+      taskTable = TaskTable()
     }
 
     fun instance(): AppDatabase {
