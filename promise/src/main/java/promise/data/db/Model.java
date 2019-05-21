@@ -69,8 +69,10 @@ public abstract class Model<T extends SModel>
     List<Column> columns1 = new List<>();
     columns1.add(id);
     columns1.addAll(columns);
-    columns1.add(new Column("CREATED_AT", Column.Type.INTEGER.NOT_NULL()));
-    columns1.add(new Column("UPDATED_AT", Column.Type.INTEGER.NOT_NULL()));
+    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
+    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
+    columns1.add(createdAt);
+    columns1.add(updatedAt);
     for (int i = 0; i < columns1.size(); i++) {
       Column column = columns1.get(i);
       if (i == columns1.size() - 1) sql = sql.concat(column.toString());
@@ -212,6 +214,7 @@ public abstract class Model<T extends SModel>
     String where = null;
     if (column != null) where = column.getName() + column.getOperand() + column.value();
     ContentValues values = get(t);
+    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     values.put(updatedAt.getName(), System.currentTimeMillis());
     return database.update(name, values, where, null) >= 0;
   }
@@ -254,6 +257,8 @@ public abstract class Model<T extends SModel>
   public final long onSave(T t, SQLiteDatabase database) {
     if (t.id() != 0 && onUpdate(t, database)) return t.id();
     ContentValues values = get(t);
+    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
+    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     values.put(createdAt.getName(), System.currentTimeMillis());
     values.put(updatedAt.getName(), System.currentTimeMillis());
     return database.insert(name, null, values);
@@ -308,12 +313,14 @@ public abstract class Model<T extends SModel>
   T getWithId(Cursor cursor) {
     T t = from(cursor);
     t.id(cursor.getInt(id.getIndex()));
+    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
+    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     t.createdAt(cursor.getInt(createdAt.getIndex(cursor)));
     t.updatedAt(cursor.getInt(updatedAt.getIndex(cursor)));
     return t;
   }
 
-  private abstract class QueryExtras<Q extends S>
+  private abstract class QueryExtras<Q extends SModel>
       implements Extras<Q>, Converter<Q, Cursor, ContentValues> {
 
     private SQLiteDatabase database;
@@ -326,6 +333,16 @@ public abstract class Model<T extends SModel>
       return database;
     }
 
+    Q getWithId(Cursor cursor) {
+      Q t = from(cursor);
+      t.id(cursor.getInt(id.getIndex()));
+      if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
+      if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
+      t.createdAt(cursor.getInt(createdAt.getIndex(cursor)));
+      t.updatedAt(cursor.getInt(updatedAt.getIndex(cursor)));
+      return t;
+    }
+
     @Nullable
     @Override
     public Q first() {
@@ -334,7 +351,7 @@ public abstract class Model<T extends SModel>
         String sql = SELECT_PREFIX + name + " LIMIT `1`;";
         cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
-        Q t = from(cursor);
+        Q t = getWithId(cursor);
         cursor.close();
         /*database.close();*/
         return t;
@@ -353,7 +370,7 @@ public abstract class Model<T extends SModel>
         String sql = SELECT_PREFIX + name + " ORDER BY 'id' DESC LIMIT `1`;";
         cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
-        Q t = from(cursor);
+        Q t = getWithId(cursor);
         cursor.close();
         /*database.close();*/
         return t;
@@ -375,8 +392,7 @@ public abstract class Model<T extends SModel>
       }
       SList<Q> ts = new SList<>();
       while (cursor.moveToNext() && !cursor.isClosed()) {
-        Q t = from(cursor);
-        t.id(cursor.getInt(id.getIndex()));
+        Q t = getWithId(cursor);
         ts.add(t);
       }
       cursor.close();
@@ -392,8 +408,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -422,8 +437,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -457,8 +471,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -484,8 +497,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -506,8 +518,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -538,8 +549,7 @@ public abstract class Model<T extends SModel>
         cursor = database.rawQuery(sql, null);
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = from(cursor);
-          t.id(cursor.getInt(id.getIndex()));
+          Q t = getWithId(cursor);
           ts.add(t);
         }
         cursor.close();
@@ -552,7 +562,7 @@ public abstract class Model<T extends SModel>
     }
   }
 
-  private abstract class QueryExtras2<U extends S> extends QueryExtras<U> {
+  private abstract class QueryExtras2<U extends SModel> extends QueryExtras<U> {
     private Column[] columns;
 
     QueryExtras2(SQLiteDatabase database, Column[] columns) {
@@ -593,8 +603,7 @@ public abstract class Model<T extends SModel>
       Cursor cursor = database().query(name, null, selection, null, null, null, null);
       SList<U> ts = new SList<>();
       while (cursor.moveToNext() && !cursor.isClosed()) {
-        U t = from(cursor);
-        t.id(cursor.getInt(id.getIndex()));
+        U t = getWithId(cursor);
         ts.add(t);
       }
       cursor.close();
