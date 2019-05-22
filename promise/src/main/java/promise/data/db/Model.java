@@ -29,6 +29,8 @@ import java.util.Set;
 import androidx.annotation.Nullable;
 
 import promise.data.db.query.QueryBuilder;
+import promise.data.db.query.criteria.Criteria;
+import promise.data.db.query.projection.Projection;
 import promise.data.log.LogUtil;
 import promise.data.utils.Converter;
 import promise.model.List;
@@ -291,13 +293,9 @@ public abstract class Model<T extends SModel>
   @Override
   public final int onGetLastId(SQLiteDatabase database) {
     if (id == null) return 0;
-    String[] cols = new String[] {id.getName()};
-    Cursor cursor = database.query(name, cols, null, null, null, null, null);
-    cursor.moveToLast();
-    int id = cursor.getInt(Model.id.getIndex());
-    cursor.close();
-    /*database.close();*/
-    return id;
+    QueryBuilder builder = new QueryBuilder().from(this).select(Projection.count(id).as("num"));
+    Cursor cursor = database.rawQuery(builder.build(), builder.buildParameters());
+    return cursor.getInt(Model.id.getIndex());
   }
 
   @Override
@@ -348,18 +346,13 @@ public abstract class Model<T extends SModel>
     public Q first() {
       Cursor cursor;
       try {
-        String sql = SELECT_PREFIX + name + " LIMIT `1`;";
-        cursor = database.rawQuery(sql, null);
-        cursor.moveToFirst();
-        Q t = getWithId(cursor);
-        cursor.close();
-        /*database.close();*/
-        return t;
+        QueryBuilder builder = new QueryBuilder().from(Model.this).take(1);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        return getWithId(cursor);
       } catch (SQLiteException e) {
         LogUtil.e(TAG, e);
         return null;
       }
-      /*return all().first();*/
     }
 
     @Nullable
@@ -367,36 +360,26 @@ public abstract class Model<T extends SModel>
     public Q last() {
       Cursor cursor;
       try {
-        String sql = SELECT_PREFIX + name + " ORDER BY 'id' DESC LIMIT `1`;";
-        cursor = database.rawQuery(sql, null);
-        cursor.moveToFirst();
-        Q t = getWithId(cursor);
-        cursor.close();
-        /*database.close();*/
-        return t;
+        QueryBuilder builder = new QueryBuilder().from(Model.this).orderByDescending(id).take(1);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        return getWithId(cursor);
       } catch (SQLiteException e) {
         LogUtil.e(TAG, e);
         return null;
       }
-      /*return all().last();*/
     }
 
     @Override
     public SList<Q> all() {
       Cursor cursor;
       try {
-        String sql = SELECT_PREFIX + name + ";";
-        cursor = database.rawQuery(sql, null);
+        QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
       } catch (SQLiteException e) {
         return new SList<>();
       }
       SList<Q> ts = new SList<>();
-      while (cursor.moveToNext() && !cursor.isClosed()) {
-        Q t = getWithId(cursor);
-        ts.add(t);
-      }
-      cursor.close();
-      /*database.close();*/
+      while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
       return ts;
     }
 
@@ -404,15 +387,10 @@ public abstract class Model<T extends SModel>
     public SList<Q> limit(int limit) {
       Cursor cursor;
       try {
-        String sql = SELECT_PREFIX + name + " LIMIT " + limit + ";";
-        cursor = database.rawQuery(sql, null);
+        QueryBuilder builder = new QueryBuilder().from(Model.this).take(1);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
-        while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = getWithId(cursor);
-          ts.add(t);
-        }
-        cursor.close();
-        /*database.close();*/
+        while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
         return ts;
       } catch (SQLiteException e) {
         LogUtil.e(TAG, e);
@@ -424,24 +402,10 @@ public abstract class Model<T extends SModel>
     public SList<Q> between(Column<Integer> column, Integer a, Integer b) {
       Cursor cursor;
       try {
-        String sql =
-            SELECT_PREFIX
-                + name
-                + " WHERE "
-                + column.getName()
-                + " BETWEEN "
-                + a
-                + " AND "
-                + b
-                + ";";
-        cursor = database.rawQuery(sql, null);
+        QueryBuilder builder = new QueryBuilder().from(Model.this).whereAnd(Criteria.between(column, a, b));
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
-        while (cursor.moveToNext() && !cursor.isClosed()) {
-          Q t = getWithId(cursor);
-          ts.add(t);
-        }
-        cursor.close();
-        /*database.close();*/
+        while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
         return ts;
       } catch (SQLiteException e) {
         LogUtil.e(TAG, e);

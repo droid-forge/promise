@@ -25,6 +25,7 @@ import android.os.Build;
 
 import java.util.Arrays;
 
+import promise.BuildConfig;
 import promise.Promise;
 import promise.data.db.query.QueryBuilder;
 import promise.data.log.LogUtil;
@@ -51,10 +52,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  public FastDB(String name, int version, final Corrupt listener) {
+  public FastDB(String name, int version, final FastDbCursorFactory.Listener cursorListener, final Corrupt listener) {
     this(
         name,
-        null,
+        cursorListener != null && BuildConfig.DEBUG ? new FastDbCursorFactory(cursorListener) : null,
         version,
         new DatabaseErrorHandler() {
           @Override
@@ -66,7 +67,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   public FastDB(int version) {
-    this(DEFAULT_NAME, version, null);
+    this(DEFAULT_NAME, version, null,null);
   }
 
   /*private void initTables() {

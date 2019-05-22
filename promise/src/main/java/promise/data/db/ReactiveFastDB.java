@@ -32,6 +32,7 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import promise.BuildConfig;
 import promise.Promise;
 import promise.data.db.query.QueryBuilder;
 import promise.data.log.LogUtil;
@@ -73,10 +74,10 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   }
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  public ReactiveFastDB(String name, int version, final Corrupt listener) {
+  public ReactiveFastDB(String name, int version,final FastDbCursorFactory.Listener cursorListener, final Corrupt listener) {
     this(
         name,
-        null,
+        cursorListener != null && BuildConfig.DEBUG ? new FastDbCursorFactory(cursorListener) : null,
         version,
         new DatabaseErrorHandler() {
           @Override
@@ -88,7 +89,7 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   }
 
   public ReactiveFastDB(int version) {
-    this(DEFAULT_NAME, version, null);
+    this(DEFAULT_NAME, version, null, null);
   }
 
   /*private void initTables() {

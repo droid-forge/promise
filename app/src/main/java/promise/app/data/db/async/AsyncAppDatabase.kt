@@ -8,15 +8,19 @@ import promise.app.data.db.TodoTable
 import promise.app.error.AppError
 import promise.app.models.Todo
 import promise.data.db.Corrupt
+import promise.data.db.FastDbCursorFactory
 import promise.data.db.ReactiveFastDB
 import promise.data.db.Table
 import promise.data.db.query.QueryBuilder
+import promise.data.log.LogUtil
 import promise.model.List
 import promise.model.Message
 import promise.model.ResponseCallBack
 import promise.model.SList
 
-class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSION,
+class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSION, FastDbCursorFactory.Listener { query ->
+  LogUtil.d("_AsyncAppDatabase", "query: ", query)
+},
     Corrupt { Promise.instance().send(Message(SENDER_TAG, "Database is corrupted")) }) {
   private val disposable = CompositeDisposable()
 
@@ -40,7 +44,8 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
           })
           cursor.close()
         }, { throwable ->
-          responseCallBack.error(AppError(throwable)) }))
+          responseCallBack.error(AppError(throwable))
+        }))
   }
 
   /**
