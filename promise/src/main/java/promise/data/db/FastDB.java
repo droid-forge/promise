@@ -55,7 +55,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public FastDB(String name, int version, final FastDbCursorFactory.Listener cursorListener, final Corrupt listener) {
     this(
         name,
-        cursorListener != null && BuildConfig.DEBUG ? new FastDbCursorFactory(cursorListener) : null,
+        cursorListener != null ? new FastDbCursorFactory(cursorListener) : null,
         version,
         new DatabaseErrorHandler() {
           @Override

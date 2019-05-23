@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +67,7 @@ public class FastParser {
   private String TAG = LogUtil.makeTag(FastParser.class);
   private Interceptor<HttpPayload> payloadInterceptor;
   private Interceptor<HttpResponse<?, ?>> responseInterceptor;
+  private okhttp3.Interceptor requestInterceptor;
 
   public FastParser(final Config config) {
     this.config = Conditions.checkNotNull(config);
@@ -81,6 +81,7 @@ public class FastParser {
           new okhttp3.Interceptor() {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
+              if (requestInterceptor != null) return requestInterceptor.intercept(chain);
               Request request = chain.request();
               Response response = null;
               boolean responseOK = false;
@@ -109,6 +110,11 @@ public class FastParser {
 
   public static FastParser with(Config config) {
     return new FastParser(config);
+  }
+
+  public FastParser requestInterceptor(okhttp3.Interceptor requestInterceptor) {
+    this.requestInterceptor = requestInterceptor;
+    return this;
   }
 
   public FastParser payloadInterceptor(Interceptor<HttpPayload> payloadInterceptor) {

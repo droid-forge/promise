@@ -50,7 +50,6 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   private String TAG = LogUtil.makeTag(ReactiveFastDB.class);
   private Context context;
 
-
   private ReactiveFastDB(
       String name,
       SQLiteDatabase.CursorFactory factory,
@@ -77,7 +76,7 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   public ReactiveFastDB(String name, int version,final FastDbCursorFactory.Listener cursorListener, final Corrupt listener) {
     this(
         name,
-        cursorListener != null && BuildConfig.DEBUG ? new FastDbCursorFactory(cursorListener) : null,
+        cursorListener != null ? new FastDbCursorFactory(cursorListener) : null,
         version,
         new DatabaseErrorHandler() {
           @Override
@@ -155,8 +154,6 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
 
   public boolean add(SQLiteDatabase database, List<Table<?, SQLiteDatabase>> tables) {
     boolean created = true;
-    int j = 0;
-    IndexCreated indexCreated;
     for (Table<?, SQLiteDatabase> table : tables) {
       try {
         created = created && create(table, database);

@@ -17,9 +17,7 @@ class TodoTable : Model<Todo>() {
     }
   }
 
-  override fun getName(): String {
-    return tableName
-  }
+  override fun getName(): String = tableName
 
   override fun get(todo: Todo): ContentValues = ContentValues().apply {
     put(category.name, todo.category())

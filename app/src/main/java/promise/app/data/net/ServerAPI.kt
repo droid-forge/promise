@@ -12,7 +12,6 @@ import promise.data.net.EndPoint
 import promise.data.net.FastParser
 import promise.data.net.extras.HttpPayload
 import promise.data.net.extras.HttpResponse
-import promise.data.net.extras.Interceptor
 import promise.model.List
 import promise.model.ResponseCallBack
 
@@ -24,17 +23,15 @@ private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
   private val TAG = LogUtil.makeTag(ServerAPI::class.java)
 
   init {
-    responseInterceptor(object : Interceptor<HttpResponse<*, *>>() {
-      override fun intercept(endPoint: EndPoint?, httpResponse: HttpResponse<*, *>, callBack: ResponseCallBack<HttpResponse<*, *>, Throwable>?): HttpResponse<*, *>? {
-        val status = httpResponse.status()
-        /// check for 403 and cancel response
-        if (status == 403)
-          callBack?.error(ServerError("Request not authorized"))
-        else
-          callBack?.response(httpResponse)/// complete the response
-        return null
-      }
-    })
+    responseInterceptor { _, httpResponse, callBack ->
+      val status = httpResponse.status()
+      /// check for 403 and cancel response
+      if (status == 403)
+        callBack?.error(ServerError("Request not authorized"))
+      else
+        callBack?.response(httpResponse)/// complete the response
+      null
+    }
   }
 
   /**

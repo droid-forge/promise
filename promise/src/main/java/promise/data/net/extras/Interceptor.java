@@ -23,6 +23,6 @@ import promise.model.ResponseCallBack;
 /**
  * Created on 6/21/18 by yoctopus.
  */
-public abstract class Interceptor<T> {
-   @Nullable public abstract T intercept(@Nullable EndPoint endPoint, T t, @Nullable ResponseCallBack<T, Throwable> callBack) throws Exception;
+public interface Interceptor<T> {
+   @Nullable T intercept(@Nullable EndPoint endPoint, T t, @Nullable ResponseCallBack<T, Throwable> callBack) throws Exception;
 }

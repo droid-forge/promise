@@ -42,7 +42,6 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
               while (cursor.moveToNext()) add(todoTable!!.from(cursor))
             }
           })
-          cursor.close()
         }, { throwable ->
           responseCallBack.error(AppError(throwable))
         }))
@@ -52,7 +51,9 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
    * @param category
    */
   fun todos(category: String, responseCallBack: ResponseCallBack<List<Todo>, AppError>) {
-    disposable.add(readAll(todoTable, TodoTable.category.with(category)).subscribe({ todos -> responseCallBack.response(todos) }, { throwable -> responseCallBack.error(AppError(throwable)) }))
+    disposable.add(readAll(todoTable, TodoTable.category.with(category))
+        .subscribe({ todos -> responseCallBack.response(todos) },
+            { throwable -> responseCallBack.error(AppError(throwable)) }))
   }
 
   /**
@@ -66,9 +67,9 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
 
   companion object {
 
-    private val DB_NAME = "a"
-    private val DB_VERSION = 1
-    val SENDER_TAG = "App_Database"
+    private const val DB_NAME = "a"
+    private const val DB_VERSION = 1
+    const val SENDER_TAG = "App_Database"
     @SuppressLint("StaticFieldLeak")
     private var instance: AsyncAppDatabase? = null
 

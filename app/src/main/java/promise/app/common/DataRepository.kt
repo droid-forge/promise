@@ -2,18 +2,56 @@ package promise.app.common
 
 import promise.app.data.db.AppDatabase
 import promise.app.data.db.async.AsyncAppDatabase
-import promise.app.data.net.ServerAPI
 import promise.app.data.net.TodoApi
-import promise.app.error.AppError
-import promise.app.error.ServerError
 import promise.app.models.Todo
+import promise.data.net.converters.GsonConverterFactory
+import promise.data.net.net.FastParserEngine
 import promise.model.List
 import promise.model.ResponseCallBack
+import promise.repo.StoreRepository
+
+enum class FilterTypes { PAGES, CATEGORY }
+
+class FilterMode {
+
+  lateinit var arg: Any
+  lateinit var filterTypes: FilterTypes
+
+  fun toMap(): MutableMap<String, Any?> = mutableMapOf(Pair(filterTypes.name, arg))
+
+  companion object {
+
+    fun pages(skip: Int, take: Int): FilterMode = FilterMode().apply {
+      arg = List.fromArray(skip, take)
+      filterTypes = FilterTypes.PAGES
+    }
+
+    fun category(category: String): FilterMode = FilterMode().apply {
+      arg = category
+      filterTypes = FilterTypes.CATEGORY
+    }
+  }
+}
+
 
 class DataRepository private constructor() {
 
-  private val appDatabase: AppDatabase = AppDatabase.instance()
-  /*private val serverAPI: ServerAPI = ServerAPI.instance()*/
+  private val appDatabase: AppDatabase by lazy { AppDatabase.instance() }
+
+  private val asyncAppDatabase: AsyncAppDatabase by lazy {
+    AsyncAppDatabase.instance()
+  }
+
+  private val todoApi: TodoApi by lazy {
+    FastParserEngine.Builder()
+        .baseUrl("https://jsonplaceholder.typicode.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build().create(TodoApi::class.java)
+  }
+
+  private val todoRepository: StoreRepository<Todo> by lazy {
+    StoreRepository.create(TodoSyncStore(appDatabase, todoApi), TodoAsyncStore(asyncAppDatabase, todoApi))
+  }
 
   /**
    * get todos from the either the database or the upstream server
@@ -25,18 +63,14 @@ class DataRepository private constructor() {
    * @param responseCallBack return response back to caller
    */
   fun getTodos(skip: Int, limit: Int, responseCallBack: ResponseCallBack<List<Todo>, Exception>) {
-    val todos = appDatabase.todos(skip, limit)
-    if (todos.isEmpty())
-      promise.app.data.net.getTodos(ResponseCallBack<List<Todo>, AppError>()
-          .response {
-            appDatabase.saveTodos(it)
-            responseCallBack.response(it)
-          }
-          .error { responseCallBack.error(it) })
-    else
-      responseCallBack.response(todos)
-
+    todoRepository.all(FilterMode.pages(skip, limit).toMap(), {
+      responseCallBack.response(it)
+    }, {
+      responseCallBack.error(it)
+    })
   }
+
+  fun syngGetTodos(skip: Int, limit: Int): List<Todo>? = todoRepository.all(FilterMode.pages(skip, limit).toMap())
 
   companion object {
     private var instance: DataRepository? = null
