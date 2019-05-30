@@ -18,9 +18,7 @@ import promise.model.Message
 import promise.model.ResponseCallBack
 import promise.model.SList
 
-class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSION, FastDbCursorFactory.Listener { query ->
-  LogUtil.d("_AsyncAppDatabase", "query: ", query)
-},
+class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSION, null,
     Corrupt { Promise.instance().send(Message(SENDER_TAG, "Database is corrupted")) }) {
   private val disposable = CompositeDisposable()
 

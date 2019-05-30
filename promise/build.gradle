@@ -38,12 +38,12 @@ ext {
     libraryVersion = '1.0.2'
     libraryVersionName = 2
     compileSdkVersion = 28
-    buildToolsVersion = "28.0.3"
+    buildToolsVersion = "29.0.0 rc3"
     supportLibVersion = "28.0.0"
     minSdkVersion = 15
     bintrayRepo = 'maven'
-    bintrayName = 'promise'
-    publishedGroupId = 'me.petervincent.android'
+    bintrayName = 'android-promise'
+    publishedGroupId = 'me.dev4vin.android-promise'
     artifact = 'promise'
     libraryName = 'AndroidPromise'
     libraryDescription = 'Android promise, android commons'
@@ -86,11 +86,16 @@ android {
         versionCode project.ext.libraryVersionName
         versionName project.ext.libraryVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
     buildTypes {
         release {
             minifyEnabled false
         }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 repositories {

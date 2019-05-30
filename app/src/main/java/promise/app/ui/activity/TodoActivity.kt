@@ -1,9 +1,9 @@
-package promise.app.ui
+package promise.app.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import promise.app.R
-import promise.app.ui.ui.todo.TodoFragment
+import promise.app.ui.fragment.todo.TodoFragment
 
 class TodoActivity : AppCompatActivity() {
 

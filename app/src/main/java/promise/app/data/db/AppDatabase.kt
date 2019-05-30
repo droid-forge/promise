@@ -15,9 +15,7 @@ import promise.model.List
 import promise.model.Message
 import promise.model.SList
 
-class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION, FastDbCursorFactory.Listener { query ->
-  LogUtil.d("_AppDatabase", "query: ", query)
-},
+class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION, null,
     Corrupt { Promise.instance().send(Message(SENDER_TAG, "Database is corrupted")) }) {
   private val TAG = LogUtil.makeTag(AppDatabase::class.java)
 

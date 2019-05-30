@@ -14,6 +14,7 @@
  */
 package promise.data.net.net;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 import androidx.annotation.Nullable;
@@ -124,7 +125,12 @@ final class RequestBuilder {
         if (utf8Buffer == null) utf8Buffer = new Buffer();
         utf8Buffer.writeUtf8CodePoint(codePoint);
         while (!utf8Buffer.exhausted()) {
-          int b = utf8Buffer.readByte() & 0xff;
+          int b = 0;
+          try {
+            b = utf8Buffer.readByte() & 0xff;
+          } catch (EOFException e) {
+            e.printStackTrace();
+          }
           out.writeByte('%');
           out.writeByte(HEX_DIGITS[(b >> 4) & 0xf]);
           out.writeByte(HEX_DIGITS[b & 0xf]);

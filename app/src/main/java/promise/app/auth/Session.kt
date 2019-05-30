@@ -47,19 +47,17 @@ object Session {
     sessionPreferences = Preferences("session")
     rolePreferenceStore = object : PreferenceStore<Role>("session",
         object : Converter<Role, JSONObject, JSONObject> {
-      override fun get(role: Role): JSONObject {
-        // convert a role to a json object
-        return object : JSONObject() {
-          init {
-            try {
-              put("namee", role.name())
-              put("allowed", role.allowed())
-            } catch (e: JSONException) {
-              e.printStackTrace()
+      override fun get(role: Role): JSONObject =// convert a role to a json object
+          object : JSONObject() {
+            init {
+              try {
+                put("namee", role.name())
+                put("allowed", role.allowed())
+              } catch (e: JSONException) {
+                e.printStackTrace()
+              }
             }
           }
-        }
-      }
 
       override fun from(jsonObject: JSONObject): Role? =// get a role from the json object
           try {
@@ -75,10 +73,10 @@ object Session {
           EachFunction { jsonObject ->
             /// do not save a role that already exists in the array
             try {
-              return@EachFunction jsonObject.getString("namee") == role.name()
+              jsonObject.getString("namee") == role.name()
             } catch (e: JSONException) {
               e.printStackTrace()
-              return@EachFunction false
+              false
             }
           }
     }

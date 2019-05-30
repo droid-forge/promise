@@ -1,4 +1,4 @@
-package promise.app.ui.ui.todo
+package promise.app.ui.fragment.todo
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -24,7 +24,6 @@ class TodoFragment : Fragment() {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
     viewModel = ViewModelProviders.of(this).get(TodoViewModel::class.java)
-    // TODO: Use the ViewModel
   }
 
 }

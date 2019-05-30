@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".ui.WeatherActivity"/>
-        <activity android:name=".ui.TodoActivity" />
+        <activity android:name=".ui.activity.WeatherActivity"/>
+        <activity android:name=".ui.activity.TodoActivity" />
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

@@ -20,7 +20,6 @@ class ServerAPI
  * Add a response interceptor to intercept error codes 403
  */
 private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
-  private val TAG = LogUtil.makeTag(ServerAPI::class.java)
 
   init {
     responseInterceptor { _, httpResponse, callBack ->
@@ -39,11 +38,9 @@ private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
    *
    * @return the headers to be used for every requests
    */
-  override fun getHeaders(): Map<String, String> = object : ArrayMap<String, String>() {
-    init {
+  override fun getHeaders(): Map<String, String> =  ArrayMap<String, String>().apply {
       put("ConsumerAPIKEY", "some value for your gateway to know this app as a consumer")
       put("Authorization", "Bearer " + Session.token)
-    }
   }
 
   /**
@@ -110,7 +107,7 @@ private constructor() : FastParser(Config.create(UPSTREAM_URL).retry(5)) {
 
   companion object {
     private var instance: ServerAPI? = null
-    private val UPSTREAM_URL = "https://jsonplaceholder.typicode.com"
+    private const val UPSTREAM_URL = "https://jsonplaceholder.typicode.com"
 
     fun instance(): ServerAPI {
       if (instance == null) instance = ServerAPI()

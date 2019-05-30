@@ -78,7 +78,6 @@ public class RxSearchableAdapter<T extends Searchable> extends RxPromiseAdapter<
                 else {
                     // The API did not return any results, invalidate the data set.
                     clear();
-                    notifyDataSetChanged();
                 }
             }
         };
