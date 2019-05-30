@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import promise.cac.anim.Anim;
@@ -94,18 +95,14 @@ public class PromiseAdapter<T extends Viewable>
   }
 
   public void restoreViewState(Bundle instanceState) {
-    this.list = new List<>(instanceState.getParcelableArrayList(AdapterItems))
-        .map(new MapFunction<T, Parcelable>() {
-          @Override
-          public T from(Parcelable parcelable) {
-            return (T) parcelable;
-          }
-        });
+    List<Parcelable> items = new List<>(instanceState.getParcelableArrayList(AdapterItems));
+    if (items.isEmpty()) return;
+    this.list = items.map(parcelable -> (T) parcelable);
     submitList(list);
   }
 
   public void backupViewState(Bundle instanceState) {
-    /*instanceState.putParcelableArrayList(AdapterItems, list);*/
+    instanceState.putParcelableArrayList(AdapterItems, new ArrayList<>(list.map(t -> (Parcelable) t)));
   }
 
   @Deprecated
