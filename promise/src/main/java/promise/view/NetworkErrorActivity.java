@@ -50,12 +50,9 @@ public class NetworkErrorActivity extends AppCompatActivity {
             }
           },
       turnOnData =
-          new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              isLaunchingNetwork = true;
-              startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS));
-            }
+          view -> {
+            isLaunchingNetwork = true;
+            startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS));
           };
 
   public static void bind(Action action) {
@@ -102,12 +99,7 @@ public class NetworkErrorActivity extends AppCompatActivity {
             {
               statusTextView.setText("An error occurred, That's all we know");
               actionButton.setOnClickListener(
-                  new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                      finish();
-                    }
-                  });
+                  view -> finish());
               errorIcon.setImageResource(R.drawable.server_error);
               actionButton.setText("Try some other time");
             }

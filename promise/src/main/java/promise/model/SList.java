@@ -90,14 +90,8 @@ public class SList<T extends S> extends List<T> {
 
     public SList<T> sortWithID() {
         Collections.sort(this,
-                new Comparator<T>() {
-                    @Override
-                    public int compare(T o1, T o2) {
-                        return o1.id() < o2.id() ? 1 :
-                                o1.id() > o2.id() ? -1 : 0;
-
-                    }
-                });
+            (o1, o2) -> o1.id() < o2.id() ? 1 :
+                    o1.id() > o2.id() ? -1 : 0);
         return this;
     }
 }

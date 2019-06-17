@@ -24,17 +24,7 @@ import promise.model.List;
  */
 public class ArrayUtil {
     public static List<Category<Double, Double>> classify(List<Double> list, int chunks) {
-        return list.sorted(new Comparator<Double>() {
-            @Override
-            public int compare(Double o1, Double o2) {
-                return o1 > o2 ? 1 : o1 < o2 ? -1 : 0;
-            }
-        }).groupBy(new GroupFunction<Double, Double>() {
-            @Override
-            public Double getKey(Double aDouble) {
-                return aDouble;
-            }
-        });
+        return list.sorted((o1, o2) -> o1 > o2 ? 1 : o1 < o2 ? -1 : 0).groupBy(aDouble -> aDouble);
     }
 
     public static int sum(List<Integer> items) {

@@ -59,14 +59,11 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
     LogUtil.d(TAG, "fast db init");
     this.context = Promise.instance().context();
     Promise.instance().listen(Promise.TAG, new ResponseCallBack<>()
-    .response(new ResponseCallBack.Response<Object, Throwable>() {
-      @Override
-      public void onResponse(Object o) {
-        if (o instanceof String) {
-          if (o.equals(Promise.CLEANING_UP_RESOURCES)) {
-            CompositeDisposable disposable = onTerminate();
-            if (disposable != null) disposable.dispose();
-          }
+    .response(o -> {
+      if (o instanceof String) {
+        if (o.equals(Promise.CLEANING_UP_RESOURCES)) {
+          CompositeDisposable disposable = onTerminate();
+          if (disposable != null) disposable.dispose();
         }
       }
     }));
@@ -78,12 +75,9 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
         name,
         cursorListener != null ? new FastDbCursorFactory(cursorListener) : null,
         version,
-        new DatabaseErrorHandler() {
-          @Override
-          public void onCorruption(SQLiteDatabase dbObj) {
-            assert listener != null;
-            listener.onCorrupt();
-          }
+        dbObj -> {
+          assert listener != null;
+          listener.onCorrupt();
         });
   }
 
@@ -197,13 +191,10 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   }
 
   public Single<Cursor> query(final QueryBuilder builder) {
-    return Single.fromCallable(new Callable<Cursor>() {
-      @Override
-      public Cursor call() throws Exception {
-        String sql = builder.build();
-        String[] params = builder.buildParameters();
-        return getReadableDatabase().rawQuery(sql, params);
-      }
+    return Single.fromCallable(() -> {
+      String sql = builder.build();
+      String[] params = builder.buildParameters();
+      return getReadableDatabase().rawQuery(sql, params);
     }).subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
@@ -347,22 +338,9 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
 
   @Override
   public Maybe<Boolean> deleteAll() {
-    return Maybe.zip(tables().map(new MapFunction<Maybe<Boolean>, Table<?, SQLiteDatabase>>() {
-      @Override
-      public Maybe<Boolean> from(Table<?, SQLiteDatabase> sqLiteDatabaseReactiveTable) {
-        return delete(sqLiteDatabaseReactiveTable);
-      }
-    }), new Function<Object[], Boolean>() {
-      @Override
-      public Boolean apply(Object[] objects) {
-        return List.fromArray(objects).allMatch(new EachFunction<Object>() {
-          @Override
-          public boolean filter(Object aBoolean) {
-            return aBoolean instanceof Boolean && (Boolean) aBoolean;
-          }
-        });
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.zip(tables().map(this::delete),
+        objects -> List.fromArray(objects).allMatch(aBoolean -> aBoolean instanceof Boolean &&
+            (Boolean) aBoolean)).subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 

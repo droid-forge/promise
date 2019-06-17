@@ -73,12 +73,10 @@ public class RxSearchableAdapter<T extends Searchable> extends RxPromiseAdapter<
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 // The API returned at least one result, update the data.
+                // The API did not return any results, invalidate the data set.
                 if (filterResults != null && filterResults.count > 0)
                     setList((List<T>) filterResults.values);
-                else {
-                    // The API did not return any results, invalidate the data set.
-                    clear();
-                }
+                else clear();
             }
         };
     }

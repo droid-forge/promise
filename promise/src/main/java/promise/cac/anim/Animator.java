@@ -32,49 +32,30 @@ public class Animator {
             AnimDuration.ofMilliSeconds(100);
     private AnimDuration waitDuration =
             AnimDuration.ofLessThanHalfSecond();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (getAnim().isAnimation()) {
-
-                if (animatorListener != null) {
-                    animatorListener.onStartAnimator(
-                            Animator.this);
-                }
-
-                getView().startAnimation(
-                        getAnim().getAnimation());
-                if (animatorListener != null) {
-                    animatorListener.onStopAnimator(
-                            Animator.this);
-                }
-            } else if (getAnim().isTechnique()) {
-                if (animatorListener != null) {
-                    animatorListener.onStartAnimator(
-                            Animator.this);
-                }
-                if (!isRepeat()) {
-                    doAnimation(getView(),
-                            getAnim(),
-                            getAnimDuration());
-
-                } else {
-                    doRepeatAnimation(getView(),
-                            getAnim(),
-                            getAnimDuration());
-                    if (animatorListener != null) {
-                        animatorListener.onRepeatAnimator(
-                                Animator.this);
-                    }
-                }
-                if (animatorListener != null) {
-                    animatorListener.onStopAnimator(
-                            Animator.this);
-                }
-            } else if (getAnim().isCustom()) {
-                getAnim().getCustomAnimation().doCustom();
+    private Runnable runnable = () -> {
+        if (getAnim().isAnimation()) {
+            if (animatorListener != null) animatorListener.onStartAnimator(
+                Animator.this);
+            getView().startAnimation(
+                    getAnim().getAnimation());
+            if (animatorListener != null) animatorListener.onStopAnimator(
+                Animator.this);
+        } else if (getAnim().isTechnique()) {
+            if (animatorListener != null) animatorListener.onStartAnimator(
+                Animator.this);
+            if (!isRepeat()) doAnimation(getView(),
+                getAnim(),
+                getAnimDuration());
+            else {
+                doRepeatAnimation(getView(),
+                        getAnim(),
+                        getAnimDuration());
+                if (animatorListener != null) animatorListener.onRepeatAnimator(
+                    Animator.this);
             }
-        }
+            if (animatorListener != null) animatorListener.onStopAnimator(
+                Animator.this);
+        } else if (getAnim().isCustom()) getAnim().getCustomAnimation().doCustom();
     };
 
     public Animator() {
@@ -206,9 +187,7 @@ public class Animator {
     public void doAnimation(View view,
                             Anim anim,
                             AnimDuration duration) {
-        if (view == null) {
-            return;
-        }
+        if (view == null) return;
         YoYo.with(
                 anim.getTechnique())
                 .duration(duration.getTime())

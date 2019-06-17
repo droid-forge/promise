@@ -60,6 +60,10 @@ public class Preferences {
         return this;
     }
 
+    public Map<String, ?> getAll() {
+        return preferences.getAll();
+    }
+
     public String getString(String key) {
         Pref<String> pref = new Pref<>(key, EMPTY_STRING);
         try {

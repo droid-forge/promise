@@ -314,21 +314,15 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
   }
 
   private void hideLoadingView() {
-    if (loadingState != null) {
-      loadingState.setVisibility(GONE);
-    }
+    if (loadingState != null) loadingState.setVisibility(GONE);
   }
 
   private void hideEmptyView() {
-    if (emptyState != null) {
-      emptyState.setVisibility(GONE);
-    }
+    if (emptyState != null) emptyState.setVisibility(GONE);
   }
 
   private void hideErrorView() {
-    if (errorState != null) {
-      errorState.setVisibility(GONE);
-    }
+    if (errorState != null) errorState.setVisibility(GONE);
   }
 
   private void restoreDefaultBackground() {
@@ -336,11 +330,8 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
   }
 
   private void setContentVisibility(boolean visible, List<Integer> skipIds) {
-    for (View v : contentViews) {
-      if (!skipIds.contains(v.getId())) {
-        v.setVisibility(visible ? View.VISIBLE : View.GONE);
-      }
-    }
+    for (View v : contentViews)
+      if (!skipIds.contains(v.getId())) v.setVisibility(visible ? View.VISIBLE : View.GONE);
   }
 
   private void inflateLoadingView() {
@@ -360,18 +351,15 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
           .setColorFilter(loadingStateProgressBarColor, PorterDuff.Mode.SRC_IN);*/
       frameLayout.requestLayout();
 
-      if (loadingStateBackgroundColor != Color.TRANSPARENT) {
+      if (loadingStateBackgroundColor != Color.TRANSPARENT)
         this.setBackgroundColor(loadingStateBackgroundColor);
-      }
 
       LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
           ViewGroup.LayoutParams.MATCH_PARENT);
       layoutParams.gravity = Gravity.CENTER;
 
       addView(loadingState, layoutParams);
-    } else {
-      loadingState.setVisibility(VISIBLE);
-    }
+    } else loadingState.setVisibility(VISIBLE);
   }
 
   private void inflateEmptyView() {
@@ -394,18 +382,15 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
       emptyStateContentTextView.setTextSize(emptyStateContentTextSize);
       emptyStateContentTextView.setTextColor(emptyStateContentTextColor);
 
-      if (emptyStateBackgroundColor != Color.TRANSPARENT) {
+      if (emptyStateBackgroundColor != Color.TRANSPARENT)
         this.setBackgroundColor(emptyStateBackgroundColor);
-      }
 
       LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
           ViewGroup.LayoutParams.MATCH_PARENT);
       layoutParams.gravity = Gravity.CENTER;
 
       addView(emptyState, layoutParams);
-    } else {
-      emptyState.setVisibility(VISIBLE);
-    }
+    } else emptyState.setVisibility(VISIBLE);
   }
 
   private void inflateErrorView() {
@@ -432,29 +417,22 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
       errorStateButton.setTextColor(errorStateButtonTextColor);
       errorStateButton.getBackground().setColorFilter(new LightingColorFilter(1, errorStateButtonBackgroundColor));
 
-      if (errorStateBackgroundColor != Color.TRANSPARENT) {
+      if (errorStateBackgroundColor != Color.TRANSPARENT)
         this.setBackgroundColor(errorStateBackgroundColor);
-      }
 
       LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
           ViewGroup.LayoutParams.MATCH_PARENT);
       layoutParams.gravity = Gravity.CENTER;
 
       addView(errorState, layoutParams);
-    } else {
-      errorState.setVisibility(VISIBLE);
-    }
+    } else errorState.setVisibility(VISIBLE);
   }
 
   @Override
   public void addView(View child, int index, ViewGroup.LayoutParams params) {
     super.addView(child, index, params);
-
     if (child.getTag() == null || (!child.getTag().equals(LOADING) &&
-        !child.getTag().equals(EMPTY) && !child.getTag().equals(ERROR))) {
-
-      contentViews.add(child);
-    }
+        !child.getTag().equals(EMPTY) && !child.getTag().equals(ERROR))) contentViews.add(child);
   }
 
   @Override

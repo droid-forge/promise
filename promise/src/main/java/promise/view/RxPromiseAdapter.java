@@ -24,7 +24,6 @@ import promise.model.List;
 import promise.model.ResponseCallBack;
 import promise.model.Viewable;
 
-
 /**
  * Created on 12/14/17 by yoctopus.
  */

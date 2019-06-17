@@ -77,7 +77,6 @@ public class AnimDuration {
 
     public void addSameDuration() {
         this.time += time;
-
     }
     private static AnimDuration newType(int time) {
         AnimDuration duration = new AnimDuration();

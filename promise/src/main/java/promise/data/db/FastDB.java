@@ -57,12 +57,9 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
         name,
         cursorListener != null ? new FastDbCursorFactory(cursorListener) : null,
         version,
-        new DatabaseErrorHandler() {
-          @Override
-          public void onCorruption(SQLiteDatabase dbObj) {
-            assert listener != null;
-            listener.onCorrupt();
-          }
+        dbObj -> {
+          assert listener != null;
+          listener.onCorrupt();
         });
   }
 
@@ -113,26 +110,6 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
      return;
     }
    }
-/*
-
-    int j = 0;
-    IndexCreated indexCreated;
-    for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
-        indexCreatedTableHashMap.entrySet()) {
-      indexCreated = entry.getKey();
-      try {
-        created = created && create(entry.getValue(), database);
-        *//*if (indexCreated.id == j) {
-            indexCreatedTableHashMap.remove(indexCreated);
-            indexCreated.created = true;
-            indexCreatedTableHashMap.put(indexCreated, entry.value());
-        }
-        j++;*//*
-      } catch (DBError dbError) {
-        LogUtil.e(TAG, dbError);
-        return;
-      }
-    }*/
   }
 
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
@@ -151,38 +128,13 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
      return;
     }
    }
-   /* initTables();
-    for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
-        indexCreatedTableHashMap.entrySet()) {
-      try {
-        if ((v2 - v1) == 1) checkTableExist(entry.getValue()).onUpgrade(database, v1, v2);
-        else {
-          int i = v1;
-          while (i < v2) {
-            checkTableExist(entry.getValue()).onUpgrade(database, i, i + 1);
-            i++;
-          }
-        }
-      } catch (ModelError modelError) {
-        LogUtil.e(TAG, modelError);
-        return;
-      }
-    }*/
   }
 
   public boolean add(SQLiteDatabase database, List<Table<?, SQLiteDatabase>> tables) {
     boolean created = true;
-    int j = 0;
-    IndexCreated indexCreated;
     for (Table<?, SQLiteDatabase> table : tables) {
       try {
         created = created && create(table, database);
-        /*if (indexCreated.id == j) {
-            indexCreatedTableHashMap.remove(indexCreated);
-            indexCreated.created = true;
-            indexCreatedTableHashMap.put(indexCreated, entry.value());
-        }
-        j++;*/
       } catch (DBError dbError) {
         LogUtil.e(TAG, dbError);
         return false;
@@ -308,9 +260,6 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
       boolean deleted = true;
       for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables()))
        deleted = deleted && delete(checkTableExist(table));
-     /* for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
-          indexCreatedTableHashMap.entrySet())
-        deleted = deleted && delete(checkTableExist(entry.getValue()));*/
       return deleted;
     }
   }

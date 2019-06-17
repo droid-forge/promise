@@ -115,167 +115,108 @@ public abstract class ReactiveModel<T extends SModel>
 
   @Override
   public final Maybe<SList<T>> onReadAll(final SQLiteDatabase database, final boolean close) {
-    return Maybe.fromCallable(new Callable<SList<T>>() {
-      @Override
-      public SList<T> call() throws Exception {
-        return table.onReadAll(database, close);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onReadAll(database, close))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public Maybe<SList<T>> onReadAll(final SQLiteDatabase database, final Column column) {
-    return Maybe.fromCallable(new Callable<SList<T>>() {
-      @Override
-      public SList<T> call() throws Exception {
-        return table.onReadAll(database, column);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onReadAll(database, column))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public Maybe<SList<T>> onReadAll(final SQLiteDatabase database, final Column[] columns) {
-    return Maybe.fromCallable(new Callable<SList<T>>() {
-      @Override
-      public SList<T> call() throws Exception {
-        return table.onReadAll(database, columns);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onReadAll(database, columns))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Maybe<Boolean> onUpdate(final T t, final SQLiteDatabase database, final Column column) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onUpdate(t, database, column);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onUpdate(t, database, column))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
-
   }
 
   @Override
   public Maybe<Boolean> onUpdate(final T t, final SQLiteDatabase database) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onUpdate(t, database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()));
+    return Maybe.fromCallable(() -> table.onUpdate(t, database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final <C> Maybe<Boolean> onDelete(final SQLiteDatabase database, final Column<C> column, final List<C> list) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onDelete(database, column, list);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onDelete(database, column, list))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Maybe<Boolean> onDelete(final SQLiteDatabase database, final Column column) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onDelete(database, column);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onDelete(database, column))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public Maybe<Boolean> onDelete(final T t, final SQLiteDatabase database) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onDelete(t, database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onDelete(t, database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Maybe<Boolean> onDelete(final SQLiteDatabase database) {
-    return Maybe.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onDelete(database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onDelete(database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Single<Long> onSave(final T t, final SQLiteDatabase database) {
-    return Single.fromCallable(new Callable<Long>() {
-      @Override
-      public Long call() throws Exception {
-        return table.onSave(t, database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Single.fromCallable(() -> table.onSave(t, database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Single<Boolean> onSave(final SList<T> list, final SQLiteDatabase database, final boolean close) {
-    return Single.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onSave(list, database, close);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Single.fromCallable(() -> table.onSave(list, database, close))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Single<Boolean> onDrop(final SQLiteDatabase database) {
-    return Single.fromCallable(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return table.onDrop(database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Single.fromCallable(() -> table.onDrop(database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public final Maybe<Integer> onGetLastId(final SQLiteDatabase database) {
-    return Maybe.fromCallable(new Callable<Integer>() {
-      @Override
-      public Integer call() throws Exception {
-        return table.onGetLastId(database);
-      }
-    }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+    return Maybe.fromCallable(() -> table.onGetLastId(database))
+        .subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public Completable backup(final SQLiteDatabase database) {
-    return Completable.fromMaybe(new MaybeSource<Boolean>() {
-      @Override
-      public void subscribe(MaybeObserver<? super Boolean> observer) {
-        table.backup(database);
-        observer.onComplete();
-      }
+    return Completable.fromMaybe((MaybeSource<Boolean>) observer -> {
+      table.backup(database);
+      observer.onComplete();
     }).subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
 
   @Override
   public Completable restore(final SQLiteDatabase database) {
-    return Completable.fromMaybe(new MaybeSource<Boolean>() {
-      @Override
-      public void subscribe(MaybeObserver<? super Boolean> observer) {
-        table.restore(database);
-        observer.onComplete();
-      }
+    return Completable.fromMaybe((MaybeSource<Boolean>) observer -> {
+      table.restore(database);
+      observer.onComplete();
     }).subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }
@@ -299,68 +240,44 @@ public abstract class ReactiveModel<T extends SModel>
     @Nullable
     @Override
     public Maybe<Q> first() {
-      return Maybe.fromCallable(new Callable<Q>() {
-        @Override
-        public Q call() throws Exception {
-          return (Q) table.read(database).first();
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (Q) table.read(database).first())
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Nullable
     @Override
     public Maybe<Q> last() {
-      return Maybe.fromCallable(new Callable<Q>() {
-        @Override
-        public Q call() throws Exception {
-          return (Q) table.read(database).last();
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (Q) table.read(database).last())
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
     public Maybe<SList<Q>> all() {
-      return Maybe.fromCallable(new Callable<SList<Q>>() {
-        @Override
-        public SList<Q> call() throws Exception {
-          return (SList<Q>) table.read(database).all();
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (SList<Q>) table.read(database).all())
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
     public Maybe<SList<Q>> limit(final int limit) {
-      return Maybe.fromCallable(new Callable<SList<Q>>() {
-        @Override
-        public SList<Q> call() throws Exception {
-          return (SList<Q>) table.read(database).limit(limit);
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (SList<Q>) table.read(database).limit(limit))
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
     public Maybe<SList<Q>> between(final Column<Integer> column, final Integer a, final Integer b) {
-      return Maybe.fromCallable(new Callable<SList<Q>>() {
-        @Override
-        public SList<Q> call() throws Exception {
-          return (SList<Q>) table.read(database).between(column, a, b);
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (SList<Q>) table.read(database).between(column, a, b))
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 
     @Override
     public Maybe<SList<Q>> where(final Column[] column) {
-      return Maybe.fromCallable(new Callable<SList<Q>>() {
-        @Override
-        public SList<Q> call() throws Exception {
-          return (SList<Q>) table.read(database).where(column);
-        }
-      }).subscribeOn(Schedulers.from(Promise.instance().executor()))
+      return Maybe.fromCallable(() -> (SList<Q>) table.read(database).where(column))
+          .subscribeOn(Schedulers.from(Promise.instance().executor()))
           .observeOn(Schedulers.from(Promise.instance().executor()));
     }
 

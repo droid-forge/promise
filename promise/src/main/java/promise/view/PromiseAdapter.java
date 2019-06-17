@@ -15,7 +15,6 @@
 
 package promise.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,19 +25,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import promise.cac.anim.Anim;
 import promise.cac.anim.AnimDuration;
 import promise.cac.anim.Animator;
@@ -52,7 +49,7 @@ import promise.util.Conditions;
  * Created by yoctopus on 11/6/17.
  */
 public class PromiseAdapter<T extends Viewable>
-    extends ListAdapter<T, PromiseAdapter<T>.Holder> {
+    extends RecyclerView.Adapter<PromiseAdapter<T>.Holder> {
   private String TAG = LogUtil.makeTag(PromiseAdapter.class);
   private String AdapterItems = "__adapter_items__";
   private Indexer indexer;
@@ -67,28 +64,14 @@ public class PromiseAdapter<T extends Viewable>
   private Handler handler;
   private RecyclerView recyclerView;
   private OnAfterInitListener onAfterInitListener;
-  private SparseArray<T> sparseArray = new SparseArray<>();
+  private SparseArray<T> sparseArray= new SparseArray<>();
 
   public PromiseAdapter(@NonNull Listener<T> listener) {
     this(new List<T>(), listener);
   }
 
   public PromiseAdapter(@NonNull List<T> list, @NonNull Listener<T> listener) {
-    super(new DiffUtil.ItemCallback<T>() {
-
-      @Override
-      public boolean areItemsTheSame(T oldItem, T newItem) {
-        return oldItem.layout() == newItem.layout();
-      }
-
-      @SuppressLint("DiffUtilEquals")
-      @Override
-      public boolean areContentsTheSame(T oldItem, T newItem) {
-        return oldItem.equals(newItem);
-      }
-    });
     this.list = Conditions.checkNotNull(list);
-    submitList(list);
     this.listener = listener;
     this.handler = new Handler(Looper.getMainLooper());
     indexList();
@@ -98,7 +81,7 @@ public class PromiseAdapter<T extends Viewable>
     List<Parcelable> items = new List<>(instanceState.getParcelableArrayList(AdapterItems));
     if (items.isEmpty()) return;
     this.list = items.map(parcelable -> (T) parcelable);
-    submitList(list);
+    setList(list);
   }
 
   public void backupViewState(Bundle instanceState) {
@@ -160,7 +143,7 @@ public class PromiseAdapter<T extends Viewable>
 
   @Override
   public int getItemViewType(int position) {
-    T t = getItem(position);
+    T t = getList().get(position);
     int viewType = t.layout();
     Conditions.checkState(viewType != 0, "The layout resource for " + t + " is not provided");
     return viewType;
@@ -226,7 +209,7 @@ public class PromiseAdapter<T extends Viewable>
 
   @Override
   public void onBindViewHolder(@NonNull Holder holder, int position) {
-    T t = getItem(position);
+    T t = getList().get(position);
     if (alternatingColor != 0)
       if (position % 2 == 1) holder.view.setBackgroundColor(alternatingColor);
     holder.bind(t);
@@ -238,6 +221,11 @@ public class PromiseAdapter<T extends Viewable>
       animator.setWaitDuration(waitDuration == null ? AnimDuration.noDuration() : waitDuration);
       animator.animate();
     }
+  }
+
+  @Override
+  public int getItemCount() {
+    return indexer.size();
   }
 
   public List<T> getList() {
@@ -397,11 +385,23 @@ public class PromiseAdapter<T extends Viewable>
         list.add(t);
         if (reverse) list.reverse();
         index();
-        submitList(list);
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyDataSetChanged();
+              }
+            });
       } else {
         list.add(t);
         t.index(0);
-        submitList(list);
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyItemInserted(0);
+              }
+            });
       }
     }
 
@@ -412,46 +412,90 @@ public class PromiseAdapter<T extends Viewable>
         list1.add(t);
         list1.addAll(list);
         setList(list1);
+        index();
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyDataSetChanged();
+              }
+            });
       } else {
         list.add(t);
         t.index(0);
-        submitList(list);
+        handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                notifyItemInserted(0);
+              }
+            });
       }
     }
 
     void setList(List<T> list) {
-      submitList(list);
+      PromiseAdapter.this.list = list;
       index();
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              notifyDataSetChanged();
+            }
+          });
     }
 
     void remove(final T t) {
       if (list == null) return;
       list.remove(t.index());
       index();
-      submitList(list);
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              notifyItemRemoved(t.index());
+            }
+          });
     }
 
     void update(final T t) {
       if (list == null) return;
       if (t.index() >= list.size()) return;
       list.set(t.index(), t);
-      submitList(list);
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              notifyDataSetChanged();
+              /*notifyItemChanged(t.index());*/
+            }
+          });
     }
 
     void updateAll() {
-      submitList(list);
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              notifyDataSetChanged();
+            }
+          });
     }
 
     void add(List<T> list) {
-      if (PromiseAdapter.this.list == null) PromiseAdapter.this.list = new List<>();
-      PromiseAdapter.this.list.addAll(list);
-      submitList(PromiseAdapter.this.list);
+      for (T t : list) add(t);
     }
 
     void clear() {
       if (list == null || list.isEmpty()) return;
       list.clear();
-      submitList(list);
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              notifyDataSetChanged();
+            }
+          });
     }
 
     int size() {
@@ -464,7 +508,7 @@ public class PromiseAdapter<T extends Viewable>
   }
 
   public class WrapContentLinearLayoutManager extends LinearLayoutManager {
-    WrapContentLinearLayoutManager(Context context) {
+    public WrapContentLinearLayoutManager(Context context) {
       super(context);
     }
 
@@ -484,7 +528,7 @@ public class PromiseAdapter<T extends Viewable>
 
   public class WrapContentGridLayoutManager extends GridLayoutManager {
 
-    WrapContentGridLayoutManager(Context context, int spanCount) {
+    public WrapContentGridLayoutManager(Context context, int spanCount) {
       super(context, spanCount);
     }
 
@@ -494,6 +538,38 @@ public class PromiseAdapter<T extends Viewable>
         super.onLayoutChildren(recycler, state);
       } catch (IndexOutOfBoundsException e) {
         LogUtil.e(TAG, "meet a Bug in RecyclerView");
+      }
+    }
+  }
+
+  public class CustomItemAnimator extends DefaultItemAnimator {
+    @Override
+    public boolean animateChange(
+        RecyclerView.ViewHolder oldHolder,
+        RecyclerView.ViewHolder newHolder,
+        int fromX,
+        int fromY,
+        int toX,
+        int toY) {
+      if (getSupportsChangeAnimations()) {
+        return super.animateChange(oldHolder, newHolder, fromX, fromY, toX, toY);
+      } else {
+        if (oldHolder == newHolder) {
+          if (oldHolder != null) {
+            // if the two holders are equal, call dispatch change only once
+            dispatchChangeFinished(oldHolder, /*ignored*/ true);
+          }
+        } else {
+          // else call dispatch change once for every non-null holder
+          if (oldHolder != null) {
+            dispatchChangeFinished(oldHolder, true);
+          }
+          if (newHolder != null) {
+            dispatchChangeFinished(newHolder, false);
+          }
+        }
+        // we don't need a call to requestPendingTransactions after this, return false.
+        return false;
       }
     }
   }

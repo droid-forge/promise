@@ -30,14 +30,11 @@ public abstract class Tx<T, X> implements Future {
             new ThreadLocal<Runnable>() {
                 @Override
                 protected Runnable initialValue() {
-                    return new Runnable() {
-                        @Override
-                        public void run() {
-                            if (task != null) return;
-                            task = new Task();
-                            if (params != null) task.execute(params);
-                            else task.execute((T[]) null);
-                        }
+                    return () -> {
+                        if (task != null) return;
+                        task = new Task();
+                        if (params != null) task.execute(params);
+                        else task.execute((T[]) null);
                     };
                 }
             };
@@ -52,11 +49,9 @@ public abstract class Tx<T, X> implements Future {
         complete = new ArrayList<>();
     }
 
-
     public void execute() {
         execute(0);
     }
-
 
     public void execute(long millis) {
         try {

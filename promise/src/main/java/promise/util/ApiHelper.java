@@ -16,6 +16,7 @@
 package promise.util;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
@@ -91,29 +92,20 @@ public class ApiHelper {
 
     public static void isLocationAllowed(Activity context,
                                          CallBack callBack) {
-        if (hasLollipop()) {
-            checkPermission(context, callBack,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
-        } else {
-            checkPermission(context, callBack,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION});
-        }
-
+        if (hasLollipop()) checkPermission(context, callBack,
+            Manifest.permission.ACCESS_FINE_LOCATION);
+        else checkPermission(context, callBack,
+            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION});
     }
 
     public static void checkPermission(Context context, CallBack callBack, String permission) {
-        if (!hasMashMellow()) {
-            callBack.onSuccess(permission);
-        } else {
-            context = Conditions.checkNotNull(context);
-            if (ContextCompat.checkSelfPermission(context,
+        if (!hasMashMellow()) callBack.onSuccess(permission);
+        else {
+            if (ContextCompat.checkSelfPermission(Conditions.checkNotNull(context),
                     permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                callBack.onFailure(permission);
-            } else {
-                callBack.onSuccess(permission);
-            }
+                    != PackageManager.PERMISSION_GRANTED) callBack.onFailure(permission);
+            else callBack.onSuccess(permission);
         }
     }
 
@@ -128,18 +120,14 @@ public class ApiHelper {
     public static void checkPermission2(Activity context,
                                        CallBack callBack,
                                        String permission) {
-        if (!hasMashMellow()) {
-            callBack.onSuccess(permission);
-        } else {
-            context = Conditions.checkNotNull(context);
-            if (ContextCompat.checkSelfPermission(context,
+        if (!hasMashMellow()) callBack.onSuccess(permission);
+        else {
+            if (ContextCompat.checkSelfPermission(Conditions.checkNotNull(context),
                     permission)
                     != PackageManager.PERMISSION_GRANTED) {
                 callBack.onFailure(permission);
                 requestPermission(context, callBack, permission);
-            } else {
-                callBack.onSuccess(permission);
-            }
+            } else callBack.onSuccess(permission);
         }
     }
 
@@ -156,16 +144,11 @@ public class ApiHelper {
                     != PackageManager.PERMISSION_GRANTED) {
                 failed.add(permission);
                 checked = false;
-            } else {
-                passed.add(permission);
-            }
+            } else passed.add(permission);
         }
         if (checked) {
-            if (!passed.isEmpty()) {
-                callBack.onSuccess(passed.get(0));
-            } else {
-                callBack.onSuccess(null);
-            }
+            if (!passed.isEmpty()) callBack.onSuccess(passed.get(0));
+            else callBack.onSuccess(null);
         } else {
             if (!failed.isEmpty()) {
                 checkPermission(context, new CallBack() {
@@ -180,9 +163,7 @@ public class ApiHelper {
                     }
                 }, failed.toArray(new String[failed.size()]), 0);
                 callBack.onFailure(failed.get(0));
-            } else {
-                callBack.onFailure(null);
-            }
+            } else callBack.onFailure(null);
         }
     }
 
@@ -199,25 +180,17 @@ public class ApiHelper {
                     != PackageManager.PERMISSION_GRANTED) {
                 failed.add(permission);
                 checked = false;
-            } else {
-                passed.add(permission);
-            }
+            } else passed.add(permission);
         }
         if (checked) {
-            if (!passed.isEmpty()) {
-                callBack.onSuccess(passed.get(0));
-            } else {
-                callBack.onSuccess(null);
-            }
+            if (!passed.isEmpty()) callBack.onSuccess(passed.get(0));
+            else callBack.onSuccess(null);
         } else {
             if (!failed.isEmpty()) {
                 String[] fails = new String[failed.size()];
                 for (int i = 0; i < failed.size(); i++) fails[i] = failed.get(i);
                 requestPermission(context, fails, request);
-
-            } else {
-                callBack.onSuccess(null);
-            }
+            } else callBack.onSuccess(null);
         }
     }
 
@@ -233,21 +206,15 @@ public class ApiHelper {
                 permissions, request);
     }
 
+    @SuppressLint("CheckResult")
     public static void requestPermission(Activity activity,
                                          final CallBack callBack,
                                          final String permission) {
         RxPermissions rxPermissions = new RxPermissions(activity);
         rxPermissions.request(permission)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
-                            callBack.onSuccess(permission);
-                        }
-                        else {
-                            callBack.onFailure(permission);
-                        }
-                    }
+                .subscribe(aBoolean -> {
+                    if (aBoolean) callBack.onSuccess(permission);
+                    else callBack.onFailure(permission);
                 });
     }
 
@@ -400,7 +367,7 @@ public class ApiHelper {
                             ClassUtil.hasMethod(Camera.class, "startFaceDetection") &&
                             ClassUtil.hasMethod(Camera.class, "stopFaceDetection") &&
                             ClassUtil.hasMethod(Camera.Parameters.class, "getMaxNumDetectedFaces");
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
         HAS_FACE_DETECTION = hasFaceDetection;
     }

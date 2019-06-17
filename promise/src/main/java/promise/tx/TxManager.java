@@ -45,12 +45,9 @@ public class TxManager {
             return;
         }
         running = true;
-        queue.peekFirst().complete(new Tx.Complete() {
-            @Override
-            public void onComplete( Object o) {
-                queue.removeFirst();
-                if (!queue.isEmpty()) cycle();
-            }
+        queue.peekFirst().complete(o -> {
+            queue.removeFirst();
+            if (!queue.isEmpty()) cycle();
         });
         queue.peekFirst().execute();
     }

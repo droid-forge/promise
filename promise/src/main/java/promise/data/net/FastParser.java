@@ -34,6 +34,9 @@ import javax.net.ssl.SSLHandshakeException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
+
+import okhttp3.logging.HttpLoggingInterceptor;
+import promise.BuildConfig;
 import promise.Promise;
 import promise.data.log.LogUtil;
 import promise.data.net.extras.HttpPayload;
@@ -78,31 +81,33 @@ public class FastParser {
             .connectTimeout(this.config.timeOut(), TimeUnit.MILLISECONDS);
     if (config.retry() > 0)
       builder.addInterceptor(
-          new okhttp3.Interceptor() {
-            @Override
-            public Response intercept(@NonNull Chain chain) throws IOException {
-              if (requestInterceptor != null) return requestInterceptor.intercept(chain);
-              Request request = chain.request();
-              Response response = null;
-              boolean responseOK = false;
-              int tryCount = 0;
-              while (!responseOK && tryCount < config.retry())
-                try {
-                  response = chain.proceed(request);
-                  responseOK = response.isSuccessful();
-                } catch (Exception e) {
-                  if (e instanceof SSLHandshakeException) {
-                    Promise.instance().send(new Message(SENDER, e));
-                  }
-                  LogUtil.e(TAG, "Request is not successful - " + tryCount, e);
-                } finally {
-                  tryCount++;
+          chain -> {
+            if (requestInterceptor != null) return requestInterceptor.intercept(chain);
+            Request request = chain.request();
+            Response response = null;
+            boolean responseOK = false;
+            int tryCount = 0;
+            while (!responseOK && tryCount < config.retry())
+              try {
+                response = chain.proceed(request);
+                responseOK = response.isSuccessful();
+              } catch (Exception e) {
+                if (e instanceof SSLHandshakeException) {
+                  Promise.instance().send(new Message(SENDER, e));
                 }
-              if (response == null)
-                throw new IOException("Problem completing after retrying request");
-              return response;
-            }
+                LogUtil.e(TAG, "Request is not successful - " + tryCount, e);
+              } finally {
+                tryCount++;
+              }
+            if (response == null)
+              throw new IOException("Problem completing after retrying request");
+            return response;
           });
+    if (BuildConfig.DEBUG) {
+      HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+      logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+      builder.addInterceptor(logging);
+    }
     client = builder.build();
   }
 
@@ -166,12 +171,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                post(endPoint, payload, responseCallBack);
-              }
-            });
+            () -> post(endPoint, payload, responseCallBack));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -182,22 +182,12 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload)
-                          .url(getUrl(endPoint))
-                          .post(getBody(httpPayload))
-                          .build(), responseCallBack);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload)
+                      .url(getUrl(endPoint))
+                      .post(getBody(httpPayload))
+                      .build(), responseCallBack))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -216,12 +206,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                post(endPoint, payload, responseCallBack, tClass);
-              }
-            });
+            () -> post(endPoint, payload, responseCallBack, tClass));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -232,22 +217,12 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload)
-                          .url(getUrl(endPoint))
-                          .post(getBody(httpPayload))
-                          .build(), responseCallBack, tClass);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload)
+                      .url(getUrl(endPoint))
+                      .post(getBody(httpPayload))
+                      .build(), responseCallBack, tClass))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -289,12 +264,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                get(endPoint, payload, responseCallBack);
-              }
-            });
+            () -> get(endPoint, payload, responseCallBack));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -309,19 +279,9 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -341,12 +301,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                get(endPoint, payload, responseCallBack, tClass);
-              }
-            });
+            () -> get(endPoint, payload, responseCallBack, tClass));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -361,19 +316,9 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack, tClass);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload).url(httpBuider.build()).get().build(), responseCallBack, tClass))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -408,12 +353,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                put(endPoint, payload, responseCallBack);
-              }
-            });
+            () -> put(endPoint, payload, responseCallBack));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -424,22 +364,12 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload)
-                          .url(getUrl(endPoint))
-                          .put(getBody(httpPayload))
-                          .build(), responseCallBack);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload)
+                      .url(getUrl(endPoint))
+                      .put(getBody(httpPayload))
+                      .build(), responseCallBack))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -459,12 +389,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                put(endPoint, payload, responseCallBack, tClass);
-              }
-            });
+            () -> put(endPoint, payload, responseCallBack, tClass));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -475,22 +400,12 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload)
-                          .url(getUrl(endPoint))
-                          .put(getBody(httpPayload))
-                          .build(), responseCallBack, tClass);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload)
+                      .url(getUrl(endPoint))
+                      .put(getBody(httpPayload))
+                      .build(), responseCallBack, tClass))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -532,12 +447,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                delete(endPoint, payload, responseCallBack);
-              }
-            });
+            () -> delete(endPoint, payload, responseCallBack));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;
@@ -548,22 +458,12 @@ public class FastParser {
           payload,
           new ResponseCallBack<HttpPayload, Throwable>()
               .response(
-                  new ResponseCallBack.Response<HttpPayload, Throwable>() {
-                    @Override
-                    public void onResponse(HttpPayload httpPayload) throws Throwable {
-                      makeRequest(getHeaders(httpPayload)
-                          .url(getUrl(endPoint))
-                          .delete(getBody(httpPayload))
-                          .build(), responseCallBack);
-                    }
-                  })
+                  httpPayload -> makeRequest(getHeaders(httpPayload)
+                      .url(getUrl(endPoint))
+                      .delete(getBody(httpPayload))
+                      .build(), responseCallBack))
               .error(
-                  new ResponseCallBack.Error<Throwable>() {
-                    @Override
-                    public void onError(Throwable throwable) {
-                      responseCallBack.error(new JSONException(throwable.getMessage()));
-                    }
-                  }));
+                  throwable -> responseCallBack.error(new JSONException(throwable.getMessage()))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -583,12 +483,7 @@ public class FastParser {
         Promise.instance().send(new Message(SENDER, new SocketTimeoutException()));
       else {
         NetworkErrorActivity.bind(
-            new NetworkErrorActivity.Action() {
-              @Override
-              public void onAction() {
-                delete(endPoint, payload, responseCallBack, tClass);
-              }
-            });
+            () -> delete(endPoint, payload, responseCallBack, tClass));
         startErrorActivity(NetworkErrorActivity.NETWORK_ERROR);
       }
       return;

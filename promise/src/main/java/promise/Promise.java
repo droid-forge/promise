@@ -75,15 +75,11 @@ public class Promise {
   }
 
   public static Promise init(Context context) {
-    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
-      @Override
-      public void accept(Throwable throwable) throws Exception {
-        if (throwable instanceof UndeliverableException) {
-          LogUtil.e(TAG, "undeliverable error: ", throwable);
-        }
-        else Thread.currentThread().getUncaughtExceptionHandler()
-            .uncaughtException(Thread.currentThread(), throwable);
-      }
+    RxJavaPlugins.setErrorHandler(throwable -> {
+      if (throwable instanceof UndeliverableException)
+        LogUtil.e(TAG, "undeliverable error: ", throwable);
+      else Thread.currentThread().getUncaughtExceptionHandler()
+          .uncaughtException(Thread.currentThread(), throwable);
     });
     if (instance != null) throw new IllegalStateException("Promise can only be instantiated once");
     instance = new Promise(context);
@@ -107,19 +103,10 @@ public class Promise {
         bus.subscribeOn(Schedulers.from(executor))
             .observeOn(Schedulers.from(executor))
             .subscribe(
-                new Consumer<Message>() {
-                  @Override
-                  public void accept(Message object)
-                  {
-                    if (sender.equals(object.sender())) callBack.response(object);
-                  }
+                object -> {
+                  if (sender.equals(object.sender())) callBack.response(object);
                 },
-                new Consumer<Throwable>() {
-                  @Override
-                  public void accept(Throwable throwable) {
-                    callBack.error(throwable);
-                  }
-                }));
+                throwable -> callBack.error(throwable)));
     disposable.add(Conditions.checkNotNull(disposables.last()));
     return disposables.size() - 1;
   }
@@ -149,12 +136,7 @@ public class Promise {
   }
 
   public Promise disableErrors() {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(Thread t, Throwable e) {
-
-      }
-    });
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> { });
     return this;
   }
 
@@ -174,27 +156,12 @@ public class Promise {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.fromCallable(
-                new Callable<T>() {
-                  @Override
-                  public T call() throws Exception {
-                    return action.execute();
-                  }
-                })
+            action::execute)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
             .subscribe(
-                new Consumer<T>() {
-                  @Override
-                  public void accept(T t) {
-                    responseCallBack.response(t);
-                  }
-                },
-                new Consumer<Throwable>() {
-                  @Override
-                  public void accept(Throwable throwable) {
-                    responseCallBack.error(throwable);
-                  }
-                }));
+                responseCallBack::response,
+                responseCallBack::error));
     disposable.add(Conditions.checkNotNull(disposables.last()));
   }
 
@@ -233,42 +200,19 @@ public class Promise {
     disposables.add(
         Observable.zip(
                 actions.map(
-                    new MapFunction<ObservableSource<?>, Action<?>>() {
-                      @Override
-                      public ObservableSource<?> from(final Action<?> action) {
-                        return new ObservableSource<Object>() {
-                          @Override
-                          public void subscribe(Observer<? super Object> observer) {
-                            try {
-                              observer.onNext(action.execute());
-                            } catch (Exception e) {
-                              observer.onError(e);
-                            }
-                          }
-                        };
+                    (MapFunction<ObservableSource<?>, Action<?>>) action -> (ObservableSource<Object>) observer -> {
+                      try {
+                        observer.onNext(action.execute());
+                      } catch (Exception e) {
+                        observer.onError(e);
                       }
                     }),
-                new Function<Object[], List<Object>>() {
-                  @Override
-                  public List<Object> apply(Object[] objects) {
-                    return List.fromArray(objects);
-                  }
-                })
+            List::fromArray)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
             .subscribe(
-                new Consumer<List<Object>>() {
-                  @Override
-                  public void accept(List<Object> objects) {
-                    responseCallBack.response(objects);
-                  }
-                },
-                new Consumer<Throwable>() {
-                  @Override
-                  public void accept(Throwable throwable) {
-                    responseCallBack.error(throwable);
-                  }
-                }));
+                responseCallBack::response,
+                responseCallBack::error));
     disposable.add(Conditions.checkNotNull(disposables.last()));
   }
 

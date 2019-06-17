@@ -123,26 +123,11 @@ public class List<T> extends ArrayList<T> {
   }
 
   public <K> List<T> arranged(final MapFunction<K, T> function, final Comparator<K> comparator) {
-    return map(new MapFunction<Arrangeable<T, K>, T>() {
-      @Override
-      public Arrangeable<T, K> from(T t) {
-        return new Arrangeable<T, K>().value(t).key(function.from(t));
-      }
-    })
+    return map(t -> new Arrangeable<T, K>().value(t).key(function.from(t)))
         .sorted(
-            new Comparator<Arrangeable<T, K>>() {
-              @Override
-              public int compare(Arrangeable<T, K> o1, Arrangeable<T, K> o2) {
-                return comparator.compare(o1.key(), o2.key());
-              }
-            })
+            (o1, o2) -> comparator.compare(o1.key(), o2.key()))
         .map(
-            new MapFunction<T, Arrangeable<T, K>>() {
-              @Override
-              public T from(Arrangeable<T, K> arrangeable) {
-                return arrangeable.value();
-              }
-            });
+            arrangeable -> arrangeable.value());
   }
 
   public <E> List<E> group(GroupFunction3<E, T> function) {
@@ -229,22 +214,12 @@ public class List<T> extends ArrayList<T> {
 
   public <U, K> List<T> reduce(
       List<U> uList, final FilterFunction2<K, U, T> function, final boolean reverse) {
-    final Set<K> set = new HashSet<>();
-    set.addAll(
-        uList.map(
-            new MapFunction<K, U>() {
-              @Override
-              public K from(U u) {
-                return function.getKey(u);
-              }
-            }));
+    final Set<K> set = new HashSet<>(uList.map(
+        function::getKey));
     return filter(
-        new EachFunction<T>() {
-          @Override
-          public boolean filter(T t) {
-            if (reverse) return set.contains(function.filterBy(t));
-            else return !set.contains(function.filterBy(t));
-          }
+        t -> {
+          if (reverse) return set.contains(function.filterBy(t));
+          else return !set.contains(function.filterBy(t));
         });
   }
 
@@ -253,22 +228,10 @@ public class List<T> extends ArrayList<T> {
       final boolean reverse,
       final FilterFunction2<K, U, T> function,
       Combiner<U, T> combiner) {
-    final Set<K> set = new HashSet<>();
-    set.addAll(
-        list.map(
-            new MapFunction<K, U>() {
-              @Override
-              public K from(U u) {
-                return function.getKey(u);
-              }
-            }));
+    final Set<K> set = new HashSet<>(list.map(
+        function::getKey));
     return filter(
-        new EachFunction<T>() {
-          @Override
-          public boolean filter(T t) {
-            return reverse == set.contains(function.filterBy(t));
-          }
-        })
+        t -> reverse == set.contains(function.filterBy(t)))
         .join(list, combiner);
   }
 
@@ -326,9 +289,9 @@ public class List<T> extends ArrayList<T> {
 
   public void consume(BIConsumer<T, T> consumer) {
     Iterator<T> it = iterator();
-    if(!it.hasNext()) return;
+    if (!it.hasNext()) return;
     T first = it.next();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       T next = it.next();
       consumer.accept(first, next);
       first = next;

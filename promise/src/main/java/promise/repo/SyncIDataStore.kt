@@ -24,3 +24,17 @@ interface SyncIDataStore<T : S> {
   fun clear(args: Map<String, Any?>? = null): Any?
 
 }
+
+open class AbstractSyncIDataStore<T: S>: SyncIDataStore<T> {
+  override fun all(args: Map<String, Any?>?): List<T>? = List()
+
+  override fun one(args: Map<String, Any?>?): T? = null
+
+  override fun save(t: T, args: Map<String, Any?>?): Pair<T, Any?> = Pair(t, Any())
+
+  override fun update(t: T, args: Map<String, Any?>?): Pair<T, Any?> = Pair(t, Any())
+
+  override fun delete(t: T, args: Map<String, Any?>?): Any? = Any()
+
+  override fun clear(args: Map<String, Any?>?): Any? = Any()
+}

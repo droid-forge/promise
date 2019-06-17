@@ -34,14 +34,11 @@ public abstract class TimedTx<T, X> extends Tx<T, X> {
 
     @Override
     public void execute() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isDone()) {
-                    cancel();
-                    if (isCancelled()) {
-                        cancel.onCancelled();
-                    }
+        new Handler().postDelayed(() -> {
+            if (!isDone()) {
+                cancel();
+                if (isCancelled()) {
+                    cancel.onCancelled();
                 }
             }
         }, millis);

@@ -22,11 +22,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import androidx.annotation.Nullable;
 
 import promise.data.db.query.QueryBuilder;
 import promise.data.db.query.criteria.Criteria;
@@ -34,7 +34,6 @@ import promise.data.db.query.projection.Projection;
 import promise.data.log.LogUtil;
 import promise.data.utils.Converter;
 import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
 import promise.model.SModel;
 import promise.util.Conditions;

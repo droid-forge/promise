@@ -21,13 +21,8 @@ import java.util.Comparator;
 
 public final class Column<T> {
     static Comparator<Column> ascending =
-            new Comparator<Column>() {
-                @Override
-                public int compare(Column o1, Column o2) {
-                    return o1.getIndex() > o2.getIndex() ? 1 :
-                            o1.getIndex() < o2.getIndex() ? -1 : 0;
-                }
-            };
+        (o1, o2) -> o1.getIndex() > o2.getIndex() ? 1 :
+                o1.getIndex() < o2.getIndex() ? -1 : 0;
     public Column<T> descending() {
         this.order = "DESC";
         return this;

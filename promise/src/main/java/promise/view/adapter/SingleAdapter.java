@@ -34,12 +34,7 @@ import promise.view.AdapterDivider;
 
 public class SingleAdapter<T extends Searchable> {
 
-  private MapFunction<Holder<T>, T> mapFunction = new MapFunction<Holder<T>, T>() {
-    @Override
-    public Holder<T> from(T t) {
-      return new Holder<>(t);
-    }
-  };
+  private MapFunction<Holder<T>, T> mapFunction = Holder::new;
 
   private List<T> searchables;
 
@@ -59,12 +54,9 @@ public class SingleAdapter<T extends Searchable> {
 
   public SingleAdapter<T> withListener(final Listener<T> listener) {
     if (flexibleAdapter == null) throw new IllegalStateException("Adapter is not initialized");
-    flexibleAdapter.addListener(new FlexibleAdapter.OnItemClickListener() {
-      @Override
-      public boolean onItemClick(View view, int position) {
-        listener.onClick(searchables.get(position), view.getId());
-        return true;
-      }
+    flexibleAdapter.addListener((FlexibleAdapter.OnItemClickListener) (view, position) -> {
+      listener.onClick(searchables.get(position), view.getId());
+      return true;
     });
     return this;
   }
@@ -112,6 +104,4 @@ public class SingleAdapter<T extends Searchable> {
   public interface Listener<T> {
     void onClick(T t, @IdRes int id);
   }
-
-
 }

@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="promise.app">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".App"
@@ -17,12 +18,60 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.WeatherActivity"/>
-        <activity android:name=".ui.activity.TodoActivity" />
+        <provider
+            android:name=".slice.AppSliceProvider"
+            android:authorities="promise.app.slice"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.app.slice.category.SLICE" />
+
+                <data
+                    android:host="dev4vin.promise.me"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+            </intent-filter>
+        </provider>
+
+        <receiver
+            android:name=".receivers.AppReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".service.AppService"
+            android:exported="false" />
+
+        <provider
+            android:name=".resolvers.TodoContentProvider"
+            android:authorities="com.promise.app.todo.content.resolver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name=".ui.widget.todo.TodoWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/todo_widget_info" />
+        </receiver>
+
+        <activity android:name=".ui.widget.todo.TodoWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.activity.AccountActivity" />
         <activity
             android:name=".ui.activity.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

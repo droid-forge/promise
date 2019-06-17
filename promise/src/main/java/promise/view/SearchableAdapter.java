@@ -35,7 +35,6 @@ public class SearchableAdapter<T extends Searchable> extends PromiseAdapter<T> i
 
     private List<T> originalList;
 
-
     public SearchableAdapter(Listener<T> listener) {
         super(listener);
         this.originalList = new List<>();
@@ -66,12 +65,7 @@ public class SearchableAdapter<T extends Searchable> extends PromiseAdapter<T> i
                 FilterResults results = new FilterResults();
                 List<T> filterData;
                 if (charSequence != null)
-                    filterData = originalList.filter(new EachFunction<T>() {
-                    @Override
-                    public boolean filter(T t) {
-                        return t.onSearch(charSequence.toString());
-                    }
-                });
+                    filterData = originalList.filter(t -> t.onSearch(charSequence.toString()));
                 else filterData = originalList;
                 results.values = filterData;
                 if (filterData != null) results.count = filterData.size();
