@@ -26,7 +26,7 @@ allprojects {
 
 
 dependencies {
-     implementation 'com.github.dev4vin:android-promise:1.0.8'
+     implementation 'com.github.dev4vin:android-promise:1.2.6-beta07'
 }
 ```
 
