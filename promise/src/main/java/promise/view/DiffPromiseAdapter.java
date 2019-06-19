@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 import promise.cac.anim.Anim;
 import promise.cac.anim.AnimDuration;
@@ -62,6 +63,8 @@ public class DiffPromiseAdapter<T extends Viewable>
   private int alternatingColor = 0;
   private OnAfterInitListener onAfterInitListener;
 
+  private Object args;
+
   public DiffPromiseAdapter(@NonNull Listener<T> listener) {
     this(new List<T>(), listener);
   }
@@ -84,6 +87,11 @@ public class DiffPromiseAdapter<T extends Viewable>
     submitList(list);
     this.listener = listener;
     indexList();
+  }
+
+  public DiffPromiseAdapter<T> args(Object args) {
+    this.args = args;
+    return this;
   }
 
   public void restoreViewState(Bundle instanceState) {
@@ -215,7 +223,7 @@ public class DiffPromiseAdapter<T extends Viewable>
     T t = getItem(position);
     if (alternatingColor != 0)
       if (position % 2 == 1) holder.view.setBackgroundColor(alternatingColor);
-    holder.bind(t);
+    holder.bind(t, args);
     holder.bindListener(t);
     holder.bindLongClickListener(t);
     if (anim != null) {
@@ -321,10 +329,10 @@ public class DiffPromiseAdapter<T extends Viewable>
       view = itemView;
     }
 
-    void bind(T t) {
+    void bind(T t, Object args) {
       this.t = t;
       t.init(view);
-      t.bind(view);
+      t.bind(view, args);
     }
 
     void bindListener(final T t) {

@@ -66,6 +66,8 @@ public class PromiseAdapter<T extends Viewable>
   private OnAfterInitListener onAfterInitListener;
   private SparseArray<T> sparseArray= new SparseArray<>();
 
+  private Object args;
+
   public PromiseAdapter(@NonNull Listener<T> listener) {
     this(new List<T>(), listener);
   }
@@ -75,6 +77,11 @@ public class PromiseAdapter<T extends Viewable>
     this.listener = listener;
     this.handler = new Handler(Looper.getMainLooper());
     indexList();
+  }
+
+  public PromiseAdapter<T> args(Object args) {
+    this.args = args;
+    return this;
   }
 
   public void restoreViewState(Bundle instanceState) {
@@ -212,7 +219,7 @@ public class PromiseAdapter<T extends Viewable>
     T t = getList().get(position);
     if (alternatingColor != 0)
       if (position % 2 == 1) holder.view.setBackgroundColor(alternatingColor);
-    holder.bind(t);
+    holder.bind(t, args);
     holder.bindListener(t);
     holder.bindLongClickListener(t);
     if (anim != null) {
@@ -323,10 +330,10 @@ public class PromiseAdapter<T extends Viewable>
       view = itemView;
     }
 
-    void bind(T t) {
+    void bind(T t, Object args) {
       this.t = t;
       t.init(view);
-      t.bind(view);
+      t.bind(view, args);
     }
 
     void bindListener(final T t) {

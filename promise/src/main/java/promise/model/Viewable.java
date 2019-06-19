@@ -17,6 +17,7 @@ package promise.model;
 import android.view.View;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 
 /**
  * Created by yoctopus on 11/6/17.
@@ -26,7 +27,7 @@ public interface Viewable {
     @LayoutRes
     int layout();
     void init(View view);
-    void bind(View view);
+    void bind(View view, @Nullable Object args);
     void index(int index);
     int index();
 }
