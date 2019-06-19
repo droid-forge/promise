@@ -18,6 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import promise.R;
 import promise.model.Viewable;
@@ -73,6 +74,13 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
   private int errorStateBackgroundColor;
 
   private String state = CONTENT;
+
+  private Object args;
+
+  public ProgressLayout args(Object args) {
+    this.args = args;
+    return this;
+  }
 
   public ProgressLayout(Context context) {
     super(context);
@@ -343,7 +351,7 @@ public class ProgressLayout extends FrameLayout implements LoadingListener {
       FrameLayout frameLayout = view.findViewById(R.id.loading_view);
       LayoutInflater.from(frameLayout.getContext()).inflate(loadingStateProgressBar.layout(), frameLayout, true);
       loadingStateProgressBar.init(frameLayout);
-      loadingStateProgressBar.bind(frameLayout);
+      loadingStateProgressBar.bind(frameLayout, args);
       /*loadingStateProgressBar = view.findViewById(R.id.progress_bar_loading);
       loadingStateProgressBar.getLayoutParams().width = loadingStateProgressBarWidth;
       loadingStateProgressBar.getLayoutParams().height = loadingStateProgressBarHeight;

@@ -12,7 +12,7 @@ class LoadableView(private val status: String) : Viewable {
 
   }
 
-  override fun bind(view: View) {
+  override fun bind(view: View, args: Any?) {
 
   }
 

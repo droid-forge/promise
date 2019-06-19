@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import promise.R;
 import promise.view.PromiseAdapter;
@@ -75,8 +76,8 @@ public class Group<K extends Viewable, T extends Viewable> extends Category<K, T
     }
 
     @Override
-    public void bind(View view) {
-        name().bind(view);
+    public void bind(View view, @Nullable Object args) {
+        name().bind(view, args);
         groupItems.setAdapter(getAdapter());
         getAdapter().add(list());
     }

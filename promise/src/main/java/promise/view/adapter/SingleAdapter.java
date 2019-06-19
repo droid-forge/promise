@@ -34,7 +34,7 @@ import promise.view.AdapterDivider;
 
 public class SingleAdapter<T extends Searchable> {
 
-  private MapFunction<Holder<T>, T> mapFunction = Holder::new;
+  private MapFunction<Holder<T>, T> mapFunction;
 
   private List<T> searchables;
 
@@ -46,9 +46,10 @@ public class SingleAdapter<T extends Searchable> {
 
   private boolean withDivider = false;
 
-  public SingleAdapter(RecyclerView recyclerView, boolean withDivider) {
+  public SingleAdapter(RecyclerView recyclerView, boolean withDivider, Object args) {
     this.recyclerView = recyclerView;
     this.withDivider = withDivider;
+    mapFunction = t -> new Holder<>(t, args);
     init();
   }
 

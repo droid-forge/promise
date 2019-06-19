@@ -32,9 +32,11 @@ import promise.model.Searchable;
 public class Holder<T extends Searchable> extends AbstractFlexibleItem<Holder<T>.MyHolder> implements IFilterable {
 
   private T t;
+  private Object args;
 
-  public Holder(T t) {
+  public Holder(T t, Object args) {
     this.t = t;
+    this.args = args;
   }
 
   @Override
@@ -54,7 +56,7 @@ public class Holder<T extends Searchable> extends AbstractFlexibleItem<Holder<T>
 
   @Override
   public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, MyHolder holder, int position, List<Object> payloads) {
-    holder.bind();
+    holder.bind(args);
   }
 
   @Override
@@ -72,8 +74,8 @@ public class Holder<T extends Searchable> extends AbstractFlexibleItem<Holder<T>
       t.init(view);
     }
 
-    void bind() {
-      t.bind(itemView);
+    void bind(Object args) {
+      t.bind(itemView, args);
     }
   }
 }

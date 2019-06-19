@@ -38,7 +38,7 @@ public class LoadingViewable implements Viewable {
   }
 
   @Override
-  public void bind(View view) {
+  public void bind(View view, Object args) {
     if (loadingStateProgressBarWidth != 0)
       progressBarLoading.getLayoutParams().width = loadingStateProgressBarWidth;
     if (loadingStateProgressBarHeight != 0)
