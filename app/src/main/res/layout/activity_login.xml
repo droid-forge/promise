@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".ui.activity.login.LoginActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <ViewSwitcher
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_assistant" />
 
@@ -45,56 +44,96 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Assistant"
-            android:textSize="24sp" />
+            android:layout_margin="16dp"
+            android:singleLine="true"
+            android:text="@string/personal_assistant"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:typeface="sans" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:background="?attr/colorAccent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <net.steamcrafted.materialiconlib.MaterialIconView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
                 android:scaleType="center"
-                app:materialIcon="mailbox"
-                app:materialIconColor="@color/colorAccent"
+                app:materialIcon="email_outline"
+                app:materialIconColor="?attr/colorPrimary"
                 app:materialIconSize="24dp" />
+
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <net.steamcrafted.materialiconlib.MaterialIconView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                style="@style/TextLabelWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:background="@android:color/white"
-                android:scaleType="center"
-                app:materialIcon="passport"
-                app:materialIconColor="@color/colorAccent"
-                app:materialIconSize="24dp" />
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_input_editText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textColor="?attr/colorPrimary"
+                    android:textColorHint="?attr/colorPrimary" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:scaleType="center"
+                app:materialIcon="lock_outline"
+                app:materialIconColor="?attr/colorPrimary"
+                app:materialIconSize="24dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextLabelWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@android:color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_input_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:hint="@string/prompt_password"
+                    android:inputType="textPassword"
+                    android:textColor="?attr/colorPrimary"
+                    android:textColorHint="?attr/colorPrimary" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -103,42 +142,68 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:background="?attr/colorAccent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/auth_btn"
             android:hapticFeedbackEnabled="true"
-            android:text="Sign in" />
+            android:text="@string/sign_in"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:typeface="sans" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sign_up_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/sign_in_btn"
-            android:text="Sign up" />
+            android:layout_margin="8dp"
+            android:background="@drawable/auth_btn"
+            android:text="@string/sign_up" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/forgot_password_textView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/sign_up_btn"
-            android:text="Forgot password" />
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:text="@string/forgot_password"
+            android:textColor="?attr/colorPrimary" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/sign_in_with_textView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/forgot_password_textView"
-            android:text="Sign in with" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/sign_in_with"
+            android:textColor="?attr/colorPrimary" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/oath_actions_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/sign_in_with_textView"
             android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true"
             android:orientation="horizontal">
 
             <net.steamcrafted.materialiconlib.MaterialIconView
@@ -146,33 +211,33 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:color/white"
+                android:background="@android:color/transparent"
                 android:scaleType="center"
-                app:materialIcon="facebook_messenger"
-                app:materialIconColor="@color/colorAccent"
-                app:materialIconSize="24dp" />
+                app:materialIcon="facebook"
+                app:materialIconColor="?attr/colorPrimary"
+                app:materialIconSize="32dp" />
 
             <net.steamcrafted.materialiconlib.MaterialIconView
                 android:id="@+id/twitter_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:color/white"
+                android:background="@android:color/transparent"
                 android:scaleType="center"
-                app:materialIcon="twitter_circle"
-                app:materialIconColor="@color/colorAccent"
-                app:materialIconSize="24dp" />
+                app:materialIcon="twitter"
+                app:materialIconColor="?attr/colorPrimary"
+                app:materialIconSize="32dp" />
 
             <net.steamcrafted.materialiconlib.MaterialIconView
                 android:id="@+id/google_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:color/white"
+                android:background="@android:color/transparent"
                 android:scaleType="center"
                 app:materialIcon="google"
-                app:materialIconColor="@color/colorAccent"
-                app:materialIconSize="24dp" />
+                app:materialIconColor="?attr/colorPrimary"
+                app:materialIconSize="32dp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </RelativeLayout>

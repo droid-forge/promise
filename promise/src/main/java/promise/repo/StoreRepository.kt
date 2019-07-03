@@ -97,6 +97,7 @@ class StoreRepository<T : S>(private val store: StoreHelper<T>) {
       null
     }
 
+
     inline fun <reified T : S> create(syncStore: SyncIDataStore<T>, asyncStore: AsyncIDataStore<T>): StoreRepository<T> {
       var repo = instance(T::class.java.simpleName)
       if (repo != null) return repo as StoreRepository<T>

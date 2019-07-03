@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import promise.app.App
 import promise.app.DaggerAppComponent
 import promise.app.R
-import promise.app.models.di.Car
-import promise.app.models.di.DieselEngineModule
+import promise.app_base.models.di.Car
+import promise.app_base.models.di.DieselEngineModule
 import javax.inject.Inject
 
 

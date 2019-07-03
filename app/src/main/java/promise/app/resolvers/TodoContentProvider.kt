@@ -21,7 +21,7 @@ class TodoContentProvider : ContentProvider() {
   }
 
   override fun onCreate(): Boolean {
-    TODO("Implement this to initialize your content provider on startup.")
+    return true
   }
 
   override fun query(uri: Uri, projection: Array<String>?, selection: String?,

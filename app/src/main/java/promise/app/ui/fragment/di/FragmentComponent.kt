@@ -1,10 +1,10 @@
 package promise.app.ui.fragment.di
 
 import dagger.Subcomponent
-import promise.app.models.di.Car
-import promise.app.models.di.DieselEngineModule
-import promise.app.models.di.PerFragment
-import promise.app.models.di.WheelsModule
+import promise.app_base.models.di.Car
+import promise.app_base.models.di.DieselEngineModule
+import promise.app_base.models.di.PerFragment
+import promise.app_base.models.di.WheelsModule
 
 @PerFragment
 @Subcomponent(modules = [WheelsModule::class, DieselEngineModule::class])

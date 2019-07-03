@@ -5,6 +5,7 @@
         android:id="@+id/action_account"
         android:title="@string/account"
         android:icon="@drawable/ic_account_circle_blue_24dp"
+        android:iconTint="@color/colorAccent"
         app:showAsAction="ifRoom" />
 </menu>
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import promise.app.R
+import promise.app.ui.activity.login.LoginActivity
 import promise.app.ui.fragment.HomeFragment
 import promise.app.ui.fragment.di.DIFragment
 import promise.app.ui.fragment.todo.TodoFragment
@@ -18,8 +19,7 @@ import promise.app.ui.fragment.wallet.WalletFragment
 import promise.app.ui.fragment.weather.WeatherFragment
 
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
   private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
     when (item.itemId) {
@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
     if (item?.itemId == R.id.action_account) {
-      startActivity(Intent(this, AccountActivity::class.java))
+
+      startActivity(Intent(this, LoginActivity::class.java))
       return true
     }
     return super.onOptionsItemSelected(item)
