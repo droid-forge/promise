@@ -1,13 +1,13 @@
-# Android Promise
-- [v1.0.8]
-Easily interacting with sqlite database, make http requests, store shared preferences, log to console, list with recyclerview, multithreading
+# Promise App
+- [v1.0.0]
+Manage your todo items, notes, expenses, See current weather and many more
 
 - Please read also [issues](https://github.com/dev4vin/android-promise/issues) 
 ### Features
-* Simple creation, altering of database tables
-* Easy making http requests, adding interceptors, custom headers, file uploads, file downloads
-* Recycler view adapter with custom layout managers, record swiping, record searching
-* Multithreading with RXAndroid
+* Todo items
+* Keeping notes
+* Managing expenses
+* Seeing current weather information
 
 ### Other _experimental_ features
 * Geo location, geo fencing, activity recognition.

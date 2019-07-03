@@ -1,1 +1,1 @@
-include ':app', ':promise', ':appbase'
+include ':app', ':appbase'
