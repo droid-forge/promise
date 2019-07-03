@@ -126,11 +126,7 @@ final class RequestBuilder {
         utf8Buffer.writeUtf8CodePoint(codePoint);
         while (!utf8Buffer.exhausted()) {
           int b = 0;
-          try {
-            b = utf8Buffer.readByte() & 0xff;
-          } catch (EOFException e) {
-            e.printStackTrace();
-          }
+          b = utf8Buffer.readByte() & 0xff;
           out.writeByte('%');
           out.writeByte(HEX_DIGITS[(b >> 4) & 0xf]);
           out.writeByte(HEX_DIGITS[b & 0xf]);
