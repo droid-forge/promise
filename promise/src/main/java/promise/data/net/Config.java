@@ -30,6 +30,17 @@ public class Config {
     private int retry = 0;
     private boolean allowSendErrors = false;
 
+    private boolean loggingEnabled = false;
+
+    public boolean loggingEnabled() {
+        return loggingEnabled;
+    }
+
+    public Config loggingEnabled(boolean loggingEnabled) {
+        this.loggingEnabled = loggingEnabled;
+        return this;
+    }
+
     public int retry() {
         return retry;
     }

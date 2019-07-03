@@ -103,7 +103,7 @@ public class FastParser {
               throw new IOException("Problem completing after retrying request");
             return response;
           });
-    if (BuildConfig.DEBUG) {
+    if (config.loggingEnabled()) {
       HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
       logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
       builder.addInterceptor(logging);
