@@ -1,1 +1,1 @@
-include ':app', ':promise'
+include ':app', ':promise', ':promisedb', ':promisepref', ':promisenet', ':promisemodel', ':promiseui', ':promisecommons'

@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 import promise.model.List;
 import promise.model.ResponseCallBack;
 
-
 public interface Store<T, K, X extends Throwable> {
 
   void get(K k, ResponseCallBack<Extras<T>, X> callBack);
