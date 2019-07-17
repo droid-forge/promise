@@ -50,7 +50,6 @@ class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
 
     uiComponent.inject(this)
 
-
     viewModel = ViewModelProviders.of(this, todoViewModelFactory)
         .get(TodoViewModel::class.java)
 
@@ -60,7 +59,7 @@ class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
         searchableAdapter.clear()
         searchableAdapter.add(it.data)
       } else if (it is Result.Error) {
-        progress_layout.showEmpty(2, "You do not have any todos now", it.exception.message)
+        progress_layout.showEmpty(R.drawable.navigation_empty_icon, "You do not have any todos now", it.exception.message)
       }
     })
     progress_layout.showLoading()

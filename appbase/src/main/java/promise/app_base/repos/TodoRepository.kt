@@ -5,6 +5,7 @@ import promise.app_base.data.net.TodoApi
 import promise.app_base.error.AppError
 import promise.app_base.models.Todo
 import promise.app_base.scopes.AppScope
+import promise.data.log.LogUtil
 import promise.data.net.net.Call
 import promise.data.net.net.Callback
 import promise.data.net.net.Response
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 const val LIMIT_KEY = "limit_key"
 const val SKIP_KEY = "skip_key"
-
+const val TAG = "_TodoRepository"
 @AppScope
 class SyncTodoRepository @Inject constructor(): AbstractSyncIDataStore<Todo>()
 
@@ -31,15 +32,21 @@ class AsyncTodoRepository @Inject constructor(private val asyncAppDatabase: Asyn
     val skip = args[SKIP_KEY] as Int
     asyncAppDatabase.todos(skip, limit, ResponseCallBack<List<Todo>, AppError>()
         .response { todos ->
-          if (todos.isEmpty()) todoApi.todos(skip, limit).enqueue(object : Callback<kotlin.collections.List<Todo>> {
+          if (todos.isEmpty()) todoApi.todos().enqueue(object : Callback<kotlin.collections.List<Todo>> {
             override fun onResponse(call: Call<kotlin.collections.List<Todo>>, response: Response<kotlin.collections.List<Todo>>) {
-                asyncAppDatabase.saveTodos(List(response.body()!!), ResponseCallBack<Boolean, AppError>()
+              LogUtil.e(TAG, "response", response)
+              val list = response.body()
+              if (list != null) {
+                asyncAppDatabase.saveTodos(List(list), ResponseCallBack<Boolean, AppError>()
                     .response {
                       res(todos)
                     }
                     .error {
                       err?.invoke(it)
                     })
+              } else {
+                err?.invoke(AppError("could not load todos $response"))
+              }
             }
             override fun onFailure(call: Call<kotlin.collections.List<Todo>>, t: Throwable) {
               err?.invoke(AppError(t))

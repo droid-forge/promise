@@ -7,8 +7,8 @@ import promise.data.net.net.Call
 
 interface TodoApi {
 
-  @GET("/todos/{skip}/{limit}")
-  fun todos(@Path("skip") skip: Int, @Path("limit") limit: Int): Call<List<Todo>>
+  @GET("/todos")
+  fun todos(): Call<List<Todo>>
 
 }
 

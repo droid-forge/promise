@@ -15,6 +15,7 @@ class Todo : SModel, Searchable {
   private var title: String? = null
   private var completed: Boolean = false
 
+  @Transient
   private var index: Int = 0
 
   fun category(): String? = category
@@ -41,7 +42,9 @@ class Todo : SModel, Searchable {
   override fun onSearch(query: String): Boolean =
       name()?.contains(query) ?: category?.contains(query) ?: false
 
+  @Transient
   private lateinit var switchCompat: SwitchCompat
+  @Transient
   private lateinit var textView: CheckedTextView
   override fun layout(): Int = R.layout.todo_layout
 
@@ -71,14 +74,12 @@ class Todo : SModel, Searchable {
     dest.writeInt(this.index)
   }
 
-  override fun toString(): String {
-    return "Todo{" +
-        "category='" + category + '\''.toString() +
-        ", namee='" + title + '\''.toString() +
-        ", completed=" + completed +
-        ", index=" + index +
-        '}'.toString()
-  }
+  override fun toString(): String = "Todo{" +
+      "category='" + category + '\''.toString() +
+      ", namee='" + title + '\''.toString() +
+      ", completed=" + completed +
+      ", index=" + index +
+      '}'.toString()
 
   constructor()
 

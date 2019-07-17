@@ -10,7 +10,7 @@ import promise.data.net.net.Response;
 
 public class TestJava {
   private void testFetchTodos(int limit, int skip, TodoApi todoApi) {
-    todoApi.todos(skip, limit).enqueue(new Callback<List<Todo>>() {
+    /*todoApi.todos(skip, limit).enqueue(new Callback<List<Todo>>() {
       @Override
       public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
 
@@ -20,6 +20,6 @@ public class TestJava {
       public void onFailure(Call<List<Todo>> call, Throwable t) {
 
       }
-    });
+    });*/
   }
 }

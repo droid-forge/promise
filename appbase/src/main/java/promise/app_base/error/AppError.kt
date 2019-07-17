@@ -1,3 +1,5 @@
 package promise.app_base.error
 
-class AppError(cause: Throwable) : Exception(cause)
+class AppError(cause: String) : Exception(cause) {
+  constructor(cause: Throwable) : this(cause.message!!)
+}
