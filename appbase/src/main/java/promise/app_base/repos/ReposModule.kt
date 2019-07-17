@@ -13,6 +13,7 @@ object ReposModule {
 
   const val TODO_REPOSITORY = "todo_repository"
 
+  @JvmStatic
   @Provides
   @AppScope
   @Named(TODO_REPOSITORY)

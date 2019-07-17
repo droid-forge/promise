@@ -1,0 +1,55 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+	package
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:14:5-22
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:1-23:12
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:13:11-69
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:15:5-81
+	android:name
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:15:22-78
+uses-permission#android.permission.VIBRATE
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:16:5-66
+	android:name
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:16:22-63
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:17:5-81
+	android:name
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:17:22-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:18:5-80
+	android:name
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:18:22-77
+application
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:19:5-22:19
+activity#promise.view.NetworkErrorActivity
+ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:20:9-21:71
+	android:theme
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:21:13-69
+	android:name
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml:20:19-60
+uses-sdk
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+		ADDED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml
+		INJECTED from /home/g33k/AndroidStudioProjects/SamplePromiseApp/promise/src/main/AndroidManifest.xml

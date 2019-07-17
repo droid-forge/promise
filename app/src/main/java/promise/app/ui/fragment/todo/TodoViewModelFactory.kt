@@ -2,6 +2,7 @@ package promise.app.ui.fragment.todo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import promise.Promise
 import promise.app.scopes.UIScope
 import promise.app_base.models.Todo
 import promise.app_base.repos.ReposModule
@@ -14,17 +15,12 @@ import javax.inject.Named
  *
  */
 @UIScope
-class TodoViewModelFactory @Inject constructor(): ViewModelProvider.Factory {
+class TodoViewModelFactory @Inject constructor(@Named(ReposModule.TODO_REPOSITORY)
+                                               var todoRepository: StoreRepository<Todo>,
+                                               val promise: Promise) : ViewModelProvider.Factory {
 
   /**
-   *
-   */
-  @Inject
-  @Named(ReposModule.TODO_REPOSITORY)
-  lateinit var todoRepository: StoreRepository<*>
-
-  /**
-   *
+   * creates a TodoModelView
    *
    * @param T
    * @param modelClass
@@ -32,7 +28,7 @@ class TodoViewModelFactory @Inject constructor(): ViewModelProvider.Factory {
    */
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     if (modelClass.isAssignableFrom(TodoViewModel::class.java)) return TodoViewModel(
-        todoRepository as StoreRepository<Todo>
+        todoRepository, promise
     ) as T
     else throw IllegalArgumentException("Unknown ViewModel class")
   }

@@ -65,7 +65,7 @@ class Task() : SModel(), Searchable {
     textView = view.findViewById(R.id.titleText)
   }
 
-  override fun bind(view: View, args: Any?) {
+  override fun bind(view: View) {
       switchCompat.isChecked = completed
       textView.text = name()
   }

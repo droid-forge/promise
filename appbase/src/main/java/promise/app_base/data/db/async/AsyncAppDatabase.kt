@@ -1,12 +1,12 @@
 package promise.app_base.data.db.async
 
-import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import io.reactivex.disposables.CompositeDisposable
 import promise.Promise
 import promise.app_base.data.db.TodoTable
 import promise.app_base.error.AppError
 import promise.app_base.models.Todo
+import promise.app_base.scopes.AppScope
 import promise.data.db.Corrupt
 import promise.data.db.ReactiveFastDB
 import promise.data.db.Table
@@ -15,8 +15,10 @@ import promise.model.List
 import promise.model.Message
 import promise.model.ResponseCallBack
 import promise.model.SList
+import javax.inject.Inject
 
-class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSION, null,
+@AppScope
+class AsyncAppDatabase @Inject constructor() : ReactiveFastDB(DB_NAME, DB_VERSION, null,
     Corrupt { Promise.instance().send(Message(SENDER_TAG, "Database is corrupted")) }) {
   private val disposable = CompositeDisposable()
 
@@ -66,18 +68,7 @@ class AsyncAppDatabase private constructor() : ReactiveFastDB(DB_NAME, DB_VERSIO
     private const val DB_NAME = "a"
     private const val DB_VERSION = 1
     const val SENDER_TAG = "App_Database"
-    @SuppressLint("StaticFieldLeak")
-    private var instance: AsyncAppDatabase? = null
+    private val todoTable: TodoTable by lazy { TodoTable() }
 
-    fun instance(): AsyncAppDatabase {
-      if (instance == null) instance = AsyncAppDatabase()
-      return instance as AsyncAppDatabase
-    }
-
-    private var todoTable: TodoTable? = null
-
-    init {
-      todoTable = TodoTable()
-    }
   }
 }

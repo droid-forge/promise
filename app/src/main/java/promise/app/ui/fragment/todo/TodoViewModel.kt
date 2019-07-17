@@ -1,35 +1,30 @@
 package promise.app.ui.fragment.todo
 
+import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
+import promise.Promise
+import promise.app_base.models.Result
 import promise.app_base.models.Todo
+import promise.app_base.repos.LIMIT_KEY
+import promise.app_base.repos.SKIP_KEY
+import promise.model.List
+import promise.model.Searchable
 import promise.repo.StoreRepository
 
-class TodoViewModel(private val todoRepository: StoreRepository<Todo>) : ViewModel() {
+class TodoViewModel(private val todoRepository: StoreRepository<Todo>, private val promise: Promise) : ViewModel() {
 
-   val data = MutableLiveData<List<Todo>>()
-/*
-  private val _loginResult = MutableLiveData<LoginResult>()
-  val loginResult: LiveData<LoginResult> = _loginResult
+   val data = MutableLiveData<Result<List<Searchable>>>()
 
-  fun login(username: String, password: String) = promise.execute {
-    val user = authRepository.one(ArrayMap<String, String>().apply {
-      put("email", username)
-      put("password", password)
-    })
-    if (user == null) _loginResult.value = LoginResult(error = R.string.login_failed)
-    else _loginResult.value = LoginResult(success = LoggedInUserView(displayName = user.names()!!))
-  }
-
-  fun loginDataChanged(username: String, password: String) =
-      if (!isUserNameValid(username)) _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
-      else if (!isPasswordValid(password)) _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
-      else _loginForm.value = LoginFormState(isDataValid = true)
-
-  private fun isUserNameValid(username: String): Boolean =
-      if (username.contains('@')) Patterns.EMAIL_ADDRESS.matcher(username).matches()
-      else username.isNotBlank()
-
-  private fun isPasswordValid(password: String): Boolean = password.length > 5*/
+   fun fetchTodos(skip: Int, limit: Int) = promise.execute {
+      todoRepository.all(ArrayMap<String, Any>().apply {
+         put(LIMIT_KEY, limit)
+         put(SKIP_KEY, skip)
+      }, {
+         data.value = Result.Success(it.map { todo -> todo as Searchable })
+      }, {
+         data.value = Result.Error(it)
+      })
+   }
 
 }

@@ -1,9 +1,53 @@
 package promise.app_base.repos
 
+import promise.app_base.data.db.async.AsyncAppDatabase
+import promise.app_base.data.net.TodoApi
+import promise.app_base.error.AppError
 import promise.app_base.models.Todo
+import promise.app_base.scopes.AppScope
+import promise.data.net.net.Call
+import promise.data.net.net.Callback
+import promise.data.net.net.Response
+import promise.model.List
+import promise.model.ResponseCallBack
 import promise.repo.AbstractAsyncIDataStore
 import promise.repo.AbstractSyncIDataStore
+import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
-class SyncTodoRepository: AbstractSyncIDataStore<Todo>()
+const val LIMIT_KEY = "limit_key"
+const val SKIP_KEY = "skip_key"
 
-class AsyncTodoRepository: AbstractAsyncIDataStore<Todo>()
+@AppScope
+class SyncTodoRepository @Inject constructor(): AbstractSyncIDataStore<Todo>()
+
+@AppScope
+class AsyncTodoRepository @Inject constructor(private val asyncAppDatabase: AsyncAppDatabase,
+                                              private val todoApi: TodoApi
+                                              ): AbstractAsyncIDataStore<Todo>() {
+  override fun all(res: (List<Todo>) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
+    if (args == null) throw IllegalArgumentException("args must be passed here")
+    val limit = args[LIMIT_KEY] as Int
+    val skip = args[SKIP_KEY] as Int
+    asyncAppDatabase.todos(skip, limit, ResponseCallBack<List<Todo>, AppError>()
+        .response { todos ->
+          if (todos.isEmpty()) todoApi.todos(skip, limit).enqueue(object : Callback<kotlin.collections.List<Todo>> {
+            override fun onResponse(call: Call<kotlin.collections.List<Todo>>, response: Response<kotlin.collections.List<Todo>>) {
+                asyncAppDatabase.saveTodos(List(response.body()!!), ResponseCallBack<Boolean, AppError>()
+                    .response {
+                      res(todos)
+                    }
+                    .error {
+                      err?.invoke(it)
+                    })
+            }
+            override fun onFailure(call: Call<kotlin.collections.List<Todo>>, t: Throwable) {
+              err?.invoke(AppError(t))
+            }
+          }) else res(todos)
+        }
+        .error {
+          err?.invoke(it)
+        })
+  }
+}

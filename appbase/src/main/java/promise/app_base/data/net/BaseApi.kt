@@ -7,8 +7,9 @@ import promise.data.net.converters.GsonConverterFactory
 import promise.data.net.net.FastParserEngine
 
 @Module
-class BaseApi {
+object BaseApi {
 
+  @JvmStatic
   @Provides
   @AppScope
   fun provideFastParserEngine(): FastParserEngine = FastParserEngine.Builder()
@@ -16,8 +17,15 @@ class BaseApi {
       .addConverterFactory(GsonConverterFactory.create())
       .build()
 
+  @JvmStatic
   @Provides
   @AppScope
   fun provideAuthApi(fastParserEngine: FastParserEngine): AuthApi =
       fastParserEngine.create(AuthApi::class.java)
+
+  @JvmStatic
+  @Provides
+  @AppScope
+  fun provideTodoApi(fastParserEngine: FastParserEngine): TodoApi =
+      fastParserEngine.create(TodoApi::class.java)
 }

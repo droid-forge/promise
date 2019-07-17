@@ -5,11 +5,14 @@ import promise.Promise
 import promise.app.ui.fragment.di.FragmentComponent
 import promise.app_base.DependenciesModule
 import promise.app_base.data.net.BaseApi
+import promise.app_base.models.Todo
 import promise.app_base.models.di.DieselEngineModule
 import promise.app_base.models.di.DriverModule
 import promise.app_base.repos.AuthRepository
 import promise.app_base.repos.ReposModule
 import promise.app_base.scopes.AppScope
+import promise.repo.StoreRepository
+import javax.inject.Named
 
 /**
  * AppComponent is the main application component
@@ -21,9 +24,13 @@ import promise.app_base.scopes.AppScope
  *
  */
 @AppScope
-@Component(modules = [DriverModule::class, BaseApi::class,
-  DependenciesModule::class, ReposModule::class])
+@Component(modules = [DriverModule::class, BaseApi::class, DependenciesModule::class, ReposModule::class])
 interface AppComponent {
+
+  @Named(ReposModule.TODO_REPOSITORY)
+  fun todoRepository(): StoreRepository<Todo>
+
+  fun getAuthRepository(): AuthRepository
 
   /**
    * Exposes Promise to the UI based components
@@ -38,7 +45,7 @@ interface AppComponent {
    *
    * @return instance of auth repository
    */
-  fun getAuthRepository(): AuthRepository
+
 
   fun getFragmentComponent(dieselEngineModule: DieselEngineModule): FragmentComponent
 }

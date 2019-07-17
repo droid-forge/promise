@@ -1,10 +1,10 @@
 package promise.app_base.data.db
 
-import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import promise.Promise
 import promise.app_base.models.Task
 import promise.app_base.models.Todo
+import promise.app_base.scopes.AppScope
 import promise.data.db.Corrupt
 import promise.data.db.FastDB
 import promise.data.db.Table
@@ -13,8 +13,10 @@ import promise.data.log.LogUtil
 import promise.model.List
 import promise.model.Message
 import promise.model.SList
+import javax.inject.Inject
 
-class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION, null,
+@AppScope
+class AppDatabase @Inject constructor() : FastDB(DB_NAME, DB_VERSION, null,
     Corrupt { Promise.instance().send(Message(SENDER_TAG, "Database is corrupted")) }) {
   private val TAG = LogUtil.makeTag(AppDatabase::class.java)
 
@@ -85,20 +87,9 @@ class AppDatabase private constructor() : FastDB(DB_NAME, DB_VERSION, null,
     private const val DB_NAME = "a"
     private const val DB_VERSION = 2
     const val SENDER_TAG = "App_Database"
-    @SuppressLint("StaticFieldLeak")
-    private var instance: AppDatabase? = null
 
-    private var todoTable: TodoTable? = null
-    private var taskTable: TaskTable? = null
+    private val todoTable: TodoTable by lazy { TodoTable() }
+    private val taskTable: TaskTable by lazy { TaskTable() }
 
-    init {
-      todoTable = TodoTable()
-      taskTable = TaskTable()
-    }
-
-    fun instance(): AppDatabase {
-      if (instance == null) instance = AppDatabase()
-      return instance as AppDatabase
-    }
   }
 }
