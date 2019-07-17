@@ -14,12 +14,15 @@ import promise.app.DaggerUIComponent
 import promise.app.R
 import promise.app.ui.ListAdapterModule
 import promise.app_base.models.Result
+import promise.data.log.LogUtil
 import promise.model.Searchable
 import promise.view.PromiseAdapter
 import promise.view.SearchableAdapter
 import javax.inject.Inject
 
 class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
+
+  val TAG = LogUtil.makeTag(TodoFragment::class.java)
 
   @Inject
   lateinit var todoViewModelFactory: TodoViewModelFactory
@@ -55,11 +58,12 @@ class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
 
     viewModel.data.observe(this, Observer {
       if (it is Result.Success) {
+        LogUtil.e(TAG, "data_ ", it.data)
         progress_layout.showContent()
         searchableAdapter.clear()
         searchableAdapter.add(it.data)
       } else if (it is Result.Error) {
-        progress_layout.showEmpty(R.drawable.navigation_empty_icon, "You do not have any todos now", it.exception.message)
+        progress_layout.showEmpty(R.drawable.ic_assistant, "You do not have any todos now", it.exception.message)
       }
     })
     progress_layout.showLoading()

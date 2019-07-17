@@ -21,9 +21,14 @@ class TodoViewModel(private val todoRepository: StoreRepository<Todo>, private v
          put(LIMIT_KEY, limit)
          put(SKIP_KEY, skip)
       }, {
-         data.value = Result.Success(it.map { todo -> todo as Searchable })
+         promise.executeOnUi {
+            data.value = Result.Success(it.map { todo -> todo as Searchable })
+         }
+
       }, {
-         data.value = Result.Error(it)
+         promise.executeOnUi {
+            data.value = Result.Error(it)
+         }
       })
    }
 

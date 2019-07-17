@@ -34,19 +34,14 @@ class AsyncTodoRepository @Inject constructor(private val asyncAppDatabase: Asyn
         .response { todos ->
           if (todos.isEmpty()) todoApi.todos().enqueue(object : Callback<kotlin.collections.List<Todo>> {
             override fun onResponse(call: Call<kotlin.collections.List<Todo>>, response: Response<kotlin.collections.List<Todo>>) {
-              LogUtil.e(TAG, "response", response)
               val list = response.body()
-              if (list != null) {
-                asyncAppDatabase.saveTodos(List(list), ResponseCallBack<Boolean, AppError>()
-                    .response {
-                      res(todos)
-                    }
-                    .error {
-                      err?.invoke(it)
-                    })
-              } else {
-                err?.invoke(AppError("could not load todos $response"))
-              }
+              if (list != null) asyncAppDatabase.saveTodos(List(list), ResponseCallBack<Boolean, AppError>()
+                  .response {
+                    res(List(list))
+                  }
+                  .error {
+                    err?.invoke(it)
+                  }) else err?.invoke(AppError("could not load todos $response"))
             }
             override fun onFailure(call: Call<kotlin.collections.List<Todo>>, t: Throwable) {
               err?.invoke(AppError(t))
