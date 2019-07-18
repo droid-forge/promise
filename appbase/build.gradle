@@ -1,6 +1,23 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+buildscript {
+    ext.kotlin_version = '1.3.41'
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
 
 android {
     compileSdkVersion 28
@@ -23,6 +40,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api 'com.google.firebase:firebase-core:17.0.1'
+    api 'com.google.firebase:firebase-auth:18.1.0'
+    api 'com.google.android.gms:play-services-auth:17.0.0'
+    // Facebook Android SDK (only required for Facebook Login)
+    api 'com.facebook.android:facebook-login:4.42.0'
+    // Twitter Android SDK (only required for Twitter Login)
+    api 'com.twitter.sdk.android:twitter-core:3.3.0'
+    api 'com.twitter.sdk.android:twitter:3.3.0'
     api 'com.github.dev4vin:android-promise:1.2.8-rc03'
     api 'com.google.dagger:dagger:2.23'
     kapt 'com.google.dagger:dagger-compiler:2.23'
@@ -32,3 +57,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'com.google.gms.google-services'

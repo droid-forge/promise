@@ -5,7 +5,6 @@ import promise.app_base.data.net.TodoApi
 import promise.app_base.error.AppError
 import promise.app_base.models.Todo
 import promise.app_base.scopes.AppScope
-import promise.data.log.LogUtil
 import promise.data.net.net.Call
 import promise.data.net.net.Callback
 import promise.data.net.net.Response
@@ -13,19 +12,18 @@ import promise.model.List
 import promise.model.ResponseCallBack
 import promise.repo.AbstractAsyncIDataStore
 import promise.repo.AbstractSyncIDataStore
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 const val LIMIT_KEY = "limit_key"
 const val SKIP_KEY = "skip_key"
-const val TAG = "_TodoRepository"
+
 @AppScope
-class SyncTodoRepository @Inject constructor(): AbstractSyncIDataStore<Todo>()
+class SyncTodoRepository @Inject constructor() : AbstractSyncIDataStore<Todo>()
 
 @AppScope
 class AsyncTodoRepository @Inject constructor(private val asyncAppDatabase: AsyncAppDatabase,
                                               private val todoApi: TodoApi
-                                              ): AbstractAsyncIDataStore<Todo>() {
+) : AbstractAsyncIDataStore<Todo>() {
   override fun all(res: (List<Todo>) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
     if (args == null) throw IllegalArgumentException("args must be passed here")
     val limit = args[LIMIT_KEY] as Int
