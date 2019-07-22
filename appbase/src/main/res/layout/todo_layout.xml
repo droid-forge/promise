@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/checked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <CheckedTextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="todo"
+            type="promise.app_base.models.Todo" />
+    </data>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/checked"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="8dp"
+            android:checked="@{todo.completed()}"
+            android:layout_gravity="center_vertical"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <CheckedTextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Call Sophia"
+                android:text="@{todo.name()}"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/date_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{todo.date()}"
+                tools:text="10pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

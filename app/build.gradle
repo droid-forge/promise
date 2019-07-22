@@ -9,6 +9,11 @@ androidExtensions {
 }
 
 android {
+
+    dataBinding {
+        enabled = true
+    }
+
     compileSdkVersion 28
     defaultConfig {
         applicationId 'me.dev4vin.promiseapp'
@@ -59,6 +64,7 @@ dependencies {
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
     implementation 'com.tapadoo.android:alerter:4.0.2'
     implementation 'androidx.slice:slice-builders:1.0.0'
+    implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:3.0.0'
     testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

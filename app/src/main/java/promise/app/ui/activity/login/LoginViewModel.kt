@@ -22,8 +22,10 @@ class LoginViewModel(private val authRepository: AuthRepository, private val pro
       put("email", username)
       put("password", password)
     })
-    if (user == null) _loginResult.value = LoginResult(error = R.string.login_failed)
-    else _loginResult.value = LoginResult(success = LoggedInUserView(displayName = user.names()!!))
+    promise.executeOnUi {
+      if (user == null) _loginResult.value = LoginResult(error = R.string.login_failed)
+      else _loginResult.value = LoginResult(success = LoggedInUserView(displayName = user.names()!!))
+    }
   }
 
   fun loginDataChanged(username: String, password: String) =

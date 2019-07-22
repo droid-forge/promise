@@ -14,6 +14,18 @@
         android:layout_height="match_parent"
         android:layout_above="@id/nav_view"/>
 
+    <!--<it.sephiroth.android.library.bottomnavigation.BottomNavigation
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_alignParentBottom="true"
+        app:bbn_entries="@menu/bottom_nav_menu"
+        app:bbn_scrollEnabled="true"
+        app:elevation="4dp"
+        app:bbn_badgeProvider="@string/bbn_badgeProvider"
+        app:layout_behavior="@string/bbn_phone_view_behavior" />-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
@@ -23,8 +35,10 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:elevation="4dp"
-        app:itemIconTint="@color/primaryTextColor"
-        app:itemTextColor="@color/primaryTextColor"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/bottom_nav_icon_background"
+        app:itemTextColor="@drawable/bottom_nav_icon_background"
+
         app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

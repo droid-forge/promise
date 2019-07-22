@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 import kotlinx.android.synthetic.main.activity_main.*
 import promise.app.R
 import promise.app.ui.activity.login.LoginActivity
@@ -21,9 +22,65 @@ import promise.app.ui.fragment.weather.WeatherFragment
 
 class MainActivity : BaseActivity() {
 
+  private val onBottomMenuSelectListner: BottomNavigation.OnMenuItemSelectionListener = object:  BottomNavigation.OnMenuItemSelectionListener {
+    override fun onMenuItemSelect(itemId: Int, position: Int, fromUser: Boolean) {
+      when (itemId) {
+        /* R.id.navigation_home -> {
+           title = "Home"
+           viewpager.setCurrentItem(0, true)
+           return@OnNavigationItemSelectedListener true
+         }
+         R.id.navigation_di -> {
+           title = "DI"
+           viewpager.setCurrentItem(1, true)
+           return@OnNavigationItemSelectedListener true
+         }*/
+        R.id.navigation_todo -> {
+          title = "Todo"
+          viewpager.setCurrentItem(2, true)
+        }
+        R.id.navigation_weather -> {
+          title = "Weather"
+          viewpager.setCurrentItem(3, true)
+        }
+        R.id.navigation_wallet -> {
+          title = "Wallet"
+          viewpager.setCurrentItem(4, true)
+        }
+      }
+    }
+
+    override fun onMenuItemReselect(itemId: Int, position: Int, fromUser: Boolean) {
+      when (itemId) {
+        /* R.id.navigation_home -> {
+           title = "Home"
+           viewpager.setCurrentItem(0, true)
+           return@OnNavigationItemSelectedListener true
+         }
+         R.id.navigation_di -> {
+           title = "DI"
+           viewpager.setCurrentItem(1, true)
+           return@OnNavigationItemSelectedListener true
+         }*/
+        R.id.navigation_todo -> {
+          title = "Todo"
+          viewpager.setCurrentItem(2, true)
+        }
+        R.id.navigation_weather -> {
+          title = "Weather"
+          viewpager.setCurrentItem(3, true)
+        }
+        R.id.navigation_wallet -> {
+          title = "Wallet"
+          viewpager.setCurrentItem(4, true)
+        }
+      }
+    }
+  }
+
   private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
     when (item.itemId) {
-      R.id.navigation_home -> {
+     /* R.id.navigation_home -> {
         title = "Home"
         viewpager.setCurrentItem(0, true)
         return@OnNavigationItemSelectedListener true
@@ -32,20 +89,20 @@ class MainActivity : BaseActivity() {
         title = "DI"
         viewpager.setCurrentItem(1, true)
         return@OnNavigationItemSelectedListener true
-      }
+      }*/
       R.id.navigation_todo -> {
         title = "Todo"
-        viewpager.setCurrentItem(2, true)
+        viewpager.setCurrentItem(0, true)
         return@OnNavigationItemSelectedListener true
       }
       R.id.navigation_weather -> {
         title = "Weather"
-        viewpager.setCurrentItem(3, true)
+        viewpager.setCurrentItem(1, true)
         return@OnNavigationItemSelectedListener true
       }
       R.id.navigation_wallet -> {
         title = "Wallet"
-        viewpager.setCurrentItem(4, true)
+        viewpager.setCurrentItem(2, true)
         return@OnNavigationItemSelectedListener true
       }
     }
@@ -77,22 +134,22 @@ class MainActivity : BaseActivity() {
   }
 
   inner class SectionsPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-    private var homeFragment: HomeFragment = HomeFragment.newInstance()
-    private var diFragment: DIFragment = DIFragment.newInstance()
+    /*private var homeFragment: HomeFragment = HomeFragment.newInstance()
+    private var diFragment: DIFragment = DIFragment.newInstance()*/
     private var todoFragment: TodoFragment = TodoFragment.newInstance()
     private var weatherFragment: WeatherFragment = WeatherFragment.newInstance()
     private var walletFragment: WalletFragment = WalletFragment.newInstance()
 
     override fun getItem(position: Int): Fragment = when (position) {
-      0 -> homeFragment
-      1 -> diFragment
-      2 -> todoFragment
-      3 -> weatherFragment
-      4 -> walletFragment
-      else -> throw IllegalArgumentException("Only allowed five fragments")
+      /*0 -> homeFragment
+      1 -> diFragment*/
+      0 -> todoFragment
+      1 -> weatherFragment
+      2 -> walletFragment
+      else -> throw IllegalArgumentException("Only allowed three fragments")
     }
 
-    override fun getCount(): Int = 5
+    override fun getCount(): Int = 3
   }
 }
 

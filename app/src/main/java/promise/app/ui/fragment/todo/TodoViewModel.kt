@@ -2,7 +2,7 @@ package promise.app.ui.fragment.todo
 
 import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 import promise.Promise
 import promise.app_base.models.Result
 import promise.app_base.models.Todo
@@ -14,22 +14,21 @@ import promise.repo.StoreRepository
 
 class TodoViewModel(private val todoRepository: StoreRepository<Todo>, private val promise: Promise) : ViewModel() {
 
-   val data = MutableLiveData<Result<List<Searchable>>>()
+  val data = MutableLiveData<Result<List<Searchable>>>()
 
-   fun fetchTodos(skip: Int, limit: Int) = promise.execute {
-      todoRepository.all(ArrayMap<String, Any>().apply {
-         put(LIMIT_KEY, limit)
-         put(SKIP_KEY, skip)
-      }, {
-         promise.executeOnUi {
-            data.value = Result.Success(it.map { todo -> todo as Searchable })
-         }
+  fun fetchTodos(skip: Int, limit: Int) = promise.execute {
+    todoRepository.all(ArrayMap<String, Any>().apply {
+      put(LIMIT_KEY, limit)
+      put(SKIP_KEY, skip)
+    }, {
+      promise.executeOnUi {
+        data.value = Result.Success(it.map { todo -> todo as Searchable })
+      }
 
-      }, {
-         promise.executeOnUi {
-            data.value = Result.Error(it)
-         }
-      })
-   }
-
+    }, {
+      promise.executeOnUi {
+        data.value = Result.Error(it)
+      }
+    })
+  }
 }

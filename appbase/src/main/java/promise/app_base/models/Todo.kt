@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
 import android.widget.CheckedTextView
-import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.AppCompatCheckBox
 import promise.app_base.R
 
 import promise.model.SModel
@@ -16,7 +16,9 @@ class Todo : SModel, Searchable {
   private var completed: Boolean = false
 
   @Transient
-  private var index: Int = 0
+  private  var index: Int = 0
+
+  fun date(): String = ""
 
   fun category(): String? = category
 
@@ -43,7 +45,7 @@ class Todo : SModel, Searchable {
       name()?.contains(query) ?: category?.contains(query) ?: false
 
   @Transient
-  private lateinit var switchCompat: SwitchCompat
+  private lateinit var switchCompat: AppCompatCheckBox
   @Transient
   private lateinit var textView: CheckedTextView
   override fun layout(): Int = R.layout.todo_layout

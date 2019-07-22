@@ -9,12 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.todo_fragment.*
+import promise.Promise
 import promise.app.App
 import promise.app.DaggerUIComponent
 import promise.app.R
 import promise.app.ui.ListAdapterModule
+import promise.app.ui.views.LoadableView
 import promise.app_base.models.Result
-import promise.data.log.LogUtil
 import promise.model.Searchable
 import promise.view.PromiseAdapter
 import promise.view.SearchableAdapter
@@ -22,13 +23,14 @@ import javax.inject.Inject
 
 class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
 
-  val TAG = LogUtil.makeTag(TodoFragment::class.java)
-
   @Inject
   lateinit var todoViewModelFactory: TodoViewModelFactory
 
   @Inject
   lateinit var searchableAdapter: SearchableAdapter<Searchable>
+
+  @Inject
+  lateinit var promise: Promise
 
   companion object {
     fun newInstance() = TodoFragment()
@@ -58,7 +60,6 @@ class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
 
     viewModel.data.observe(this, Observer {
       if (it is Result.Success) {
-        LogUtil.e(TAG, "data_ ", it.data)
         progress_layout.showContent()
         searchableAdapter.clear()
         searchableAdapter.add(it.data)
@@ -66,8 +67,10 @@ class TodoFragment : Fragment(), PromiseAdapter.Listener<Searchable> {
         progress_layout.showEmpty(R.drawable.ic_assistant, "You do not have any todos now", it.exception.message)
       }
     })
-    progress_layout.showLoading()
-    viewModel.fetchTodos(0, 10)
+    progress_layout.showLoading(LoadableView("Fetching please wait..."))
+    promise.executeOnUi({
+      viewModel.fetchTodos(0, 10)
+    }, 500)
   }
 
   override fun onClick(t: Searchable, id: Int) {
