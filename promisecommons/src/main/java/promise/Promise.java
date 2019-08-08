@@ -17,6 +17,7 @@ package promise;
 
 import android.content.Context;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,10 +32,9 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import promise.data.log.LogUtil;
-import promise.model.Action;
 import promise.model.List;
 import promise.model.Message;
-import promise.model.ResponseCallBack;
+import promise.model.Result;
 import promise.model.function.MapFunction;
 import promise.util.Conditions;
 
@@ -87,7 +87,7 @@ public class Promise {
     bus.onNext(object);
   }
 
-  public int listen(final String sender, final ResponseCallBack<Object, Throwable> callBack) {
+  public int listen(final String sender, final Result<Object, Throwable> callBack) {
     if (bus == null) bus = PublishSubject.create();
     if (disposables == null) disposables = new List<>();
     disposables.add(
@@ -143,21 +143,21 @@ public class Promise {
   }
 
   public <T> void execute(
-      final Action<T> action, final ResponseCallBack<T, Throwable> responseCallBack) {
+      final Callable<T> action, final Result<T, Throwable> result) {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.fromCallable(
-            action::execute)
+            action)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
             .subscribe(
-                responseCallBack::response,
-                responseCallBack::error));
+                result::response,
+                result::error));
     disposable.add(Conditions.checkNotNull(disposables.last()));
   }
 
  /* public <T> void executeAsync(
-    final AsyncAction<T> action, final ResponseCallBack<T, Throwable> responseCallBack) {
+    final AsyncAction<T> action, final Result<T, Throwable> response) {
     if (disposables == null) disposables = new List<>();
     disposables.add(
       Observable.fromCallable(
@@ -173,37 +173,37 @@ public class Promise {
           new Consumer<T>() {
             @Override
             public void accept(T t) {
-              responseCallBack.response(t);
+              response.response(t);
             }
           },
           new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) {
-              responseCallBack.error(throwable);
+              response.error(throwable);
             }
           }));
     disposable.add(Conditions.checkNotNull(disposables.last()));
   }*/
 
   public void execute(
-      final List<Action<?>> actions, final ResponseCallBack<List<?>, Throwable> responseCallBack) {
+      final List<Callable<?>> actions, final Result<List<?>, Throwable> result) {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.zip(
                 actions.map(
-                    (MapFunction<ObservableSource<?>, Action<?>>) action -> (ObservableSource<Object>) observer -> {
+                    (MapFunction<ObservableSource<?>, Callable<?>>) action -> (ObservableSource<Object>) observer -> {
                       try {
-                        observer.onNext(action.execute());
+                        observer.onNext(action.call());
                       } catch (Exception e) {
                         observer.onError(e);
                       }
                     }),
-            List::fromArray)
+            List.Companion::fromArray)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
             .subscribe(
-                responseCallBack::response,
-                responseCallBack::error));
+                result::response,
+                result::error));
     disposable.add(Conditions.checkNotNull(disposables.last()));
   }
 

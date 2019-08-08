@@ -354,7 +354,7 @@ public class QueryBuilder {
       union.skip = -1;
       union.take = -1;
 
-      ret.addAll(List.fromArray(union.buildParameters()));
+      ret.addAll(List.Companion.fromArray(union.buildParameters()));
 
       union.orderBy = oldOrderBy;
       union.skip = oldSkip;

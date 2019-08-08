@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+                                                                   
+    
+                 
+                       
+                                                  
+           
+    <androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp" android:tag="layout/todo_layout_0" xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/checked"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="8dp"
+            android:tag="binding_1"              
+            android:layout_gravity="center_vertical"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <CheckedTextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Call Sophia"
+                android:tag="binding_2"      
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/date_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="binding_3"      
+                tools:text="10pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+         

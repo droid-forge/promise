@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/drawable-watch-v20/abc_dialog_material_background.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/drawable-watch-v20/abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/drawable-watch-v20/common_google_signin_btn_text_dark_normal.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/82e6884ac8cbf0230d23bf895fcc9cda/res/drawable-watch-v20/common_google_signin_btn_text_dark_normal.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/drawable-watch-v20/common_google_signin_btn_text_disabled.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/82e6884ac8cbf0230d23bf895fcc9cda/res/drawable-watch-v20/common_google_signin_btn_text_disabled.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/drawable-watch-v20/common_google_signin_btn_text_light_normal.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/82e6884ac8cbf0230d23bf895fcc9cda/res/drawable-watch-v20/common_google_signin_btn_text_light_normal.xml"
+    }
+]

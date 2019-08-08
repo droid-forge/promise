@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-watch-v20/abc_alert_dialog_title_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout-watch-v20/abc_alert_dialog_title_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-watch-v20/abc_alert_dialog_button_bar_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout-watch-v20/abc_alert_dialog_button_bar_material.xml"
+    }
+]

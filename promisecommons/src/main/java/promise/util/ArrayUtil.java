@@ -31,7 +31,7 @@ public class ArrayUtil {
     }
 
     public static int sum(Integer... items) {
-        return sum(List.fromArray(items));
+        return sum(List.Companion.fromArray(items));
     }
 
     public static double average(List<Integer> items) {
@@ -40,6 +40,6 @@ public class ArrayUtil {
     }
 
     public static double average(Integer... items) {
-        return average(List.fromArray(items));
+        return average(List.Companion.fromArray(items));
     }
 }

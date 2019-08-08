@@ -95,7 +95,7 @@ public abstract class Model<T extends SModel>
     if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     QueryBuilder builder = new QueryBuilder().from(this);
     Cursor c = database.rawQuery(builder.build(), builder.buildParameters());
-    Set<String> set = new HashSet<>(List.fromArray(c.getColumnNames()));
+    Set<String> set = new HashSet<>(List.Companion.fromArray(c.getColumnNames()));
     if (!set.contains(createdAt.getName())) addColumns(database, createdAt);
     if (!set.contains(updatedAt.getName())) addColumns(database, updatedAt);
     return false;

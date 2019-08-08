@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_slide_in_bottom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_fade_in.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_fade_in.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_fade_out.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_fade_out.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_shrink_fade_out_from_bottom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_shrink_fade_out_from_bottom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_slide_out_bottom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_slide_out_bottom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_popup_enter.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_popup_enter.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_tooltip_enter.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_tooltip_enter.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_popup_exit.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_popup_exit.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_slide_out_top.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_slide_out_top.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/tw__accelerate_cubic.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/anim/tw__accelerate_cubic.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_grow_fade_in_from_bottom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_grow_fade_in_from_bottom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/design_snackbar_out.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/anim/design_snackbar_out.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/design_snackbar_in.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/anim/design_snackbar_in.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_tooltip_exit.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_tooltip_exit.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/anim/abc_slide_in_top.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/anim/tw__slide_out.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/anim/tw__slide_out.xml"
+    }
+]

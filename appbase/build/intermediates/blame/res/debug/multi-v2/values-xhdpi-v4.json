@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/values-xhdpi-v4/values-xhdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/21ca0fc35c512fd3de66f3543d29d93c/res/values-xhdpi-v4/values-xhdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/incremental/mergeDebugResources/merged.dir/values-xhdpi-v4/values-xhdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/21ca0fc35c512fd3de66f3543d29d93c/res/values-xhdpi-v4/values-xhdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        }
+    ]
+}

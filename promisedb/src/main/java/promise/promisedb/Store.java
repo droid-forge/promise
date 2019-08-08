@@ -19,24 +19,24 @@ package promise.promisedb;
 import androidx.annotation.Nullable;
 
 import promise.model.List;
-import promise.model.ResponseCallBack;
+import promise.model.Result;
 
 public interface Store<T, K, X extends Throwable> {
 
-  void get(K k, ResponseCallBack<Extras<T>, X> callBack);
+  void get(K k, Result<Extras<T>, X> callBack);
 
-  void delete(K k, T t, ResponseCallBack<Boolean, X> callBack);
+  void delete(K k, T t, Result<Boolean, X> callBack);
 
-  void update(K k, T t, ResponseCallBack<Boolean, X> callBack);
+  void update(K k, T t, Result<Boolean, X> callBack);
 
-  void save(K k, T t, ResponseCallBack<Boolean, X> callBack);
+  void save(K k, T t, Result<Boolean, X> callBack);
 
-  void clear(K k, ResponseCallBack<Boolean, X> callBack);
+  void clear(K k, Result<Boolean, X> callBack);
 
-  void clear(ResponseCallBack<Boolean, X> callBack);
+  void clear(Result<Boolean, X> callBack);
 
   abstract class StoreExtra<T, E extends Throwable> {
-    public void getExtras(final List<T> list, ResponseCallBack<Extras<T>, E> callBack) {
+    public void getExtras(final List<T> list, Result<Extras<T>, E> callBack) {
       callBack.response(
           new Extras<T>() {
             @Nullable

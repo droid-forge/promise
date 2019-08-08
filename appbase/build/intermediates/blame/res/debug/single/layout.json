@@ -1,0 +1,350 @@
+[
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__activity_oauth.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/21ca0fc35c512fd3de66f3543d29d93c/res/layout/tw__activity_oauth.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__video_control.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__video_control.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_lines_media.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_lines_media.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/support_simple_spinner_dropdown_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_bar_up_container.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_bar_up_container.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__activity_composer.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/5e7f636b28b29a185dd8148b5911389a/res/layout/tw__activity_composer.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__composer_view.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/5e7f636b28b29a185dd8148b5911389a/res/layout/tw__composer_view.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_activity_chooser_view_list_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_menu_item_action_area.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_menu_item_action_area.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_search_dropdown_item_icons_2line.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_search_dropdown_item_icons_2line.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_menu_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_alert_dialog_button_bar_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_alert_dialog_button_bar_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_layout_snackbar.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_layout_snackbar.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/com_facebook_activity_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/b1b4eb3a5384a8dce75330a45582e129/res/layout/com_facebook_activity_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_big_media_custom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/com_facebook_smart_device_dialog_fragment.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/b1b4eb3a5384a8dce75330a45582e129/res/layout/com_facebook_smart_device_dialog_fragment.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/incremental/mergeDebugResources/stripped.dir/layout/todo_layout.xml",
+        "source": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/src/main/res/layout/todo_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_mode_bar.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/select_dialog_singlechoice_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/select_dialog_singlechoice_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_big_media_narrow_custom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_screen_simple.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_screen_simple.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_bottom_sheet_dialog.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_bottom_sheet_dialog.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_layout_tab_text.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_layout_tab_text.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_big_media.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_bottom_navigation_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_bottom_navigation_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_list_menu_item_checkbox.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/loading_viewable.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/loading_viewable.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_layout_tab_icon.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_layout_tab_icon.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/com_facebook_device_auth_dialog_fragment.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/b1b4eb3a5384a8dce75330a45582e129/res/layout/com_facebook_device_auth_dialog_fragment.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/mtrl_layout_snackbar_include.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/mtrl_layout_snackbar_include.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__tweet_quote.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__tweet_quote.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/view_error.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/view_error.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__gallery_activity.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__gallery_activity.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/com_facebook_tooltip_bubble.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/104912499c863aabae7ff5d6613a13fd/res/layout/com_facebook_tooltip_bubble.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/todo_layout.xml",
+        "source": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/src/main/res/layout/todo_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_search_view.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_search_view.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__media_badge.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__media_badge.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/activity_network_error.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/activity_network_error.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_tooltip.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_tooltip.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_media_cancel_action.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_list_menu_item_icon.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_list_menu_item_icon.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_media_action.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_media_action.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/browser_actions_context_menu_page.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/676dc4d00272317ba782b224f59de91f/res/layout/browser_actions_context_menu_page.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_menu_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_menu_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__player_activity.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__player_activity.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/select_dialog_item_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/select_dialog_item_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_screen_simple_overlay_action_mode.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_select_dialog_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_select_dialog_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/select_dialog_multichoice_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/select_dialog_multichoice_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_part_chronometer.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__tweet.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__tweet.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/browser_actions_context_menu_row.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/676dc4d00272317ba782b224f59de91f/res/layout/browser_actions_context_menu_row.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_list_menu_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_list_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/view_loading.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/view_loading.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_popup_menu_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_media.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_media.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_dialog_title_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_dialog_title_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_menu_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_item_separator.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_item_separator.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/com_facebook_login_fragment.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/b1b4eb3a5384a8dce75330a45582e129/res/layout/com_facebook_login_fragment.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_big_media_narrow.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_popup_menu_header_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_popup_menu_header_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_item_header.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_item_header.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_layout_snackbar_include.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_layout_snackbar_include.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_alert_dialog_title_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_alert_dialog_title_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/library_fast_scroller_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/8d9e600756f37a4febec1cc138a69fd6/res/layout/library_fast_scroller_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_expanded_menu_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_menu.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_menu.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_navigation_item_subheader.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_navigation_item_subheader.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/design_text_input_password_icon.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/design_text_input_password_icon.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_screen_toolbar.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_screen_toolbar.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_bar_title_item.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_bar_title_item.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/group_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/group_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_cascading_menu_item_layout.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_cascading_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__tweet_compact.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__tweet_compact.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_list_menu_item_radio.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_list_menu_item_radio.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/tw__action_bar.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/a8cf46daf44e5f67eab3c5ca465af687/res/layout/tw__action_bar.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/searchable_list_dialog.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/searchable_list_dialog.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_action_mode_close_item_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/mtrl_layout_snackbar.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/2ec39cfecf2ecdee18d2897b0f631fb4/res/layout/mtrl_layout_snackbar.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_alert_dialog_material.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_alert_dialog_material.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/notification_template_media_custom.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/3a76b69ef898b9838766d6306202f17f/res/layout/notification_template_media_custom.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/abc_screen_content_include.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/f67cf034e41e78717fe0fbac6e8ebec4/res/layout/abc_screen_content_include.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout/view_empty.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/4ed59390590c18efecd8f9d0f737bff6/res/layout/view_empty.xml"
+    }
+]

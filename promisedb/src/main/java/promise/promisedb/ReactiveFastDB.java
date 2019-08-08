@@ -31,7 +31,7 @@ import io.reactivex.schedulers.Schedulers;
 import promise.Promise;
 import promise.data.log.LogUtil;
 import promise.model.List;
-import promise.model.ResponseCallBack;
+import promise.model.Result;
 import promise.model.S;
 import promise.model.SList;
 import promise.model.SModel;
@@ -51,8 +51,8 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
     super(Promise.instance().context(), name, factory, version, errorHandler);
     LogUtil.d(TAG, "fast db init");
     this.context = Promise.instance().context();
-    Promise.instance().listen(Promise.TAG, new ResponseCallBack<>()
-    .response(o -> {
+    Promise.instance().listen(Promise.TAG, new Result<>()
+    .responseCallBack(o -> {
       if (o instanceof String) {
         if (o.equals(Promise.CLEANING_UP_RESOURCES)) {
           CompositeDisposable disposable = onTerminate();
@@ -332,7 +332,7 @@ public abstract class ReactiveFastDB extends SQLiteOpenHelper implements Reactiv
   @Override
   public Maybe<Boolean> deleteAll() {
     return Maybe.zip(tables().map(this::delete),
-        objects -> List.fromArray(objects).allMatch(aBoolean -> aBoolean instanceof Boolean &&
+        objects -> List.Companion.fromArray(objects).allMatch(aBoolean -> aBoolean instanceof Boolean &&
             (Boolean) aBoolean)).subscribeOn(Schedulers.from(Promise.instance().executor()))
         .observeOn(Schedulers.from(Promise.instance().executor()));
   }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App Base</string>
+    <string name="default_web_client_id" translatable="false">939477234378-78vth92kupfkcglnod2mu7343c1fs85j.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://promiseapp.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">939477234378</string>
+    <string name="google_api_key" translatable="false">AIzaSyBN75XAdEpkwik5UITl1TO4DjPOle5Ccd8</string>
+    <string name="google_app_id" translatable="false">1:939477234378:android:b86cbd5d9bbc478f</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBN75XAdEpkwik5UITl1TO4DjPOle5Ccd8</string>
+    <string name="google_storage_bucket" translatable="false">promiseapp.appspot.com</string>
+    <string name="project_id" translatable="false">promiseapp</string>
+</resources>

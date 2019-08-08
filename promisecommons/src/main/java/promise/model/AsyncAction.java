@@ -15,9 +15,11 @@
 
 package promise.model;
 
+import java.util.concurrent.Callable;
+
 /**
  * Created on 6/18/18 by yoctopus.*
  */
 public interface AsyncAction<T> {
-     void execute(Action<T> action) throws Exception;
+     void execute(Callable<T> action) throws Exception;
 }

@@ -19,7 +19,7 @@ public class SubQueryProjection extends Projection {
 
   @Override
   public List<String> buildParameters() {
-    if (subQuery != null) return List.fromArray(subQuery.buildParameters());
+    if (subQuery != null) return List.Companion.fromArray(subQuery.buildParameters());
     else
       return Utils.EMPTY_LIST.map(
           String::valueOf);

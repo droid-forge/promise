@@ -15,6 +15,7 @@
 
 package promise.model;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
@@ -99,9 +100,9 @@ public class List<T> extends ArrayList<T> {
   public int findIndex(EachFunction<T> function) {
     int match = 0;
     for (T t : this) {
-      if (function.filter(t)) return match;
-      match++;
-    }
+    if (function.filter(t)) return match;
+    match++;
+  }
     return -1;
   }
 
@@ -123,10 +124,10 @@ public class List<T> extends ArrayList<T> {
 
   public <K> List<T> arranged(final MapFunction<K, T> function, final Comparator<K> comparator) {
     return map(t -> new Arrangeable<T, K>().value(t).key(function.from(t)))
-        .sorted(
-            (o1, o2) -> comparator.compare(o1.key(), o2.key()))
-        .map(
-            arrangeable -> arrangeable.value());
+    .sorted(
+      (o1, o2) -> comparator.compare(o1.key(), o2.key()))
+    .map(
+      arrangeable -> arrangeable.value());
   }
 
   public <E> List<E> group(GroupFunction3<E, T> function) {
@@ -137,57 +138,57 @@ public class List<T> extends ArrayList<T> {
     List<E> es = new List<>();
     Map<K, List<T>> map = new ArrayMap<>();
     for (int i = 0, size = this.size(); i < size; i++) {
-      T t = this.get(i);
-      K key = function.getKey(t);
-      if (map.containsKey(key)) {
-        List<T> list = Conditions.checkNotNull(map.get(key));
-        list.add(t);
-      } else {
-        List<T> list = new List<>();
-        list.add(t);
-        map.put(key, list);
-      }
+    T t = this.get(i);
+    K key = function.getKey(t);
+    if (map.containsKey(key)) {
+      List<T> list = Conditions.checkNotNull(map.get(key));
+      list.add(t);
+    } else {
+      List<T> list = new List<>();
+      list.add(t);
+      map.put(key, list);
     }
+  }
     for (Map.Entry<K, List<T>> entry : map.entrySet()) {
-      E e = function.get(entry.getKey());
-      function.apply(e, entry.getValue());
-      es.add(e);
-    }
+    E e = function.get(entry.getKey());
+    function.apply(e, entry.getValue());
+    es.add(e);
+  }
     return es;
   }
 
   public <K> List<Category<K, T>> groupBy(final GroupFunction<K, T> function) {
     return group(
         new GroupFunction2<K, Category<K, T>, T>() {
-          @Override
-          public K getKey(T t) {
-            return function.getKey(t);
-          }
+      @Override
+      public K getKey(T t) {
+        return function.getKey(t);
+      }
 
-          @Override
-          public Category<K, T> get(K k) {
-            return new Category<>(k);
-          }
+      @Override
+      public Category<K, T> get(K k) {
+      return new Category<>(k);
+    }
 
-          @Override
-          public void apply(Category<K, T> category, List<T> list) {
-            category.list(list);
-          }
-        });
+      @Override
+      public void apply(Category<K, T> category, List<T> list) {
+        category.list(list);
+      }
+    });
   }
 
   public <U> List<T> joinOn(List<U> uList, JoinFunction<T, U> function) {
     List<T> ts = new List<>();
     for (int i = 0, tSize = this.size(); i < tSize; i++) {
-      T t = this.get(i);
-      for (int i1 = 0, uSize = uList.size(); i1 < uSize; i1++) {
-        U u = uList.get(i1);
-        if (function.joinBy(t, u)) {
-          ts.add(t);
-          break;
-        }
-      }
+    T t = this.get(i);
+    for (int i1 = 0, uSize = uList.size(); i1 < uSize; i1++) {
+    U u = uList.get(i1);
+    if (function.joinBy(t, u)) {
+      ts.add(t);
+      break;
     }
+  }
+  }
     return ts;
   }
 
@@ -196,10 +197,10 @@ public class List<T> extends ArrayList<T> {
       throw new IllegalArgumentException("Samples must be of same size");
     List<T> ts = new List<>();
     for (int i = 0, size = this.size(); i < size; i++) {
-      T t = this.get(i);
-      U u = uList.get(i);
-      ts.add(function.join(t, u));
-    }
+    T t = this.get(i);
+    U u = uList.get(i);
+    ts.add(function.join(t, u));
+  }
     return ts;
   }
 
@@ -217,21 +218,21 @@ public class List<T> extends ArrayList<T> {
         function::getKey));
     return filter(
         t -> {
-          if (reverse) return set.contains(function.filterBy(t));
-          else return !set.contains(function.filterBy(t));
-        });
+    if (reverse) return set.contains(function.filterBy(t));
+    else return !set.contains(function.filterBy(t));
+  });
   }
 
   public <K, U> List<T> merge(
       List<U> list,
-      final boolean reverse,
-      final FilterFunction2<K, U, T> function,
-      Combiner<U, T> combiner) {
+  final boolean reverse,
+  final FilterFunction2<K, U, T> function,
+  Combiner<U, T> combiner) {
     final Set<K> set = new HashSet<>(list.map(
         function::getKey));
     return filter(
         t -> reverse == set.contains(function.filterBy(t)))
-        .join(list, combiner);
+    .join(list, combiner);
   }
 
   public <K, MERGE> List<Pair<T, K>> mergeWith(List<K> list, final FilterFunction2<MERGE, K, T> function) {
@@ -245,25 +246,25 @@ public class List<T> extends ArrayList<T> {
         })
     );*/
     for (T t : this)
-      for (K k : list)
-        if (function.getKey(k).equals(function.filterBy(t))) list1.add(new Pair<>(t, k));
+    for (K k : list)
+    if (function.getKey(k).equals(function.filterBy(t))) list1.add(new Pair<>(t, k));
     return list1;
   }
 
   public boolean anyMatch(EachFunction<T> function) {
     boolean match = false;
     for (T t : this)
-      if (function.filter(t)) {
-        match = true;
-        break;
-      }
+    if (function.filter(t)) {
+      match = true;
+      break;
+    }
     return match;
   }
 
   public boolean allMatch(EachFunction<T> function) {
     boolean match = true;
     for (T t : this)
-      match = match && function.filter(t);
+    match = match && function.filter(t);
     return match;
   }
 
@@ -276,13 +277,13 @@ public class List<T> extends ArrayList<T> {
   public <U> List<T> reduce(List<U> list, JoinFunction<T, U> function) {
     List<T> ts = new List<>();
     for (int i = 0; i < this.size(); i++) {
-      T t = this.get(i);
-      for (int j = 0; j < list.size(); j++)
-        if (!function.joinBy(t, list.get(j))) {
-          ts.add(t);
-          break;
-        }
+    T t = this.get(i);
+    for (int j = 0; j < list.size(); j++)
+    if (!function.joinBy(t, list.get(j))) {
+      ts.add(t);
+      break;
     }
+  }
     return ts;
   }
 

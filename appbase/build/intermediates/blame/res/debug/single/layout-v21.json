@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/g33k/AndroidStudioProjects/SamplePromiseApp/appbase/build/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/g33k/.gradle/caches/transforms-2/files-2.1/e7ad2032a6d384553cb8feb8e73e9d86/res/layout-v21/notification_template_icon_group.xml"
+    }
+]
