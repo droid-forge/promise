@@ -1,1 +1,1 @@
-include ':promisecommons', ':commonsapp'
+include ':promisecommons', ':commonsapp', 'dbapp', 'modelapp', 'netapp', 'promisedb', 'promisemodel', 'promisenet', 'promiseui', 'uiapp'
