@@ -13,7 +13,7 @@
  *
  */
 
-package promise.promisemodel.utils;
+package promisemodel.utils;
 
 import android.content.Context;
 import android.os.Environment;

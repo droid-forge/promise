@@ -1,4 +1,4 @@
-package promise.promisemodel.repo
+package promisemodel.repo
 
 import promise.model.List
 import promise.model.S

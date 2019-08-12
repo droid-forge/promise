@@ -1,4 +1,4 @@
-package promise.promisemodel.store
+package promisemodel.store
 
 import android.os.Build
 import org.json.JSONArray
@@ -8,8 +8,8 @@ import promise.model.List
 import promise.model.Result
 import promise.model.function.EachFunction
 import promise.pref.Preferences
-import promise.promisemodel.Extras
-import promise.promisemodel.Store
+import promisemodel.Extras
+import promisemodel.Store
 import promise.util.DoubleConverter
 
 /**

@@ -1,4 +1,4 @@
-package promise.promisemodel;
+package promisemodel;
 
 
 import androidx.annotation.Nullable;

@@ -1,4 +1,4 @@
-package promise.promisemodel.store;
+package promisemodel.store;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +10,7 @@ import kotlin.Pair;
 import promise.model.List;
 import promise.model.S;
 import promise.pref.Preferences;
-import promise.promisemodel.repo.SyncIDataStore;
+import promisemodel.repo.SyncIDataStore;
 import promise.util.DoubleConverter;
 
 /**

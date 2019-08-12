@@ -13,7 +13,7 @@
  *
  */
 
-package promise.promisemodel.utils;
+package promisemodel.utils;
 
 public class Base64 {
 
