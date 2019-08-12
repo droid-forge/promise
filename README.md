@@ -1,17 +1,6 @@
-# Android Promise
-- [v1.0.8]
-Easily interacting with sqlite database, make http requests, store shared preferences, log to console, list with recyclerview, multithreading
-
-- Please read also [issues](https://github.com/dev4vin/android-promise/issues) 
-### Features
-* Simple creation, altering of database tables
-* Easy making http requests, adding interceptors, custom headers, file uploads, file downloads
-* Recycler view adapter with custom layout managers, record swiping, record searching
-* Multithreading with RXAndroid
-
-### Other _experimental_ features
-* Geo location, geo fencing, activity recognition.
-* Websockets and data streaming
+# Android Promise Commons
+- [v1.0.0]
+The base promise library
 
 # Setup
 - 
@@ -24,9 +13,16 @@ allprojects {
     }
 }
 
+android {
+    compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+}
 
 dependencies {
      implementation 'com.github.dev4vin:android-promise:1.0.8'
+     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
 }
 ```
 
