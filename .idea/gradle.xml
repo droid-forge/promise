@@ -8,16 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/commonsapp" />
             <option value="$PROJECT_DIR$/dbapp" />
-            <option value="$PROJECT_DIR$/modelapp" />
-            <option value="$PROJECT_DIR$/netapp" />
-            <option value="$PROJECT_DIR$/promisecommons" />
             <option value="$PROJECT_DIR$/promisedb" />
-            <option value="$PROJECT_DIR$/promisemodel" />
-            <option value="$PROJECT_DIR$/promisenet" />
-            <option value="$PROJECT_DIR$/promiseui" />
-            <option value="$PROJECT_DIR$/uiapp" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -6,28 +6,8 @@ import android.view.View
 import promise.dbapp.R
 import promise.model.List
 import promise.model.SModel
-import promise.promiseui.model.Viewable
 
-class ComplexModel constructor() : SModel(), Parcelable, Viewable {
-  var index: Int = 0
-
-  override fun layout(): Int = R.layout.complex_layout
-
-  override fun init(view: View?) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  override fun bind(view: View?) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  override fun index(index: Int) {
-   this.index = index
-  }
-
-  override fun index(): Int {
-    return this.index
-  }
+class ComplexModel constructor() : SModel(), Parcelable {
 
   var intVariable: Int? = null
 
