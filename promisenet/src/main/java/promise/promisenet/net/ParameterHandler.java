@@ -25,7 +25,8 @@ import okhttp3.Headers;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-import static promise.data.net.net.Utils.checkNotNull;
+import static promise.promisenet.net.Utils.checkNotNull;
+
 
 abstract class ParameterHandler<T> {
   abstract void apply(RequestBuilder builder, @Nullable T value) throws IOException;

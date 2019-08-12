@@ -27,10 +27,10 @@ import java.io.Serializable;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import promise.model.List;
-import promise.model.Searchable;
 import promise.model.function.MapFunction;
+import promise.promiseui.AdapterDivider;
+import promise.promiseui.model.Searchable;
 import promise.util.Conditions;
-import promise.view.AdapterDivider;
 
 public class SingleAdapter<T extends Searchable> {
 

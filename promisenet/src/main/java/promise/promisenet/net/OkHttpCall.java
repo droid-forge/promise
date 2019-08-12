@@ -27,8 +27,9 @@ import okio.BufferedSource;
 import okio.ForwardingSource;
 import okio.Okio;
 
-import static promise.data.net.net.Utils.checkNotNull;
-import static promise.data.net.net.Utils.throwIfFatal;
+import static promise.promisenet.net.Utils.checkNotNull;
+import static promise.promisenet.net.Utils.throwIfFatal;
+
 
 /*import javax.annotation.concurrent.GuardedBy;*/
 

@@ -35,28 +35,28 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import promise.data.net.http.Body;
-import promise.data.net.http.DELETE;
-import promise.data.net.http.Field;
-import promise.data.net.http.FieldMap;
-import promise.data.net.http.FormUrlEncoded;
-import promise.data.net.http.GET;
-import promise.data.net.http.HEAD;
-import promise.data.net.http.HTTP;
-import promise.data.net.http.Header;
-import promise.data.net.http.HeaderMap;
-import promise.data.net.http.Multipart;
-import promise.data.net.http.OPTIONS;
-import promise.data.net.http.PATCH;
-import promise.data.net.http.POST;
-import promise.data.net.http.PUT;
-import promise.data.net.http.Part;
-import promise.data.net.http.PartMap;
-import promise.data.net.http.Path;
-import promise.data.net.http.Query;
-import promise.data.net.http.QueryMap;
-import promise.data.net.http.QueryName;
-import promise.data.net.http.Url;
+import promise.promisenet.http.Body;
+import promise.promisenet.http.DELETE;
+import promise.promisenet.http.Field;
+import promise.promisenet.http.FieldMap;
+import promise.promisenet.http.FormUrlEncoded;
+import promise.promisenet.http.GET;
+import promise.promisenet.http.HEAD;
+import promise.promisenet.http.HTTP;
+import promise.promisenet.http.Header;
+import promise.promisenet.http.HeaderMap;
+import promise.promisenet.http.Multipart;
+import promise.promisenet.http.OPTIONS;
+import promise.promisenet.http.PATCH;
+import promise.promisenet.http.POST;
+import promise.promisenet.http.PUT;
+import promise.promisenet.http.Part;
+import promise.promisenet.http.PartMap;
+import promise.promisenet.http.Path;
+import promise.promisenet.http.Query;
+import promise.promisenet.http.QueryMap;
+import promise.promisenet.http.QueryName;
+import promise.promisenet.http.Url;
 
 /** Adapts an invocation of an interface method into an HTTP call. */
 final class ServiceMethod<R, T> {
@@ -261,8 +261,8 @@ final class ServiceMethod<R, T> {
       } else if (annotation instanceof HTTP) {
         HTTP http = (HTTP) annotation;
         parseHttpMethodAndPath(http.method(), http.path(), http.hasBody());
-      } else if (annotation instanceof promise.data.net.http.Headers) {
-        String[] headersToParse = ((promise.data.net.http.Headers) annotation).value();
+      } else if (annotation instanceof promise.promisenet.http.Headers) {
+        String[] headersToParse = ((promise.promisenet.http.Headers) annotation).value();
         if (headersToParse.length == 0) {
           throw methodError("@Headers annotation is empty.");
         }

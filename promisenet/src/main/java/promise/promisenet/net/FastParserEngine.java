@@ -51,7 +51,7 @@ import promise.promisenet.http.Query;
 import promise.promisenet.http.Url;
 
 import static java.util.Collections.unmodifiableList;
-import static promise.data.net.net.Utils.checkNotNull;
+import static promise.promisenet.net.Utils.checkNotNull;
 
 /**
  * FastParserEngine adapts a Java interface to HTTP calls by using annotations on the declared methods to

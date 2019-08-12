@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import promise.promisenet.utils.Converter;
+
 /**
  * Created on 2/14/18 by yoctopus.
  */

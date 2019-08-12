@@ -20,9 +20,6 @@ import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import promise.cac.anim.Anim;
-import promise.cac.anim.AnimDuration;
-import promise.cac.anim.Animator;
 
 /**
  * Created by octopus on 10/1/16.

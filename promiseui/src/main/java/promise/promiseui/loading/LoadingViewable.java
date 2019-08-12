@@ -4,8 +4,8 @@ import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import promise.R;
-import promise.model.Viewable;
+import promise.promiseui.R;
+import promise.promiseui.model.Viewable;
 
 public class LoadingViewable implements Viewable {
   protected ProgressBar progressBarLoading;

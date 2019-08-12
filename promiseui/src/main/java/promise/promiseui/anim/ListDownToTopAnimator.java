@@ -17,8 +17,6 @@ package promise.promiseui.anim;
 
 import android.view.View;
 
-import promise.cac.anim.Anim;
-import promise.cac.anim.AnimDuration;
 
 /**
  * Created by octopus on 10/1/16.

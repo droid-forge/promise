@@ -27,7 +27,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import promise.model.Searchable;
+import promise.promiseui.model.Searchable;
 
 public class Holder<T extends Searchable> extends AbstractFlexibleItem<Holder<T>.MyHolder> implements IFilterable {
 

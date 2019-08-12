@@ -28,6 +28,7 @@ import android.os.Vibrator;
 import androidx.annotation.DrawableRes;
 
 import promise.data.log.LogUtil;
+import promise.promiseui.utils.ApiHelper;
 
 public class Notification {
   private String TAG = LogUtil.makeTag(Notification.class);

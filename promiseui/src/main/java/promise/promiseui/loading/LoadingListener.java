@@ -5,7 +5,8 @@ import android.view.View;
 
 import java.util.List;
 
-import promise.model.Viewable;
+import promise.promiseui.model.Viewable;
+
 
 public interface LoadingListener {
 

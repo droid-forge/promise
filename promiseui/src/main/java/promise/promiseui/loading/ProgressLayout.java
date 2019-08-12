@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import promise.R;
-import promise.model.Viewable;
+import promise.promiseui.R;
+import promise.promiseui.model.Viewable;
 
 public class ProgressLayout extends FrameLayout implements LoadingListener {
 

@@ -21,7 +21,8 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 
-import static promise.data.net.net.Utils.checkNotNull;
+import static promise.promisenet.net.Utils.checkNotNull;
+
 
 /** An HTTP response. */
 public final class Response<T> {

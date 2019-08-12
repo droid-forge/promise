@@ -14,7 +14,8 @@
  */
 package promise.promisenet.net;
 
-import static promise.data.net.net.Utils.checkNotNull;
+
+import static promise.promisenet.net.Utils.checkNotNull;
 
 /** Exception for an unexpected, non-2xx HTTP response. */
 public class HttpException extends RuntimeException {

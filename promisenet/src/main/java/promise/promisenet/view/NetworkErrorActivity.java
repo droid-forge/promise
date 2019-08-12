@@ -26,6 +26,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import promise.promisenet.R;
+import promise.promisenet.utils.NetworkUtil;
 
 public class NetworkErrorActivity extends AppCompatActivity {
 

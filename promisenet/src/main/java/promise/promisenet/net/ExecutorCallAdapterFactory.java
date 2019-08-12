@@ -21,7 +21,8 @@ import java.util.concurrent.Executor;
 
 import okhttp3.Request;
 
-import static promise.data.net.net.Utils.checkNotNull;
+import static promise.promisenet.net.Utils.checkNotNull;
+
 
 final class ExecutorCallAdapterFactory extends CallAdapter.Factory {
   final Executor callbackExecutor;

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import promise.promisenet.utils.Converter;
 import promise.util.DoubleConverter;
 
 
@@ -39,7 +40,7 @@ public class JsonAdapter<T> extends CallAdapter<T, JSONObject, Map<String, Objec
             @Override
             public Map<String, Object> serialize(T t) {
                 try {
-                    return promise.util.Converter.toMap(new JSONObject(new Gson().toJson(t)));
+                    return Converter.toMap(new JSONObject(new Gson().toJson(t)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

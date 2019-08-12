@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import promise.data.net.http.Streaming;
+import promise.promisenet.http.Streaming;
 
 final class CommonConverters extends Converter.Factory {
   @Override

@@ -57,10 +57,15 @@ dependencies {
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar'
     implementation "com.android.support:exifinterface:$project.ext.supportLibVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin_version"
-    compileOnly "com.android.support:recyclerview-v7:$project.ext.supportLibVersion"
-    compileOnly 'androidx.appcompat:appcompat:1.0.2'
-    compileOnly 'io.reactivex.rxjava2:rxjava:2.2.7'
-    compileOnly project(path: ':promisecommons')
+    implementation "com.android.support:recyclerview-v7:$project.ext.supportLibVersion"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation project(path: ':promisecommons')
+    implementation 'eu.davidea:flexible-adapter:5.1.0'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
+    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
+    // From 1.0.0-b3, library is compiled with data binding v2
+    implementation 'eu.davidea:flexible-adapter-databinding:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
