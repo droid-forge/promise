@@ -40,13 +40,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin_version"
     compileOnly 'androidx.appcompat:appcompat:1.0.2'
-    compileOnly project(path: ':promisecommons')
+    compileOnly 'com.github.android-promise:promise:commons-1.0-beta'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -11,5 +11,14 @@
 .externalNativeBuild
 /app
 /appbase
-
+/commonsapp
+/dbapp
+/netapp
+/promise
+/promisecommons
+/promisedb
+/promisenet
+/promisepref
+/promiseui
+/uiapp
 
