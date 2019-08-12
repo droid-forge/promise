@@ -198,7 +198,7 @@ public class Promise {
                         observer.onError(e);
                       }
                     }),
-            List.Companion::fromArray)
+            List::fromArray)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
             .subscribe(

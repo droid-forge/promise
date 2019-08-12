@@ -38,40 +38,112 @@ import promise.promisedb.query.projection.Projection;
 import promise.util.Conditions;
 import promise.util.DoubleConverter;
 
+/**
+ * This class models database queries
+ * Each extending class must implement {@link DoubleConverter#serialize(Object)} method to
+ * convert the {@link SModel} instance to a content value see {@link ContentValues}
+ * and {@link DoubleConverter#deserialize(Object)}
+ * method to deserialize a {@link Cursor} back to the instance
+ *
+ * @param <T> {@link SModel} instance to be persisted by the model
+ */
 public abstract class Model<T extends SModel>
     implements Table<T, SQLiteDatabase>, DoubleConverter<T, Cursor, ContentValues> {
+  /**
+   * The create prefix in a prefix for queries that create a table structure
+   */
   private static final String CREATE_PREFIX = "CREATE TABLE IF NOT EXISTS ";
+  /**
+   * The drop prefix is a prefix for queries that destroy a table in the database
+   */
   private static final String DROP_PREFIX = "TRUNCATE TABLE IF EXISTS ";
-  private static final String SELECT_PREFIX = "SELECT * FROM ";
+  /**
+   * The alter prefix is used to alter the structure of a column when making upgrades
+   */
+  private String ALTER_COMMAND = "ALTER TABLE";
+  /**
+   * the name of the primary column
+   */
+  private static final String ID_COLUMN_NAME = "id";
+  /**
+   * The name of the timestamp columns
+   */
+  private static final String CREATED_AT_COLUMN_NAME = "CREATED_AT";
+  private static final String UPDATED_AT_COLUMN_NAME = "UPDATED_AT";
+  /**
+   * Each table must have a primary column as well al timestamp columns
+   * see {@link Column} for more info
+   */
   public static Column<Integer> id, createdAt, updatedAt;
 
+  /*
+   * the primary column of the database if named id and the same name in all tables
+   */
   static {
-    id = new Column<>("id", Column.Type.INTEGER.PRIMARY_KEY_AUTOINCREMENT());
+    id = new Column<>(ID_COLUMN_NAME, Column.Type.INTEGER.PRIMARY_KEY_AUTOINCREMENT());
+    createdAt = new Column<>(CREATED_AT_COLUMN_NAME, Column.Type.INTEGER.NULLABLE());
+    updatedAt = new Column<>(UPDATED_AT_COLUMN_NAME, Column.Type.INTEGER.NULLABLE());
   }
 
-  private String ALTER_COMMAND = "ALTER TABLE";
+  /**
+   * the name of the table to be created
+   * see {@link Table#getName()}
+   */
   private String name = "`" + getName() + "`";
+  /**
+   * The specific tag for logging in this table
+   */
   private String TAG = LogUtil.makeTag(Model.class).concat(name);
+  /**
+   * Temporary data holder for holding data during dangerous table structure changes
+   */
   private SList<T> backup;
 
+  /**
+   * gets all the columns for this model from the child class for creation purposes
+   * see {@link #onCreate(SQLiteDatabase)}
+   *
+   * @return list of columns
+   */
   public abstract List<Column> getColumns();
 
+  /**
+   * optional to get the number of all the columns in this table
+   * noteby the added 3 is for id, and timestamp columns
+   *
+   * @return the number of the columns in this table
+   */
   public int getNumberOfColumns() {
     return getColumns().size() + 3;
   }
 
+  /**
+   * this handler created a table in the given database instance passed
+   * uses {@link Column#getDescription()} to get the column info
+   * adds the id and timestamp in the table
+   *
+   * @param database writable sql database
+   * @return true if table is created
+   * @throws ModelError if theirs a query error
+   */
   @Override
   public boolean onCreate(SQLiteDatabase database) throws ModelError {
     String sql = CREATE_PREFIX;
+    /*
+     * add the opening braces after select prefix, see {@link Model#CREATE_PREFIX}
+     */
     sql = sql.concat(name + "(");
-    List<Column> columns = getColumns();
-    columns = Conditions.checkNotNull(columns);
+    List<Column> columns = Conditions.checkNotNull(getColumns());
+    /*
+     * sorts the column in ascending order, see {@link Column#ascending()} comparator
+     */
     Collections.sort(columns, Column.ascending);
     List<Column> columns1 = new List<>();
+    /*
+     * add the three additional columns to the creation script
+     */
     columns1.add(id);
     columns1.addAll(columns);
-    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
-    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     columns1.add(createdAt);
     columns1.add(updatedAt);
     for (int i = 0; i < columns1.size(); i++) {
@@ -89,18 +161,33 @@ public abstract class Model<T extends SModel>
     return true;
   }
 
+  /*
+   * upgrades the table from one version to the next
+   * if the table doesn't have the timestamps add them
+   * @param database writable sql database
+   * @param v1 previous version
+   * @param v2 next version
+   * @return
+   * @throws ModelError
+   */
   @Override
   public boolean onUpgrade(SQLiteDatabase database, int v1, int v2) throws ModelError {
-    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
-    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     QueryBuilder builder = new QueryBuilder().from(this);
     Cursor c = database.rawQuery(builder.build(), builder.buildParameters());
-    Set<String> set = new HashSet<>(List.Companion.fromArray(c.getColumnNames()));
+    Set<String> set = new HashSet<>(List.fromArray(c.getColumnNames()));
     if (!set.contains(createdAt.getName())) addColumns(database, createdAt);
     if (!set.contains(updatedAt.getName())) addColumns(database, updatedAt);
     return false;
   }
 
+  /**
+   * adds column to the database
+   *
+   * @param database writable sql database
+   * @param columns  fields to be added must be nullable entry types
+   * @return true if the table is upgraded
+   * @throws ModelError if theirs an sql error
+   */
   public boolean addColumns(SQLiteDatabase database, Column... columns) throws ModelError {
     for (Column column : columns) {
       String alterSql = ALTER_COMMAND + " `" + getName() + "` " + "ADD " + column.toString() + ";";
@@ -114,6 +201,14 @@ public abstract class Model<T extends SModel>
     return true;
   }
 
+  /**
+   * drops column from the database
+   *
+   * @param database writable sql database
+   * @param columns  fields to be dropped
+   * @return true if fields are dropped successfully
+   * @throws ModelError if theirs an sql error
+   */
   public boolean dropColumns(SQLiteDatabase database, Column... columns) throws ModelError {
     for (Column column : columns) {
       String alterSql =
@@ -127,43 +222,40 @@ public abstract class Model<T extends SModel>
     return true;
   }
 
+  /**
+   * more verbose read operation against the database
+   *
+   * @param database readable sql database
+   * @return an extras instance for more concise reads
+   */
   @Override
   public Extras<T> read(final SQLiteDatabase database) {
     return new QueryExtras<T>(database) {
       @Override
-      public ContentValues to(T t) {
-        return Model.this.to(t);
+      public ContentValues serialize(T t) {
+        return Model.this.serialize(t);
       }
 
       @Override
-      public T from(Cursor cursor) {
-        return Model.this.from(cursor);
+      public T deserialize(Cursor cursor) {
+        return Model.this.deserialize(cursor);
       }
     };
   }
 
-  @Override
-  public Extras<T> read(SQLiteDatabase database, Column... columns) {
-    return new QueryExtras2<T>(database, columns) {
-      @Override
-      public ContentValues to(T t) {
-        return Model.this.to(t);
-      }
-
-      @Override
-      public T from(Cursor cursor) {
-        return Model.this.from(cursor);
-      }
-    };
-  }
-
+  /**
+   * read all the rows in the database
+   *
+   * @param database readable sql database
+   * @param close    close the connection if this is true
+   * @return a list of records
+   */
   @Override
   public final SList<T> onReadAll(SQLiteDatabase database, boolean close) {
+    QueryBuilder builder = new QueryBuilder().from(Model.this);
     Cursor cursor;
     try {
-      String sql = SELECT_PREFIX + name + ";";
-      LogUtil.d(TAG, sql);
-      cursor = database.rawQuery(sql, null);
+      cursor = database.rawQuery(builder.build(), builder.buildParameters());
       SList<T> ts = new SList<>();
       while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
       cursor.close();
@@ -173,36 +265,29 @@ public abstract class Model<T extends SModel>
       return new SList<>();
     }
   }
-
-  @Override
-  public SList<T> onReadAll(SQLiteDatabase database, Column column) {
-    if (column == null) return onReadAll(database, true);
-    String where = column.getName() + column.getOperand();
-    if (column.value() instanceof String) where = where + "\"" + column.value() + "\"";
-    else where = where + column.value();
-    Cursor cursor = database.query(name, null, where, null, null, null, null);
-    SList<T> ts = new SList<>();
-    while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
-    cursor.close();
-    /*database.close();*/
-    return ts;
-  }
-
+  /**
+   * read the rows following the criteria specified in the column provided
+   * for each of the columns
+   * if {@link Column#value()} is not null, filter with the value
+   * if {@link Column#order()} is not null, order by that column too
+   *
+   * @param database readable sql database
+   * @param columns  the fields to infer where and order by conditions
+   * @return list of records satisfying the criteria
+   */
   @Override
   public SList<T> onReadAll(SQLiteDatabase database, Column[] columns) {
     if (columns == null) return onReadAll(database, true);
-    String[] args = new String[columns.length];
-    String selection = "";
-    for (int i = 0; i < args.length; i++) {
-      Column column = columns[i];
-      String where = column.getName() + column.getOperand();
-      selection = selection.concat(where);
-      if (column.value() instanceof String) args[i] = "\"" + column.value() + "\"";
-      else args[i] = column.value().toString();
-      selection = selection.concat(args[i]);
-      if (i < args.length - 1) selection = selection.concat(" AND ");
+    QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
+    for (Column column : columns) {
+      if (column.value() != null) builder.whereAnd(Criteria.equals(column, column.value()));
+      if (column.order() != null) {
+        if (column.order().equals(Column.DESCENDING)) {
+          builder.orderByDescending(column);
+        } else builder.orderByAscending(column);
+      }
     }
-    Cursor cursor = database.query(name, null, selection, null, null, null, null);
+    Cursor cursor = database.rawQuery(builder.build(), builder.buildParameters());
     SList<T> ts = new SList<>();
     while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
     cursor.close();
@@ -210,33 +295,72 @@ public abstract class Model<T extends SModel>
     return ts;
   }
 
+  /**
+   * update a row in the table
+   *
+   * @param t        instance to update
+   * @param database writable sql database
+   * @param column   field with where condition to update
+   * @return true if instance is updated
+   */
   @Override
-  public final boolean onUpdate(T t, SQLiteDatabase database, Column column) {
-    String where = null;
-    if (column != null) where = column.getName() + column.getOperand() + column.value();
-    ContentValues values = to(t);
-    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
+  public final boolean onUpdate(T t, SQLiteDatabase database, Column column) throws ModelError {
+    String where;
+    if (column != null && column.getOperand() != null && column.value() != null)
+      where = column.getName() + column.getOperand() + column.value();
+    else throw new ModelError("Cant update the record, missing updating information");
+    ContentValues values = serialize(t);
     values.put(updatedAt.getName(), System.currentTimeMillis());
     return database.update(name, values, where, null) >= 0;
   }
 
+  /**
+   * updated an instance with an id value more than zero
+   *
+   * @param t        the instance to update
+   * @param database writable sql database
+   * @return true if updated
+   */
   @Override
   public boolean onUpdate(T t, SQLiteDatabase database) {
-    return id != null && onUpdate(t, database, id.with(t.id()));
+    try {
+      return id != null && onUpdate(t, database, id.with(t.id()));
+    } catch (ModelError modelError) {
+      return false;
+    }
   }
 
+  /**
+   * deletes multiple rows from the table where the column matches all the
+   * given values in list
+   *
+   * @param database writable sql database
+   * @param column   the matching column
+   * @param list     values to match with
+   * @param <C>      the type of matching, must not be derived data type
+   * @return true if all rows are deleted
+   */
   @Override
   public final <C> boolean onDelete(SQLiteDatabase database, Column<C> column, List<C> list) {
-    boolean deleted = true;
-    String where;
+    boolean deleted;
+    String where = "";
     for (int i = 0, listSize = list.size(); i < listSize; i++) {
       C c = list.get(i);
-      where = column.getName() + column.getOperand() + c;
-      deleted = database.delete(name, where, null) >= 0;
+      if (i == listSize - 1) {
+        where = column.getName() + " " + column.getOperand() + " " + c;
+      } else where = column.getName() + " " + column.getOperand() + " " + c + " OR ";
+
     }
+    deleted = database.delete(name, where, null) >= 0;
     return deleted;
   }
 
+  /**
+   * delete a row in the table matching condition in the column
+   * @param database writable sql database
+   * @param column field to match
+   * @return true if row is deleted
+   */
   @Override
   public final boolean onDelete(SQLiteDatabase database, Column column) {
     if (column == null) return false;
@@ -244,29 +368,51 @@ public abstract class Model<T extends SModel>
     return database.delete(name, where, null) >= 0;
   }
 
+  /**
+   * delete an instance from the table
+   * @param t instance to be removed must have an id more than zero
+   * @param database writable sql database
+   * @return true if item is deleted
+   */
   @Override
   public boolean onDelete(T t, SQLiteDatabase database) {
     return onDelete(database, id.with(t.id()));
   }
 
+  /**
+   * delete all rows in the table
+   * @param database writable sql database
+   * @return true if all rows are deleted
+   */
   @Override
   public final boolean onDelete(SQLiteDatabase database) {
     return !TextUtils.isEmpty(name) && database.delete(name, null, null) >= 0;
   }
 
+  /**
+   * save an instance to the database
+   * serialize it to content values
+   * @param t instance to be saved
+   * @param database writable sql database
+   * @return id of the row affected
+   */
   @Override
   public final long onSave(T t, SQLiteDatabase database) {
     if (t.id() != 0 && onUpdate(t, database)) return t.id();
-    ContentValues values = to(t);
-    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
-    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
+    ContentValues values = serialize(t);
     values.put(createdAt.getName(), System.currentTimeMillis());
     values.put(updatedAt.getName(), System.currentTimeMillis());
     return database.insert(name, null, values);
   }
 
+  /**
+   * save a list of items in the database
+   * @param list items to be saved
+   * @param database writable sql database
+   * @return true if all the items are saved
+   */
   @Override
-  public final boolean onSave(SList<T> list, SQLiteDatabase database, boolean close) {
+  public final boolean onSave(SList<T> list, SQLiteDatabase database) {
     boolean saved = true;
     int i = 0, listSize = list.size();
     while (i < listSize) {
@@ -278,6 +424,12 @@ public abstract class Model<T extends SModel>
     return saved;
   }
 
+  /**
+   * drop this table from the database
+   * @param database writable sql database
+   * @return true if the table is dropped
+   * @throws ModelError if theirs an sql error
+   */
   @Override
   public final boolean onDrop(SQLiteDatabase database) throws ModelError {
     String sql = DROP_PREFIX + name + ";";
@@ -289,6 +441,12 @@ public abstract class Model<T extends SModel>
     return true;
   }
 
+  /**
+   * get the last id of the last row in the table
+   * uses projection to count the id column as num
+   * @param database readable sql database
+   * @return the id
+   */
   @Override
   public final int onGetLastId(SQLiteDatabase database) {
     if (id == null) return 0;
@@ -297,29 +455,48 @@ public abstract class Model<T extends SModel>
     return cursor.getInt(Model.id.getIndex());
   }
 
+  /**
+   * backup all the items in the table during dangerous upgrdes
+   * @param database readable database instance
+   */
   @Override
   public void backup(SQLiteDatabase database) {
     backup = onReadAll(database, false);
   }
 
+  /**
+   * save back the backed items to the database
+   * @param database writable database
+   */
   @Override
   public void restore(SQLiteDatabase database) {
-    if (backup != null && !backup.isEmpty()) onSave(backup, database, false);
+    if (backup != null && !backup.isEmpty()) onSave(backup, database);
   }
 
+  /**
+   * gets a single from the cursor pre populated with id and timestamps
+   * @param cursor the serialized version of the instance
+   * @return instance from the cursor
+   */
   T getWithId(Cursor cursor) {
-    T t = from(cursor);
+    T t = deserialize(cursor);
     t.id(cursor.getInt(id.getIndex()));
-    if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
-    if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
     t.createdAt(cursor.getInt(createdAt.getIndex(cursor)));
     t.updatedAt(cursor.getInt(updatedAt.getIndex(cursor)));
     return t;
   }
 
+  /**
+   * This class contains special queries for reading from the table
+   * see {@link SModel} for encapsulating id and timestamps
+   * see {@link DoubleConverter} for serializing and de-serializing
+   * @param <Q> The type of the items in the table
+   */
   private abstract class QueryExtras<Q extends SModel>
       implements Extras<Q>, DoubleConverter<Q, Cursor, ContentValues> {
-
+    /**
+     * the database instance to read fromm
+     */
     private SQLiteDatabase database;
 
     QueryExtras(SQLiteDatabase database) {
@@ -330,16 +507,23 @@ public abstract class Model<T extends SModel>
       return database;
     }
 
+    /**
+     * get a record pre populated with id and timestamps from each read
+     * @param cursor serialized version of Q
+     * @return Q the de-serialized output of reading the cursor
+     */
     Q getWithId(Cursor cursor) {
-      Q t = from(cursor);
+      Q t = deserialize(cursor);
       t.id(cursor.getInt(id.getIndex()));
-      if (createdAt == null) createdAt = new Column<>("CREATED_AT", Column.Type.INTEGER.NULLABLE());
-      if (updatedAt == null) updatedAt = new Column<>("UPDATED_AT", Column.Type.INTEGER.NULLABLE());
       t.createdAt(cursor.getInt(createdAt.getIndex(cursor)));
       t.updatedAt(cursor.getInt(updatedAt.getIndex(cursor)));
       return t;
     }
 
+    /**
+     * get the first record in the table
+     * @return the first records or null if theirs none in the table
+     */
     @Nullable
     @Override
     public Q first() {
@@ -354,6 +538,10 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * get the last record in the table
+     * @return an item or null if theirs none stored in the table
+     */
     @Nullable
     @Override
     public Q last() {
@@ -368,25 +556,34 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * get all the items in the table
+     * @return the items or an empty list if theirs none
+     */
     @Override
     public SList<Q> all() {
       Cursor cursor;
       try {
         QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
         cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        SList<Q> ts = new SList<>();
+        while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
+        return ts;
       } catch (SQLiteException e) {
         return new SList<>();
       }
-      SList<Q> ts = new SList<>();
-      while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
-      return ts;
     }
 
+    /**
+     * read the top items in the table
+     * @param limit the number of records to read
+     * @return a list of the items
+     */
     @Override
     public SList<Q> limit(int limit) {
       Cursor cursor;
       try {
-        QueryBuilder builder = new QueryBuilder().from(Model.this).take(1);
+        QueryBuilder builder = new QueryBuilder().from(Model.this).take(limit);
         cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
@@ -397,11 +594,17 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * reads the records between the skip and limit in the table
+     * @param skip of set from the top to not read
+     * @param limit items to load after skip
+     * @return a list of records
+     */
     @Override
-    public SList<Q> between(Column<Integer> column, Integer a, Integer b) {
+    public SList<Q> paginate(int skip, int limit) {
       Cursor cursor;
       try {
-        QueryBuilder builder = new QueryBuilder().from(Model.this).whereAnd(Criteria.between(column, a, b));
+        QueryBuilder builder = new QueryBuilder().from(Model.this).take(limit).skip(skip);
         cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
@@ -412,26 +615,66 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * gets all items that match in between the int left and right
+     * @param column column to match between
+     * @param a lower between bound
+     * @param b upper between bound
+     * @return a list of items
+     */
+    @Override
+    public <N extends Number> SList<Q> between(Column<N> column, N a, N b) {
+      Cursor cursor;
+      try {
+        QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll().whereAnd(Criteria.between(column, a, b));
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        SList<Q> ts = new SList<>();
+        while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
+        return ts;
+      } catch (SQLiteException e) {
+        LogUtil.e(TAG, e);
+        return new SList<>();
+      }
+    }
+
+    /**
+     * gets all items matching the multiple columns
+     * @param column fields to match their values
+     * @return a list of items
+     */
     @Override
     public SList<Q> where(Column[] column) {
-      return null;
-    }
-
-    @Override
-    public SList<Q> notIn(Column<Integer> column, Integer a, Integer b) {
       Cursor cursor;
       try {
-        String sql =
-            SELECT_PREFIX
-                + name
-                + " WHERE "
-                + column.getName()
-                + " NOT BETWEEN "
-                + a
-                + " AND "
-                + b
-                + ";";
-        cursor = database.rawQuery(sql, null);
+        QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
+        for (Column column1 : column)
+          if (column1.value() != null) builder.whereAnd(Criteria.equals(column1, column1.value()));
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        SList<Q> ts = new SList<>();
+        while (cursor.moveToNext() && !cursor.isClosed()) ts.add(getWithId(cursor));
+        return ts;
+      } catch (SQLiteException e) {
+        LogUtil.e(TAG, e);
+        return new SList<>();
+      }
+    }
+
+    /**
+     * gets all the items matching not in any of the columns
+     * @param column field to match
+     * @param bounds not in bounds
+     * @return a list of items
+     */
+    @SafeVarargs
+    @Override
+    public final <N extends Number> SList<Q> notIn(Column<N> column, N... bounds) {
+      Cursor cursor;
+      Object[] items = new Object[bounds.length];
+      System.arraycopy(bounds, 0, items, 0, bounds.length);
+      QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll()
+          .whereAnd(Criteria.notIn(column, items));
+      try {
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
           Q t = getWithId(cursor);
@@ -446,18 +689,47 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * get all the rows where the column is like the columns values
+     * @param column the fields to compute like from
+     * @return a list of columns
+     */
     @Override
     public SList<Q> like(Column[] column) {
-      return null;
+      Cursor cursor;
+      QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
+      for (Column column1 : column)
+        builder.whereAnd(Criteria.contains(column1, String.valueOf(column1.value())));
+      try {
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
+        SList<Q> ts = new SList<>();
+        while (cursor.moveToNext() && !cursor.isClosed()) {
+          Q t = getWithId(cursor);
+          ts.add(t);
+        }
+        cursor.close();
+        /*database.close();*/
+        return ts;
+      } catch (SQLiteException e) {
+        LogUtil.e(TAG, e);
+        return new SList<>();
+      }
     }
 
+    /**
+     * get all the rows in the oder specified by the column
+     * @param column field to order by
+     * @return a list of ordered items
+     */
     @Override
     public SList<Q> orderBy(Column column) {
       Cursor cursor;
+      QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll();
+      if (column.order().equals(Column.DESCENDING)) {
+        builder.orderByDescending(column);
+      } else builder.orderByAscending(column);
       try {
-        String sql =
-            SELECT_PREFIX + name + " ORDER BY " + column.getName() + " " + column.order() + ";";
-        cursor = database.rawQuery(sql, null);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
           Q t = getWithId(cursor);
@@ -472,13 +744,17 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * gets all the items grouped by the column
+     * @param column field to group by
+     * @return a list of grouped items
+     */
     @Override
     public SList<Q> groupBy(Column column) {
       Cursor cursor;
+      QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll().groupBy(column);
       try {
-        String sql =
-            SELECT_PREFIX + name + " GROUP BY " + column.getName() + " " + column.order() + ";";
-        cursor = database.rawQuery(sql, null);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
           Q t = getWithId(cursor);
@@ -493,23 +769,21 @@ public abstract class Model<T extends SModel>
       }
     }
 
+    /**
+     * gets all the items grouped and ordered by the two columns
+     * @param column group by field
+     * @param column1 order by fields
+     * @return a list of items
+     */
     @Override
     public SList<Q> groupAndOrderBy(Column column, Column column1) {
       Cursor cursor;
+      QueryBuilder builder = new QueryBuilder().from(Model.this).takeAll().groupBy(column);
+      if (column1.order().equals(Column.DESCENDING)) {
+        builder.orderByDescending(column1);
+      } else builder.orderByAscending(column1);
       try {
-        String sql =
-            SELECT_PREFIX
-                + name
-                + " GROUP BY "
-                + column.getName()
-                + " "
-                + column.order()
-                + " ORDER BY "
-                + column.getName()
-                + " "
-                + column.order()
-                + ";";
-        cursor = database.rawQuery(sql, null);
+        cursor = database.rawQuery(builder.build(), builder.buildParameters());
         SList<Q> ts = new SList<>();
         while (cursor.moveToNext() && !cursor.isClosed()) {
           Q t = getWithId(cursor);
@@ -522,96 +796,6 @@ public abstract class Model<T extends SModel>
         LogUtil.e(TAG, e);
         return new SList<>();
       }
-    }
-  }
-
-  private abstract class QueryExtras2<U extends SModel> extends QueryExtras<U> {
-    private Column[] columns;
-
-    QueryExtras2(SQLiteDatabase database, Column[] columns) {
-      super(database);
-      this.columns = columns;
-    }
-
-    @Nullable
-    @Override
-    public U first() {
-      SList<U> list = all();
-      if (!list.isEmpty()) return list.get(0);
-      return null;
-    }
-
-    @Nullable
-    @Override
-    public U last() {
-      SList<U> list = all();
-      if (!list.isEmpty()) return list.get(list.size() - 1);
-      return null;
-    }
-
-    @Override
-    public SList<U> all() {
-      if (columns == null || columns.length == 0) return super.all();
-      String[] args = new String[columns.length];
-      String selection = "";
-      for (int i = 0; i < args.length; i++) {
-        Column column = columns[i];
-        String where = column.getName() + column.getOperand();
-        selection = selection.concat(where);
-        if (column.value() instanceof String) args[i] = "\"" + column.value() + "\"";
-        else args[i] = column.value().toString();
-        selection = selection.concat(args[i]);
-        if (i < args.length - 1) selection = selection.concat(" AND ");
-      }
-      Cursor cursor = database().query(name, null, selection, null, null, null, null);
-      SList<U> ts = new SList<>();
-      while (cursor.moveToNext() && !cursor.isClosed()) {
-        U t = getWithId(cursor);
-        ts.add(t);
-      }
-      cursor.close();
-      /*database().close();*/
-      return ts;
-    }
-
-    @Override
-    public SList<U> limit(int limit) {
-      return null;
-    }
-
-    @Override
-    public SList<U> between(Column<Integer> column, Integer a, Integer b) {
-      return super.between(column, a, b);
-    }
-
-    @Override
-    public SList<U> where(Column[] column) {
-      return null;
-    }
-
-    @Override
-    public SList<U> notIn(Column<Integer> column, Integer a, Integer b) {
-      return super.notIn(column, a, b);
-    }
-
-    @Override
-    public SList<U> like(Column[] column) {
-      return null;
-    }
-
-    @Override
-    public SList<U> orderBy(Column column) {
-      return null;
-    }
-
-    @Override
-    public SList<U> groupBy(Column column) {
-      return null;
-    }
-
-    @Override
-    public SList<U> groupAndOrderBy(Column column, Column column1) {
-      return null;
     }
   }
 }

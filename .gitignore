@@ -9,3 +9,16 @@
 /build
 /captures
 .externalNativeBuild
+app
+appbase
+dbapp
+modelapp
+netapp
+modelapp
+promise
+promisedb
+promisemodel
+promisenet
+promiseui
+uiapp
+

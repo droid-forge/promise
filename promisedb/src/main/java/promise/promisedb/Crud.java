@@ -35,8 +35,6 @@ interface Crud<X> {
 
     <T extends S> SList<T> readAll(Table<T, X> table, Column[] columns);
 
-    <T extends S> Table.Extras<T> read(Table<T, X> table, Column... columns);
-
     boolean delete(Table<?, X> table, Column column);
 
     <T extends S> boolean delete(Table<T, X> table, T t);

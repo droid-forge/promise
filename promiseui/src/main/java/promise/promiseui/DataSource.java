@@ -15,11 +15,25 @@
 
 package promise.promiseui;
 
-/**
- * Created on 4/12/18 by yoctopus.
- */
+import promise.model.List;
+import promise.model.Result;
+import promise.promiseui.model.Viewable;
 
+/**
+ *
+ * @param <T>
+ */
 public interface DataSource<T extends Viewable> {
-    void load(ResponseCallBack<List<T>, ?> response);
-    void load(ResponseCallBack<List<T>, ?> response, int index);
+    /**
+     *
+     * @param response
+     */
+    void load(Result<List<T>, ?> response);
+
+    /**
+     *
+     * @param response
+     * @param index
+     */
+    void load(Result<List<T>, ?> response, int index);
 }

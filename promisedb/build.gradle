@@ -30,7 +30,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(path: ':promisecommons')
+    compileOnly 'io.reactivex.rxjava2:rxjava:2.2.7'
+    compileOnly 'androidx.appcompat:appcompat:1.0.2'
+    compileOnly project(path: ':promisecommons')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

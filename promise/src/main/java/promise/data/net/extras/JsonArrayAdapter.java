@@ -21,7 +21,6 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 
 import promise.data.log.LogUtil;
-import promise.data.utils.Converter;
 import promise.model.List;
 
 /**

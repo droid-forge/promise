@@ -10,7 +10,5 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     Promise.init(this).threads(100);
-
   }
-
 }

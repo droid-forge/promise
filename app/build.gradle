@@ -43,7 +43,7 @@ android {
             multiDexEnabled = true
         }
     }
-    buildToolsVersion = '29.0.0 rc3'
+    buildToolsVersion = '29.0.1'
 }
 
 dependencies {
@@ -56,7 +56,11 @@ dependencies {
     testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(path: ':promise')
+    implementation project(path: ':promisecommons')
+    implementation project(path: ':promisedb')
+    implementation project(path: ':promisemodel')
+    implementation project(path: ':promisenet')
+    implementation project(path: ':promiseui')
    /* implementation 'com.google.dagger:dagger:2.23'
     kapt 'com.google.dagger:dagger-compiler:2.23'*/
 }

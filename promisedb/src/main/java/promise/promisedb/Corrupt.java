@@ -15,6 +15,12 @@
 
 package promise.promisedb;
 
+/**
+ *
+ */
 public interface Corrupt {
+    /**
+     *
+     */
     void onCorrupt();
 }

@@ -20,7 +20,10 @@ package promise.promisedb;
  */
 
 public final class ModelError extends Exception {
-    public ModelError(Throwable cause) {
+    ModelError(Throwable cause) {
+        super(cause);
+    }
+    ModelError(String cause) {
         super(cause);
     }
 }

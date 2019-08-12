@@ -21,9 +21,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import promise.data.net.extras.CallAdapter;
-import promise.data.utils.Converter;
-
 /**
  * Created on 6/16/18 by yoctopus.
  */

@@ -15,9 +15,24 @@
 
 package promise.util;
 
+/**
+ * The double converter converts a class instance to and from another form
+ * @param <T> the type instance to be converted
+ * @param <E> type to get the instance from during de-serializing
+ * @param <X> type returned after serializing the instance
+ */
+public interface DoubleConverter<T, E, X> {
+    /*
+     * deserialize back the instance from the serializes form
+     * @param e serialized form
+     * @return back the instance
+     */
+    T deserialize(E e);
 
-import promise.model.function.MapFunction;
-
-public interface DoubleConverter<T, E, X> extends MapFunction<T, E> {
-    X to(T t);
+    /*
+     *  serializes the instance to another form
+     * @param t the instance to be serialized
+     * @return the serialized form of t
+     */
+    X serialize(T t);
 }

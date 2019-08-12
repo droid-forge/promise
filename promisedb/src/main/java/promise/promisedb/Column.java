@@ -23,12 +23,13 @@ public final class Column<T> {
     static Comparator<Column> ascending =
         (o1, o2) -> o1.getIndex() > o2.getIndex() ? 1 :
                 o1.getIndex() < o2.getIndex() ? -1 : 0;
+    public static final String ASCENDING = "ASC", DESCENDING = "DESC";
     public Column<T> descending() {
-        this.order = "DESC";
+        this.order = DESCENDING;
         return this;
     }
     public Column<T> ascending() {
-        this.order = "ASC";
+        this.order = ASCENDING;
         return this;
     }
     private String order;

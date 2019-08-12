@@ -8,14 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/promise" />
+            <option value="$PROJECT_DIR$/commonsapp" />
             <option value="$PROJECT_DIR$/promisecommons" />
-            <option value="$PROJECT_DIR$/promisedb" />
-            <option value="$PROJECT_DIR$/promisemodel" />
-            <option value="$PROJECT_DIR$/promisenet" />
-            <option value="$PROJECT_DIR$/promisepref" />
-            <option value="$PROJECT_DIR$/promiseui" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

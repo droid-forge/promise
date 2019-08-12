@@ -8,7 +8,6 @@ import org.json.JSONObject
 
 import promise.data.Extras
 import promise.data.Store
-import promise.data.utils.Converter
 import promise.model.List
 import promise.model.ResponseCallBack
 import promise.model.function.EachFunction

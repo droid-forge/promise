@@ -18,15 +18,15 @@ package promise.promisedb;
 /**
  * Created by yoctopus on 2/21/17.
  */
-public  final class DBError extends Exception {
-    public DBError() {
+public final class DBError extends Exception {
+    DBError() {
     }
 
-    public DBError(String message) {
+    DBError(String message) {
         super(message);
     }
 
-    public DBError(Throwable cause) {
+    DBError(Throwable cause) {
         super(cause);
     }
 }

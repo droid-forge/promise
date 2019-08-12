@@ -21,36 +21,33 @@ import io.reactivex.Single;
 import promise.model.List;
 import promise.model.S;
 import promise.model.SList;
+import promise.model.SModel;
 
 interface ReactiveCrud<X> {
 
-    <T extends S> ReactiveTable.Extras<T> read(Table<T, X> table) throws ModelError;
+    <T extends SModel> ReactiveTable.Extras<T> read(Table<T, X> table) throws ModelError;
 
-    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table);
+    <T extends SModel> Maybe<SList<T>> readAll(Table<T, X> table);
 
-    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table, Column column);
+    <T extends SModel> Maybe<SList<T>> readAll(Table<T, X> table, Column... column);
 
-    <T extends S> Maybe<Boolean> update(T t, Table<T, X> table, Column column);
+    <T extends SModel> Maybe<Boolean> update(T t, Table<T, X> table, Column column);
 
-    <T extends S> Maybe<Boolean> update(T t, Table<T, X> table);
+    <T extends SModel> Maybe<Boolean> update(T t, Table<T, X> table);
 
-    <T extends S> Maybe<SList<T>> readAll(Table<T, X> table, Column[] columns);
+    <T extends SModel> Maybe<Boolean> delete(Table<T, X> table, Column column);
 
-    <T extends S> ReactiveTable.Extras<T> read(Table<T, X> table, Column... columns) throws ModelError;
-
-    Maybe<Boolean> delete(Table<?, X> table, Column column);
-
-    <T extends S> Maybe<Boolean> delete(Table<T, X> table, T t);
+    <T extends SModel> Maybe<Boolean> delete(Table<T, X> table, T t);
 
     Maybe<Boolean> delete(Table<?, X> table);
 
-    <T> Maybe<Boolean> delete(Table<?, X> table, Column<T> column, List<T> list);
+    <C> Maybe<Boolean> delete(Table<?, X> table, Column<C> column, List<C> list);
 
-    <T extends S> Single<Long> save(T t, Table<T, X> table);
+    <T extends SModel> Single<Long> save(T t, Table<T, X> table);
 
-    <T extends S> Single<Boolean> save(SList<T> list, Table<T, X> table);
+    <T extends SModel> Single<Boolean> save(SList<T> list, Table<T, X> table);
 
     Maybe<Boolean> deleteAll();
 
-    Maybe<Integer> getLastId(Table<?, X> table);
+    <T extends SModel> Maybe<Integer> getLastId(Table<T, X> table);
 }

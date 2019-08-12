@@ -29,6 +29,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 
     buildTypes {
         release {
@@ -40,8 +44,9 @@ android {
 }
 
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin_version"
-    api project(path: ':promisecommons')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.ext.kotlin_version"
+    compileOnly 'androidx.appcompat:appcompat:1.0.2'
+    compileOnly project(path: ':promisecommons')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

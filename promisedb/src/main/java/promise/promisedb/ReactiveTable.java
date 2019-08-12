@@ -18,66 +18,110 @@ package promise.promisedb;
 
 import androidx.annotation.Nullable;
 
-import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
-import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
+import promise.model.SModel;
 
+/**
+ * models concise read queries in an reactive way
+ * see {@link Table}
+ */
+public interface ReactiveTable {
 
-public interface ReactiveTable<T extends S, X> {
+  /**
+   * modeling concise read queries
+   * see {@link Table.Extras}
+   * @param <T> the type of data to be stored in the table
+   */
+  interface Extras<T extends SModel> {
+    /** gets the first record in the table
+     * see {@link Table.Extras#first()}
+     * @return the first records
+     */
+    @Nullable
+    Maybe<T> first();
 
-    boolean onCreate(X x) throws ModelError;
-    boolean onUpgrade(X x, int v1, int v2) throws ModelError;
+    /** gets the last record in the table
+     * see {@link Table.Extras#last()}
+     * @return the last record in the table
+     */
+    @Nullable
+    Maybe<T> last();
 
-    Extras<T> read(X x);
+    /** gets all the records in the table
+     * see {@link Table.Extras#all()}
+     * @return the list if records
+     */
+    Maybe<SList<T>> all();
 
-    Maybe<SList<T>> onReadAll(X x, boolean close);
+    /** gets the top records marked by the limit
+     * @param limit limit to take from the table
+     * see {@link Table.Extras#limit(int)}
+     * @return a list of records
+     */
+    Maybe<SList<T>> limit(int limit);
 
-    Maybe<SList<T>> onReadAll(X x, Column column);
+    /** paginates the data between the offset and limit
+     * see {@link Table.Extras#paginate(int, int)}
+     * @param skip offset to take
+     * @param limit limit to fetch
+     * @return a list of records
+     */
+    Maybe<SList<T>> paginate(int skip, int limit);
 
-    Maybe<SList<T>> onReadAll(X x, Column... column);
+    /** gets data that matches between the values passed in the specified column
+     * see {@link Table.Extras#between(Column, N, N)}
+     * @param column field to match between
+     * @param a lower bound of between
+     * @param b upper bound of between
+     * @return a list of matched records
+     */
+    <N extends Number> Maybe<SList<T>> between(Column<N> column, N a, N b);
 
-    Extras<T> read(X x, Column... column);
+    /** gets all the data matched in where in the columns
+     * see {@link Table.Extras#where(Column[])}
+     * @param column columns to match where clause
+     * @return a list of records matching the criteria
+     */
+    Maybe<SList<T>> where(Column... column);
 
-    Maybe<Boolean> onUpdate(T t, X x, Column column);
+    /**
+     * gets all the data not within the specified bounds in the specified column
+     * see {@link Table.Extras#notIn(Column, N...)}
+     * @param column field to checkout bounds
+     * @param bounds specified not in bounds
+     * @param <N> type of bound
+     * @return list of records
+     */
+   <N extends Number> Maybe<SList<T>> notIn(Column<N> column, N... bounds);
 
-    Maybe<Boolean> onUpdate(T t, X x);
+    /** fetches all the data where the column contains the value
+     * see {@link Table.Extras#limit(int)}
+     * @param column field to build like clause
+     * @return list of records
+     */
+    Maybe<SList<T>> like(Column<String>... column);
 
-    Maybe<Boolean> onDelete(X x, Column column);
+    /** fetches all the data in the order specified in the column
+     * see {@link Table.Extras#orderBy(Column)}
+     * @param column field to build order by clause
+     * @return a list of records ordered
+     */
+    Maybe<SList<T>> orderBy(Column column);
 
-    Maybe<Boolean> onDelete(T t, X x);
+    /** fetches all the data in the group by condition specified in the column
+     * see {@link Table.Extras#groupBy(Column)}
+     * @param column field to build the group by clause
+     * @return a list of records grouped by the condition in the column
+     */
+    Maybe<SList<T>> groupBy(Column column);
 
-    Maybe<Boolean> onDelete(X x);
-
-    <C> Maybe<Boolean> onDelete(X x, Column<C> column, List<C> list);
-
-    Single<Long> onSave(T t, X x);
-
-    Single<Boolean> onSave(SList<T> list, X x, boolean close);
-
-    Single<Boolean> onDrop(X x);
-
-    Completable backup(X x);
-    Completable restore(X x);
-
-    Maybe<Integer> onGetLastId(X x);
-
-    String getName();
-
-    interface Extras<T extends S> {
-        @Nullable
-        Maybe<T> first();
-        @Nullable Maybe<T> last();
-        Maybe<SList<T>> all();
-        Maybe<SList<T>> limit(int limit);
-        Maybe<SList<T>> between(Column<Integer> column, Integer a, Integer b);
-        Maybe<SList<T>> where(Column... column);
-        Maybe<SList<T>> notIn(Column<Integer> column, Integer a, Integer b);
-        Maybe<SList<T>> like(Column... column);
-        Maybe<SList<T>> orderBy(Column column);
-        Maybe<SList<T>> groupBy(Column column);
-        Maybe<SList<T>> groupAndOrderBy(Column column, Column column1);
-    }
+    /** groups and orders the result set by the two provided sets of columns
+     * see {@link Table.Extras#groupAndOrderBy(Column, Column)}
+     * @param column field to group by
+     * @param column1 field to order by
+     * @return a list of data grouped and ordered in the given criteria
+     */
+    Maybe<SList<T>> groupAndOrderBy(Column column, Column column1);
+  }
 }
